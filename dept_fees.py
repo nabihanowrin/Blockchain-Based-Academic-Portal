@@ -20,12 +20,21 @@ FUNDS = {"development": "Development Fund",
 MAX_AMOUNT = 100000            # Tk; anything above this is surely a typo
 
 
+# starting amounts, used once if the office hasn't set that fee yet (the office's own
+# amount always wins, and a starting amount is never put back once it has been changed)
+START = {"development": 750}
+
+
 def init():
     con = connect()
     con.execute("""CREATE TABLE IF NOT EXISTS dept_fees (
         fund TEXT PRIMARY KEY, amount INTEGER, changed_at TEXT, changed_by TEXT)""")
     con.commit()
+    missing = [f for f in START
+               if not con.execute("SELECT 1 FROM dept_fees WHERE fund=?", (f,)).fetchone()]
     con.close()
+    for fund in missing:
+        set_amount("seed", fund, START[fund])
 
 
 def amounts():
