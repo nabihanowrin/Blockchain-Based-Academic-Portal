@@ -41,6 +41,25 @@ PORT = 8100
 COPY_FILE = "copy_of_the_chain.json"     # our own full copy
 DIARY = "diary.json"                     # what the chain looked like, each time we looked
 
+# The shared secret that proves this laptop is a real chain copy. The writer
+# only hands the full records to copies that send it. Put it in the PEER_KEY
+# setting, or in a file called peer_key.txt next to this program.
+# Never put it in this file: this file is shared.
+def _peer_key():
+    key = os.environ.get("PEER_KEY", "").strip()
+    here = os.path.join(os.path.dirname(os.path.abspath(__file__)), "peer_key.txt")
+    if not key and os.path.exists(here):
+        with open(here, encoding="utf-8") as f:
+            key = f.read().strip()
+    return key
+
+
+def _ask(url, data=None, headers=None):
+    """A request to the writer, carrying the peer key."""
+    h = {"X-Peer-Key": _peer_key(), **(headers or {})}
+    return Request(url, data=data, headers=h)
+
+
 STATE = {"count": 0, "head": None, "ok": True, "note": "starting up",
          "last_look": None, "alarm": None, "others": []}
 
@@ -101,7 +120,7 @@ def write_diary(count, head, note):
 # taking a copy
 # ------------------------------------------------------------------
 def fetch(where, path, timeout=15):
-    with urlopen(where.rstrip("/") + path, timeout=timeout) as answer:
+    with urlopen(_ask(where.rstrip("/") + path), timeout=timeout) as answer:
         return json.loads(answer.read().decode())
 
 
@@ -150,8 +169,8 @@ def say_hello():
     """Tell the writer we are here, so the other laptops can find us."""
     body = json.dumps({"name": NAME, "port": PORT, "count": STATE["count"],
                        "head": STATE["head"], "ok": STATE["ok"], "note": STATE["note"]}).encode()
-    ask = Request(WRITER.rstrip("/") + "/api/peers/hello", data=body,
-                  headers={"Content-Type": "application/json"})
+    ask = _ask(WRITER.rstrip("/") + "/api/peers/hello", data=body,
+               headers={"Content-Type": "application/json"})
     with urlopen(ask, timeout=10) as answer:
         answer.read()
 
@@ -277,7 +296,7 @@ class Serve(BaseHTTPRequestHandler):
 def update_myself():
     mine = os.path.abspath(__file__)
     try:
-        with urlopen(WRITER.rstrip("/") + "/api/peer-code", timeout=10) as answer:
+        with urlopen(_ask(WRITER.rstrip("/") + "/api/peer-code"), timeout=10) as answer:
             theirs = answer.read()
     except Exception:
         return False

@@ -12,6 +12,8 @@ import json
 import os
 import datetime as dt
 
+import clock
+
 import db
 from ledger import connect
 from contract import Refused, MAX_UPLOAD
@@ -178,7 +180,7 @@ def achievement_add(who, title, detail, year, link, filename=None, data=None):
     if not title:
         raise Refused("Give the achievement a title.")
     try:
-        year = int(year or dt.date.today().year)
+        year = int(year or clock.today().year)
     except ValueError:
         raise Refused("The year must be a number, like 2026.")
     link = _clean_link(link)

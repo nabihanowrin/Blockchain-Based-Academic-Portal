@@ -11,6 +11,7 @@ and hands the browser what it asks for.
 import json
 import os
 import hashlib
+import hmac
 import datetime as dt
 from urllib.parse import unquote, quote
 from http.server import SimpleHTTPRequestHandler, HTTPServer
@@ -24,6 +25,7 @@ import mailer
 import notices
 import complaints
 import site_settings
+import clock
 import faculty
 import resources
 import site_content
@@ -55,7 +57,8 @@ COPIES = {}
 
 
 def today():
-    return dt.date.today()
+    """Today in Bangladesh, not on the server's own clock (see clock.py)."""
+    return clock.today()
 
 
 def rows(sql, args=()):
@@ -877,21 +880,89 @@ SEO_SITEMAP = f"""<?xml version="1.0" encoding="UTF-8"?>
 # ------------------------------------------------------------------
 class Handler(SimpleHTTPRequestHandler):
 
+    # don't tell visitors which server or Python version this is
+    server_version = "EEE-Records"
+    sys_version = ""
+
+    # The ONLY files a browser may download. Everything else in the folder
+    # (code, databases, notes, tests, scripts) is never served to anyone.
+    PAGES = {"/landing.html", "/app.html", "/teacher.html", "/office.html", "/exam.html",
+             "/google6089bfc9267fdecb.html"}                 # Google Search Console's check
+    PHOTO_TYPES = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg")
+
+    # Security headers on every answer. What each one does:
+    #   Content-Security-Policy: the page may only load scripts, styles, fonts and
+    #     pictures from this site (plus Google Fonts), and can't be put in a frame.
+    #   X-Frame-Options: older browsers: no other site may show us inside a frame
+    #     (stops "clickjacking", tricking someone into clicking a hidden button).
+    #   X-Content-Type-Options: the browser must trust our file types, never guess.
+    #   Referrer-Policy: other sites we link to only learn our address, not the page.
+    #   Strict-Transport-Security: browsers always use https:// for this site.
+    #   Permissions-Policy: no camera, microphone or location, ever.
+    SECURITY_HEADERS = {
+        "Content-Security-Policy": (
+            "default-src 'self'; script-src 'self' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; "
+            "connect-src 'self'; object-src 'self' blob:; frame-src 'self' blob:; "
+            "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"),
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Strict-Transport-Security": "max-age=31536000",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    }
+
+    def end_headers(self):
+        for name, value in self.SECURITY_HEADERS.items():
+            self.send_header(name, value)
+        super().end_headers()
+
     def reply(self, data, code=200):
         body = json.dumps(data).encode()
         self.send_response(code)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")      # records never sit in a shared cache
         self.end_headers()
         self.wfile.write(body)
 
-    # files the server must never hand out
-    BLOCKED = (".db", ".py", ".pyc", ".log", ".txt", ".json", ".zip", ".md")
+    def may_download(self, path):
+        """Is this one of the site's own pages or landing-page photos?"""
+        import posixpath
+        clean = posixpath.normpath(unquote(path))
+        if clean in self.PAGES:
+            return True
+        return (clean.startswith("/photos/") and clean.lower().endswith(self.PHOTO_TYPES)
+                and os.path.isfile(clean.lstrip("/")))
+
+    def do_HEAD(self):
+        if not self.may_download(urlparse(self.path).path):
+            self.send_error(404)
+            return
+        super().do_HEAD()
 
     def signed_in(self):
         head = self.headers.get("Authorization", "")
         token = head[7:] if head.startswith("Bearer ") else None
         return auth.who(token), token
+
+    def device(self):
+        """Which device is asking: its internet address. On Render the visitor's
+        address arrives in X-Forwarded-For (Render's own address is in front)."""
+        forwarded = (self.headers.get("X-Forwarded-For") or "").split(",")[0].strip()
+        return forwarded or self.client_address[0]
+
+    def is_peer(self):
+        """A chain copy on another laptop proves itself with the shared PEER_KEY
+        (set on the server and on each copy). With no key set, no copy is trusted."""
+        key = os.environ.get("PEER_KEY", "").strip()
+        given = (self.headers.get("X-Peer-Key") or "").strip()
+        return bool(key) and hmac.compare_digest(key.encode(), given.encode())
+
+    def office_or_peer(self):
+        user, _ = self.signed_in()
+        return (user and user["role"] == "office") or self.is_peer()
 
     def do_GET(self):
         url = urlparse(self.path)
@@ -916,26 +987,32 @@ class Handler(SimpleHTTPRequestHandler):
             return
 
         if not url.path.startswith("/api/"):
-            if (url.path.lower().endswith(self.BLOCKED) or "__pycache__" in url.path
-                    or url.path.startswith("/uploads")):          # files go through /api/file only
+            # only the pages and photos on the list; no folder listings, no code,
+            # no databases. Uploaded files go through /api/file, which checks who asks.
+            if not self.may_download(url.path):
                 return self.reply({"ok": False, "why": "Not available."}, 404)
             return super().do_GET()
 
         if url.path == "/api/landing":
             return self.reply(landing_view())
 
-        # The chain, open to the other laptops. With ?full=1 it includes the
-        # records themselves, which is what a copy needs: a laptop holding
-        # only fingerprints can say a record changed, but not what it said.
+        # The chain. Anyone may see the fingerprints (block number, previous
+        # hash, hash): enough to check nothing was changed, nothing about anyone.
+        # The records themselves (?full=1) go only to the office and to chain
+        # copies holding the PEER_KEY: a copy needs them to say what a changed
+        # record used to say.
         if url.path == "/api/chain":
             full = one("full") in ("1", "true", "yes")
+            if full and not self.office_or_peer():
+                return self.reply({"ok": False, "why": "The full records are only for the office "
+                                   "and for chain copies with the peer key."}, 403)
             blocks = []
             for n, t, text, a, at, p, h in rows(
                     "SELECT block_no, entry_type, payload, actor, created_at, prev_hash, hash "
                     "FROM blocks ORDER BY block_no"):
-                b = {"block_no": n, "type": t, "actor": a, "at": at, "prev_hash": p, "hash": h}
+                b = {"block_no": n, "prev_hash": p, "hash": h}
                 if full:
-                    b["payload"] = json.loads(text)
+                    b.update(type=t, actor=a, at=at, payload=json.loads(text))
                 blocks.append(b)
             ok, message = verify_chain()
             return self.reply({"count": len(blocks), "ok": ok, "message": message,
@@ -944,6 +1021,8 @@ class Handler(SimpleHTTPRequestHandler):
 
         # the copy program itself, so nobody has to be sent a file by hand
         if url.path == "/api/peer-code":
+            if not self.office_or_peer():
+                return self.reply({"ok": False, "why": "Only for the office and chain copies."}, 403)
             with open("peer.py", "rb") as f:
                 code = f.read()
             # point the copy at this laptop, whatever Wi-Fi address it has today
@@ -960,6 +1039,8 @@ class Handler(SimpleHTTPRequestHandler):
 
         # who else is holding a copy, and what they last reported
         if url.path == "/api/peers":
+            if not self.office_or_peer():
+                return self.reply({"ok": False, "why": "Only for the office and chain copies."}, 403)
             now = dt.datetime.now()
             out = []
             for name, p in sorted(COPIES.items()):
@@ -1144,9 +1225,11 @@ class Handler(SimpleHTTPRequestHandler):
         one = lambda k: q.get(k, [None])[0]
         length = int(self.headers.get("Content-Length", 0))
 
-        # a copy on another laptop saying hello. No sign-in: a copy is not a
-        # person, and it only ever tells us what it holds.
+        # a copy on another laptop saying hello. A copy is not a person, so it
+        # has no sign-in: it proves itself with the shared PEER_KEY instead.
         if url.path == "/api/peers/hello":
+            if not self.is_peer():
+                return self.reply({"ok": False, "why": "Chain copies need the peer key."}, 403)
             said = json.loads(self.rfile.read(length) or "{}")
             name = str(said.get("name") or "")[:40] or "copy"
             COPIES[name] = {"url": f"http://{self.client_address[0]}:{int(said.get('port') or 8100)}",
@@ -1166,34 +1249,28 @@ class Handler(SimpleHTTPRequestHandler):
                     return self.reply({"ok": True})
                 if url.path == "/api/password/finish":
                     email = auth.reset_finish(body.get("email"), body.get("code"), body.get("password"))
-                    token, role = auth.sign_in(email, body.get("password"), body.get("remember"))
+                    token, role = auth.sign_in(email, body.get("password"), body.get("remember"), self.device())
                     return self.reply({"ok": True, "token": token, "role": role})
                 if url.path == "/api/register/staff-start":
-                    status, shown = auth.staff_register_start(body.get("email"))
-                    out = {"ok": True, "emailed": status == "sent"}
-                    if shown:
-                        out["code"] = shown
-                    return self.reply(out)
+                    auth.staff_register_start(body.get("email"))
+                    return self.reply({"ok": True, "emailed": True})
                 if url.path == "/api/register/staff-finish":
                     email, role = auth.staff_register_finish(body.get("email"), body.get("code"),
                                                              body.get("password"))
-                    token, role = auth.sign_in(email, body.get("password"), body.get("remember"))
+                    token, role = auth.sign_in(email, body.get("password"), body.get("remember"), self.device())
                     return self.reply({"ok": True, "token": token, "role": role})
                 if url.path == "/api/register/start":
-                    status, shown = auth.start_registration(
+                    auth.start_registration(
                         body.get("email"), body.get("father"), body.get("mother"),
                         body.get("name"), body.get("batch"))
-                    out = {"ok": True, "emailed": status == "sent"}
-                    if shown:
-                        out["code"] = shown          # email is off on this server
-                    return self.reply(out)
+                    return self.reply({"ok": True, "emailed": True})
                 if url.path == "/api/register/finish":
                     email = auth.finish_registration(body.get("email"), body.get("code"),
                                                      body.get("password"))
-                    token, role = auth.sign_in(email, body.get("password"), body.get("remember"))
+                    token, role = auth.sign_in(email, body.get("password"), body.get("remember"), self.device())
                     return self.reply({"ok": True, "token": token, "role": role})
                 if url.path == "/api/signin":
-                    token, role = auth.sign_in(body.get("email"), body.get("password"), body.get("remember"))
+                    token, role = auth.sign_in(body.get("email"), body.get("password"), body.get("remember"), self.device())
                     return self.reply({"ok": True, "token": token, "role": role})
             except Refused as why:
                 return self.reply({"ok": False, "why": str(why)}, 400)
@@ -1312,12 +1389,8 @@ class Handler(SimpleHTTPRequestHandler):
             body = json.loads(self.rfile.read(length) or "{}")
             try:
                 if url.path.endswith("/start"):
-                    status, shown = site_settings.start_change(user["email"], body.get("key"),
-                                                               body.get("address"))
-                    out = {"ok": True, "emailed": status == "sent"}
-                    if shown:
-                        out["code"] = shown          # email is off on this server
-                    return self.reply(out)
+                    site_settings.start_change(user["email"], body.get("key"), body.get("address"))
+                    return self.reply({"ok": True, "emailed": True})
                 block_no = site_settings.finish_change(user["email"], body.get("key"), body.get("code"))
                 return self.reply({"ok": True, "block_no": block_no})
             except Refused as why:

@@ -984,7 +984,8 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 document.querySelectorAll('.rise').forEach(el => io.observe(el));
 
 /* ---------- achievements and gallery, from the office's tables ---------- */
-function esc(t){ const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; }
+/* makes text safe to put inside the page: < > & and both quote marks can't start code */
+function esc(t){ return String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 function fill(list, render, a, b){
   if (!list.length) return;
@@ -1297,10 +1298,8 @@ async function staffCode(p){
   const email = document.getElementById(p + 'JEmail').value.trim().toLowerCase();
   const res = await post('/api/register/staff-start', {email});
   if (!res.ok){ msg.textContent = res.why; return; }
-  document.getElementById(p + 'JWhere').textContent = res.code
-    ? `Email isn't working on this server right now, so your code is shown here: ${res.code}`
-    : `A 6-digit code is on its way to ${email}. Check the inbox (and spam) — it can take a minute.`;
-  if (res.code) document.getElementById(p + 'JCode').value = res.code;
+  document.getElementById(p + 'JWhere').textContent =
+    `A 6-digit code is on its way to ${email}. Check the inbox (and spam) — it can take a minute.`;
   document.getElementById(p + 'JStep2').classList.remove('hide');
 }
 async function staffFinish(p, kind){
@@ -1330,16 +1329,7 @@ async function regStart(){
     father: document.getElementById('rFa').value, mother: document.getElementById('rMo').value});
   if (!res.ok){ msg.textContent = res.why; return; }
   document.getElementById('rSent').textContent = email.trim().toLowerCase();
-  if (res.code){
-    document.getElementById('rCode').value = res.code;
-    document.getElementById('rWhere').textContent = res.emailed
-      ? `It has been emailed to you, and for this demo it is also shown here: ${res.code}`
-      : `Email sending is switched off in this demo, so your code is shown here instead: ${res.code}`;
-  } else {
-    document.getElementById('rWhere').textContent = res.emailed
-      ? 'Check your university inbox — it can take a minute.'
-      : 'Email isn\'t available for this address, so the code appears in the server\'s terminal window instead.';
-  }
+  document.getElementById('rWhere').textContent = 'Check your university inbox (and spam) — it can take a minute.';
   document.getElementById('reg1').classList.add('hide');
   document.getElementById('reg2').classList.remove('hide');
   document.getElementById('s1').classList.remove('on');

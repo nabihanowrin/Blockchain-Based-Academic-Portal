@@ -765,7 +765,7 @@ async function fillHistory(courseId, itemId, label){
     const d = e.detail, last = i === h.marks.length - 1;
     html += `<div class="ev ${last?'now':''}">
       <div class="h">${e.type === 'score' ? 'Entered as ' : 'Changed to '}<span class="mono">${d.absent ? 'Absent' : fmt(d.value)}</span></div>
-      <div class="m">by ${who(e.actor)} · ${when(e.at)} · block ${e.block_no}${d.reason ? '<br>Reason given: ' + d.reason : ''}</div>
+      <div class="m">by ${who(e.actor)} · ${when(e.at)} · block ${e.block_no}${d.reason ? '<br>Reason given: ' + esc(d.reason) : ''}</div>
     </div>`;
   });
 
@@ -773,7 +773,7 @@ async function fillHistory(courseId, itemId, label){
     const o = t.opened;
     html += `<div class="ev">
       <div class="h">Objection #${t.id} <span class="pill ${t.status==='open'?'acc':'ok'}">${t.status}</span></div>
-      <div class="m">raised by ${who(o.actor)} · ${when(o.at)}<br>“${o.detail.note}”</div>
+      <div class="m">raised by ${who(o.actor)} · ${when(o.at)}<br>“${esc(o.detail.note)}”</div>
       <div class="kids">${t.events.map(e => kid(e)).join('') || '<div class="kid">No response yet.</div>'}</div>
     </div>`;
   });
@@ -793,13 +793,13 @@ function kid(e){
   if (e.type === 'notification'){
     const to = d.to ? ` to the ${d.to}` : '';
     const what = d.status === 'sent'    ? `<b>Email sent${to}</b>`
-               : d.status === 'blocked' ? `<b>Email not sent${to}</b> — ${d.note}`
+               : d.status === 'blocked' ? `<b>Email not sent${to}</b> — ${esc(d.note)}`
                : d.status === 'off'     ? `<b>Email not sent${to}</b> — email isn't set up on this computer`
-               : d.status === 'failed'  ? `<b>Email failed${to}</b> — ${d.note}`
+               : d.status === 'failed'  ? `<b>Email failed${to}</b> — ${esc(d.note)}`
                :                          `<b>Notification recorded${to}</b>`;       // entries made before emails existed
     return `<div class="kid">↳ ${what} · ${when(e.at)}</div>`;
   }
-  if (e.type === 'objection' && d.status === 'closed') return `<div class="kid">↳ <b>Closed by ${who(e.actor)}</b> — “${d.note}” · ${when(e.at)}</div>`;
+  if (e.type === 'objection' && d.status === 'closed') return `<div class="kid">↳ <b>Closed by ${who(e.actor)}</b> — “${esc(d.note)}” · ${when(e.at)}</div>`;
   return `<div class="kid">↳ ${e.type} · ${when(e.at)}</div>`;
 }
 
@@ -1158,13 +1158,13 @@ async function homePage(){
   setSidebarPhoto(p.photo, p.name);
 
   const fact = (k, v, mono) => `<div><div class="k">${k}</div>
-      <div class="v ${v ? (mono?'mono':'') : 'none'}">${v || 'not on file yet'}</div></div>`;
+      <div class="v ${v ? (mono?'mono':'') : 'none'}">${v ? esc(v) : 'not on file yet'}</div></div>`;
 
   const d = new Date();
   view(`
     <div class="hello">
       <div class="date in"><b>${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}</b>${d.toLocaleDateString('en-GB',{weekday:'long'})}</div>
-      <h1 class="page in d1">Welcome back, ${p.name.split(' ')[0]}</h1>
+      <h1 class="page in d1">Welcome back, ${esc(p.name.split(' ')[0])}</h1>
     </div>
     ${HOME.sample ? `<div class="samplenote in d1"><b>Sample results.</b> This is a demo: the GPAs and class-test marks here were generated for you to try the system. They are not your real marks. Attendance appears when a teacher takes it.</div>` : ''}
 
@@ -1179,7 +1179,7 @@ async function homePage(){
           <div class="upmsg" id="photoMsg"></div>
         </div>
         <div>
-          <h2>${p.name}</h2>
+          <h2>${esc(p.name)}</h2>
           <div class="facts">
             ${fact('Roll number', p.roll, true)}
             ${fact('Student ID', p.student_id, true)}
@@ -1369,7 +1369,8 @@ function watchRise(){
 
 function initials(name){ return name.split(' ').map(w => w[0]).slice(0,2).join(''); }
 function ordinal(n){ return n + (['th','st','nd','rd'][n % 10 > 3 || Math.floor(n % 100 / 10) === 1 ? 0 : n % 10] || 'th'); }
-function esc(t){ const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+/* makes text safe to put inside the page: < > & and both quote marks can't start code */
+function esc(t){ return String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 /* ============================================================
    helpers

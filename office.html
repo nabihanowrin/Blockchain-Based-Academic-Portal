@@ -195,7 +195,8 @@ function toLanding(){
 async function signOut(){ try { await api('/api/signout', {method:'POST'}); } catch (e) {} toLanding(); }
 
 const view = html => { document.getElementById('view').innerHTML = html; window.scrollTo(0,0); };
-const esc = t => { const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; };
+/* makes text safe to put inside the page: < > & and both quote marks can't start code */
+function esc(t){ return String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 const ordinal = n => n + (['th','st','nd','rd'][n % 10 > 3 || Math.floor(n % 100 / 10) === 1 ? 0 : n % 10] || 'th');
 const when = at => at ? at.slice(0,16).replace('T',' ') : '';
 
@@ -585,7 +586,7 @@ async function settingsPage(){
     <p class="lede in d1">Where the website sends emails meant for the office (tamper alerts, complaints) and for the chairman (complaints).
       To change one, a code is sent to the new address first, so a typo can't send emails into nowhere. The old address is told about the change,
       and every change is written to the chain.</p>
-    ${d.email ? '' : '<p class="lede in d1"><b>Email is switched off on this server</b>, so nothing is sent yet. The code will be shown on this page instead.</p>'}
+    ${d.email ? '' : '<p class="lede in d1"><b>Email is switched off on this server</b>, so an address can\'t be changed until it is switched on.</p>'}
     <div class="box in d2">${d.settings.map(card).join('')}</div>
     <div class="box in d3"><h2>Changes so far</h2>${past || '<p class="lede">No changes yet.</p>'}</div>`);
 }
@@ -599,8 +600,7 @@ async function settingStart(key){
   if (!res.ok){ m.className = 'okmsg bad'; m.textContent = res.why; return; }
   document.getElementById('code-' + key).style.display = '';
   m.className = 'okmsg good';
-  m.textContent = res.code ? `Email is off on this server. The code is ${res.code}.`
-                           : 'A code was sent to that address. Type it in below.';
+  m.textContent = 'A code was sent to that address. Type it in below.';
 }
 
 async function settingFinish(key){

@@ -88,7 +88,9 @@ def _gmail_api_ready():
 
 
 def method():
-    """Which way email would go right now: 'gmail-api', 'brevo', 'gmail' or None."""
+    """Which way email would go right now: 'outbox', 'gmail-api', 'brevo', 'gmail' or None."""
+    if _env("MAIL_OUTBOX"):            # the automatic tests: write emails to a file, send nothing
+        return "outbox"
     if _gmail_api_ready():
         return "gmail-api"
     if _env("BREVO_API_KEY") and _env("MAIL_FROM"):
@@ -171,6 +173,19 @@ def _via_gmail_api(to, subject, text, attachment=None):
         raise
 
 
+_outbox_lock = threading.Lock()
+
+
+def _via_outbox(to, subject, text, attachment=None):
+    """For the automatic tests only (MAIL_OUTBOX=a file path): each email becomes
+    one line of JSON in that file, so a test can read a code the way a person
+    reads their inbox. Nothing leaves the computer."""
+    line = json.dumps({"to": to, "subject": subject, "body": text,
+                       "attachment": attachment[0] if attachment else None})
+    with _outbox_lock, open(_env("MAIL_OUTBOX"), "a", encoding="utf-8") as f:
+        f.write(line + "\n")
+
+
 def _via_brevo(to, subject, text, attachment=None):
     payload = {
         "sender": {"email": _env("MAIL_FROM"), "name": _env("MAIL_FROM_NAME", "EEE Records")},
@@ -220,7 +235,8 @@ def send(to, subject, body, attachment=None, trusted=False):
     how = method()
     if not how:
         return "off", "email is not set up on this computer"
-    sender = {"gmail-api": _via_gmail_api, "brevo": _via_brevo, "gmail": _via_gmail}[how]
+    sender = {"outbox": _via_outbox, "gmail-api": _via_gmail_api,
+              "brevo": _via_brevo, "gmail": _via_gmail}[how]
     try:
         sender(to, subject, body + FOOTER, attachment)
         return "sent", f"accepted for delivery ({how})"

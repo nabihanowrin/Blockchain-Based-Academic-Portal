@@ -2,6 +2,55 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — Security round 1
+
+**1. Codes are never shown on screen.** Registration, staff sign-up, password
+reset and the Email settings page only ever email the code. If the email can't
+be sent, the person is told to try again later. The code is also no longer
+written to the server's log. (`auth.py`, `site_settings.py`, `server.py`,
+`landing.html`, `office.html`; the `SHOW_CODE` setting no longer exists.)
+Registration and reset codes go to the university address typed, even if
+`MAIL_ALLOW_ALL` is off.
+
+**2. The chain's records are private.** `/api/chain` now shows anyone only the
+fingerprints (block number, previous hash, hash), enough to check nothing was
+changed and nothing about anyone. The full records (`?full=1`), the list of
+chain copies (`/api/peers`) and the copy program (`/api/peer-code`) are only
+for the office or a chain copy holding the shared `PEER_KEY`. A copy saying
+hello (`/api/peers/hello`) must have the key. `peer.py` sends the key, read
+from the `PEER_KEY` setting or a `peer_key.txt` file next to it.
+
+**3. Only the site's own pages and photos can be downloaded.** Everything else
+(code, databases, notes, tests, `START.bat`, folder listings) answers "Not
+available", also for tricks like `/photos/../server.py` and HEAD requests.
+The server no longer tells visitors its Python version. (`server.py`:
+`PAGES`, `may_download`.)
+
+**4. Security headers on every answer** (`server.py`: `SECURITY_HEADERS`):
+Content-Security-Policy, X-Frame-Options, X-Content-Type-Options,
+Referrer-Policy, Strict-Transport-Security, Permissions-Policy. API answers are
+never cached.
+
+**5. Bangladesh time.** New `clock.py`: "what day is it" is always asked in
+Bangladesh time (UTC+6). Render's clock is UTC, so between midnight and 6 AM
+the site used to think it was still yesterday.
+
+**6. Text people type is always made safe before it is shown.** The `esc()`
+helper on every page now also escapes quote marks (a name with `"` could break
+out of a form field). The student page now escapes the teacher's reason, the
+objection notes, the closing note, the student's own name and parents' names.
+Batch names must look like `2026–27`.
+
+**7. Wrong passwords lock the device, not the account.** 5 wrong tries lock
+that device for 15 minutes; a stranger can't lock a student out from their own
+phone any more. 25 wrong tries from all devices together still lock the
+account, to stop password guessing. If the email has no account, the message
+says to register first.
+
+**Tests:** checks 2, 2b, 2c, 3b, 15b, 24, 25 are new; check 4 and 23 now read
+codes from a test-only outbox file (`MAIL_OUTBOX`) instead of the screen; the
+mark-change email is checked in 12. 29 checks, on SQLite and Postgres.
+
 ## 2026-11-22 — The office sets where its emails go (Email settings)
 
 **What you see (office page):** a new **Email settings** item in the sidebar.

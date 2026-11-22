@@ -365,6 +365,10 @@ def add_batch(office_email, name, current_semester=1):
     name = (name or "").strip()
     if not name:
         raise Refused("A batch needs a name, like 2026–27.")
+    import re
+    if not re.fullmatch(r"\d{4}\s*[–-]\s*\d{2}", name):    # only years: it ends up inside buttons
+        raise Refused("A batch name looks like 2026–27: the starting year, a dash, the next year's last two digits.")
+    name = re.sub(r"\s*[–-]\s*", "–", name)                # always the same dash
     if _one("SELECT 1 FROM academic_sessions WHERE name=?", (name,)):
         raise Refused("There is already a batch with that name.")
     try:
@@ -601,7 +605,7 @@ def save_register(teacher_id, course_id, session, session_id, marks):
         raise Refused("That class is not in this course's timetable.")
     held_on = found[0]
     day = _dt.date.fromisoformat(held_on)
-    if day > _dt.date.today():
+    if day > _clock.today():
         raise Refused("That class has not happened yet.")
     if session_id in cancelled_classes(course_id):
         raise Refused("This class was cancelled.")
@@ -680,7 +684,7 @@ def cancel_class(teacher_id, course_id, session, session_id):
         raise Refused("That class is not in this course's timetable.")
     held_on, slot = found
     day = _dt.date.fromisoformat(held_on)
-    if day < _dt.date.today():
+    if day < _clock.today():
         raise Refused("That class has already happened.")
     if session_id in cancelled_classes(course_id):
         raise Refused("This class is already cancelled.")
@@ -957,6 +961,7 @@ def close_objection(teacher_id, course_id, roll, item_id, outcome):
 # the syllabus rules — from the curriculum, sessions 2022-23 & 2023-24
 # ==================================================================
 import datetime as _dt
+import clock as _clock
 
 TERM_START = _dt.date(2026, 9, 1)
 
@@ -1045,7 +1050,7 @@ def verify_project(teacher_id, project_id):
                             teacher_id)
     con = connect()
     con.execute("UPDATE projects SET verified_by=?, verified_at=? WHERE id=?",
-                (teacher_id, _dt.date.today().isoformat(), project_id))
+                (teacher_id, _clock.today().isoformat(), project_id))
     con.commit()
     con.close()
     return block_no

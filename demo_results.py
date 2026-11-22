@@ -17,6 +17,7 @@ emails are sent for it.
 Switch it off with SAMPLE_RESULTS=0.
 """
 
+import clock
 import os
 import json
 import random
@@ -65,7 +66,7 @@ def give(roll, batch):
     con.close()
     lucky = registered > 0 and registered % 10 == 0
     gpa = 4.00 if lucky else GPA
-    today = dt.date.today()
+    today = clock.today()     # Bangladesh date, whatever the server's clock says
     written = 0
 
     # finished semesters: a published GPA

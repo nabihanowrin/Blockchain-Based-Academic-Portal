@@ -105,7 +105,7 @@ def history():
 
 
 def start_change(office_email, key, new):
-    """Step 1: send a code to the new address. Returns (status, code_to_show)."""
+    """Step 1: send a code to the new address. The code is never shown on screen."""
     _check_key(key)
     new = (new or "").strip().lower()
     if not LOOKS_LIKE_EMAIL.match(new):
@@ -129,14 +129,11 @@ def start_change(office_email, key, new):
                             "If you didn't expect this, ignore it and nothing changes.",
                             trusted=True)
     if status != "sent":
-        print(f"\n  >>> Code for the {key} email setting ({new}): {code} "
-              f"(email {status}; valid {CODE_MINUTES} minutes)\n", flush=True)
-        import auth
-        if auth.SHOW_CODE_WHEN_EMAIL_OFF:
-            return status, code
-    elif os.environ.get("SHOW_CODE", "").strip().lower() == "always":
-        return status, code
-    return status, None
+        _forget(key)
+        print(f"  [settings] code for the {key} address could not be emailed ({status})", flush=True)
+        raise Refused("We couldn't email a code to that address right now. "
+                      "Check the address, or try again in a few minutes.")
+    return status
 
 
 def finish_change(office_email, key, code):

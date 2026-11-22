@@ -53,8 +53,8 @@ class Site:
     def __init__(self, port):
         self.base = f"http://127.0.0.1:{port}"
 
-    def call(self, path, body=None, token=None):
-        headers = {"Content-Type": "application/json"}
+    def call(self, path, body=None, token=None, extra=None):
+        headers = {"Content-Type": "application/json", **(extra or {})}
         if token:
             headers["Authorization"] = "Bearer " + token
         data = json.dumps(body).encode() if body is not None else None
@@ -89,7 +89,11 @@ class TestSite(unittest.TestCase):
         env = {k: v for k, v in os.environ.items()
                if not k.startswith(("DATABASE_URL", "GMAIL_", "MAIL_", "OFFICE_EMAIL", "CHAIRMAN_EMAIL"))}
         port = free_port()
-        env.update({"PORT": str(port), "DEMO_TAMPER": "1", "SHOW_CODE": "1",
+        cls.outbox = os.path.join(cls.folder, "outbox.jsonl")
+        env.update({"PORT": str(port), "DEMO_TAMPER": "1",
+                    "MAIL_OUTBOX": cls.outbox,      # emails go to this file, nothing is sent
+                    "MAIL_ALLOW_ALL": "1",
+                    "PEER_KEY": secrets.token_urlsafe(16),
                     "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8"})
         if os.environ.get("TEST_DATABASE_URL"):      # an empty Postgres, like Supabase
             env["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
@@ -142,6 +146,29 @@ class TestSite(unittest.TestCase):
             return f.read()[-4000:]
 
     # small helpers --------------------------------------------------------
+    def emails_to(self, address, about="", wait=8):
+        """Emails the site 'sent' to this address (from the test outbox), oldest first.
+        about: only those whose subject contains this. Waits a little, because
+        some emails are sent in the background."""
+        found = []
+        for _ in range(int(wait * 10)):
+            if os.path.exists(self.outbox):
+                with open(self.outbox, encoding="utf-8") as f:
+                    found = [json.loads(line) for line in f if line.strip()]
+                found = [m for m in found if m["to"].lower() == address.lower() and about in m["subject"]]
+                if found:
+                    return found
+            time.sleep(0.1)
+        return found
+
+    def code_sent_to(self, address):
+        """The newest 6-digit code emailed to this address."""
+        mails = self.emails_to(address, about="code" if "@std." in address else "")
+        self.assertTrue(mails, f"no email reached {address}")
+        codes = re.findall(r"\b(\d{6})\b", mails[-1]["body"])
+        self.assertTrue(codes, f"the last email to {address} has no code")
+        return codes[0]
+
     def call(self, path, body=None, who=None):
         return self.site.call(path, body, self.tokens.get(who) if who else None)
 
@@ -174,10 +201,43 @@ class TestSite(unittest.TestCase):
         self.assertTrue(landing.get("batches"), "the landing page has no batches to sign up for")
 
     def test_02_private_files_stay_hidden(self):
-        """Code files and the database can't be downloaded."""
-        for path in ("/server.py", "/auth.py", "/records.db", "/demo_records.db", "/NOTES.md"):
-            status, _ = self.call(path)
-            self.assertEqual(status, 404, f"{path} could be downloaded")
+        """Only the site's pages and photos can be downloaded: no code, databases, notes or folder lists."""
+        for path in ("/server.py", "/auth.py", "/records.db", "/demo_records.db", "/NOTES.md",
+                     "/START.bat", "/requirements.txt", "/.github/workflows/tests.yml",
+                     "/photos/", "/tests/", "/.github/", "/photos/uploads/", "/uploads/",
+                     "/photos/../server.py", "/photos/..%2fserver.py", "/%2e%2e/server.py",
+                     "/photos/logo.webp/../../auth.py", "/peer_key.txt", "/outbox.jsonl"):
+            status, body = self.call(path)
+            self.assertEqual(status, 404, f"{path} could be downloaded or listed")
+            self.assertNotIn("Directory listing", str(body))
+        # HEAD asks "does this exist and how big is it?": same answer
+        req = urllib.request.Request(self.site.base + "/server.py", method="HEAD")
+        with self.assertRaises(urllib.error.HTTPError, msg="HEAD /server.py answered"):
+            urllib.request.urlopen(req, timeout=10)
+        status, _ = self.call("/photos/building-wide.jpg")
+        self.assertEqual(status, 200, "a landing-page photo didn't load")
+
+    def test_02b_security_headers(self):
+        """Every answer carries the security headers and doesn't name the server's Python version."""
+        for path in ("/landing.html", "/api/landing", "/nope"):
+            try:
+                resp = urllib.request.urlopen(self.site.base + path, timeout=10)
+            except urllib.error.HTTPError as e:
+                resp = e
+            headers = resp.headers
+            for name in ("Content-Security-Policy", "X-Frame-Options", "X-Content-Type-Options",
+                         "Referrer-Policy", "Strict-Transport-Security"):
+                self.assertTrue(headers.get(name), f"{path} has no {name} header")
+            self.assertNotIn("Python", headers.get("Server", ""), f"{path} tells visitors the Python version")
+
+    def test_02c_bangladesh_time(self):
+        """The site's 'today' is Bangladesh's date (UTC+6), whatever the server's own clock says."""
+        sys.path.insert(0, ROOT)
+        import clock
+        import datetime as dt
+        self.assertEqual(clock.now().utcoffset(), dt.timedelta(hours=6))
+        utc = dt.datetime.now(dt.timezone.utc)
+        self.assertEqual(clock.today(), (utc + dt.timedelta(hours=6)).date())
 
     # ------------------------------------------------------------------
     # 2. signing in and registering
@@ -190,6 +250,22 @@ class TestSite(unittest.TestCase):
             answer = self.ok("/api/signin", {"email": self.emails[role], "password": self.passwords[role]})
             self.assertEqual(answer["role"], role)
             self.tokens[role] = answer["token"]
+
+    def test_03b_wrong_passwords_lock_only_that_device(self):
+        """5 wrong passwords from one device lock that device, not the teacher on their own device."""
+        email = self.emails["teacher"]
+        stranger = {"X-Forwarded-For": "203.0.113.7"}
+        for _ in range(5):
+            status, _ = self.site.call("/api/signin", {"email": email, "password": "guess"}, extra=stranger)
+            self.assertEqual(status, 400)
+        status, answer = self.site.call("/api/signin", {"email": email, "password": self.passwords["teacher"]},
+                                        extra=stranger)
+        self.assertEqual(status, 400, "the stranger's device should be locked now")
+        self.assertIn("Too many wrong tries", answer["why"])
+        status, answer = self.site.call("/api/signin", {"email": email, "password": self.passwords["teacher"]},
+                                        extra={"X-Forwarded-For": "198.51.100.20"})
+        self.assertEqual(status, 200, f"the teacher was locked out by someone else's wrong tries: {answer}")
+        self.tokens["teacher"] = answer["token"]
 
     def test_04_student_registers(self):
         """A student registers with a university email; bad emails and wrong codes are refused."""
@@ -206,13 +282,14 @@ class TestSite(unittest.TestCase):
         self.refused("/api/register/start", {**form, "name": ""}, status=400, what="no name")
 
         start = self.ok("/api/register/start", form)
-        self.assertIn("code", start, "with email off, the code should be shown to the tester")
-        self.refused("/api/register/finish", {"email": STUDENT_EMAIL, "code": "000000",
+        self.assertNotIn("code", start, "the registration code must never be shown on screen")
+        code = self.code_sent_to(STUDENT_EMAIL)
+        self.refused("/api/register/finish", {"email": STUDENT_EMAIL, "code": "000000" if code != "000000" else "111111",
                                               "password": self.passwords["student"]},
                      status=400, what="wrong code")
-        self.refused("/api/register/finish", {"email": STUDENT_EMAIL, "code": start["code"],
+        self.refused("/api/register/finish", {"email": STUDENT_EMAIL, "code": code,
                                               "password": "short"}, status=400, what="short password")
-        done = self.ok("/api/register/finish", {"email": STUDENT_EMAIL, "code": start["code"],
+        done = self.ok("/api/register/finish", {"email": STUDENT_EMAIL, "code": code,
                                                 "password": self.passwords["student"]})
         self.assertEqual(done["role"], "student")
         self.tokens["student"] = done["token"]
@@ -367,6 +444,11 @@ class TestSite(unittest.TestCase):
         self.assertIn(self.item["out_of"] - 2, values, "the history doesn't show the new mark")
         self.assertIn("Re-checked the script", json.dumps(history), "the reason isn't in the history")
 
+        # the student is emailed about the change, with the reason
+        changed = self.emails_to(STUDENT_EMAIL, about="was changed")
+        self.assertTrue(changed, "the student wasn't emailed about the changed mark")
+        self.assertIn("Re-checked the script", changed[-1]["body"])
+
     def test_13_objection_round_trip(self):
         """The student raises an objection; the teacher answers it; it shows in the history."""
         self.ok("/api/object", {"course_id": self.course, "item_id": self.item["item_id"],
@@ -400,6 +482,32 @@ class TestSite(unittest.TestCase):
         chain = self.ok("/api/chain")
         self.assertTrue(chain["ok"], chain["message"])
         self.assertGreater(chain["count"], 0)
+
+    def test_15b_chain_records_are_private(self):
+        """Anyone sees only fingerprints; the records go only to the office and to copies with the peer key."""
+        public = self.ok("/api/chain")
+        self.assertTrue(public["blocks"])
+        leaked = {k for b in public["blocks"] for k in b} - {"block_no", "prev_hash", "hash"}
+        self.assertFalse(leaked, f"the public chain shows {leaked}")
+        self.assertNotIn(STUDENT_ROLL, json.dumps(public), "a roll number is visible in the public chain")
+
+        for path in ("/api/chain?full=1", "/api/peers", "/api/peer-code"):
+            self.refused(path, status=403, what=f"{path} without signing in")
+            self.refused(path, who="student", status=403, what=f"{path} as a student")
+            self.refused(path, who="teacher", status=403, what=f"{path} as a teacher")
+        self.assertEqual(self.site.call("/api/chain?full=1", extra={"X-Peer-Key": "wrong"})[0], 403,
+                         "a wrong peer key got the full records")
+        self.refused("/api/peers/hello", {"name": "fake", "count": 1, "ok": True}, status=403,
+                     what="a fake chain copy saying hello without the key")
+
+        office = self.ok("/api/chain?full=1", who="office")
+        self.assertIn("payload", office["blocks"][-1], "the office should see the full records")
+        status, copy = self.site.call("/api/chain?full=1", extra={"X-Peer-Key": self.env["PEER_KEY"]})
+        self.assertEqual(status, 200, "a chain copy with the right key was refused")
+        self.assertIn("payload", copy["blocks"][-1])
+        status, _ = self.site.call("/api/peers/hello", {"name": "ci-copy", "port": 8100, "count": 1, "ok": True},
+                                   extra={"X-Peer-Key": self.env["PEER_KEY"]})
+        self.assertEqual(status, 200, "a real chain copy couldn't say hello")
 
     def test_16_insider_edit_is_caught(self):
         """An edit made straight in the database is caught, and putting it back makes the chain whole."""
@@ -522,14 +630,15 @@ class TestSite(unittest.TestCase):
 
         start = self.ok("/api/office/settings/start", {"key": "chairman", "address": "Test.Chair@cu.ac.bd"},
                         who="office")
-        self.assertIn("code", start, "with email off, the code should be shown to the tester")
-        wrong = "000000" if start["code"] != "000000" else "111111"
+        self.assertNotIn("code", start, "the code must never be shown on screen")
+        code = self.code_sent_to("test.chair@cu.ac.bd")
+        wrong = "000000" if code != "000000" else "111111"
         self.refused("/api/office/settings/finish", {"key": "chairman", "code": wrong},
                      who="office", status=400, what="a wrong code")
         still = {s["key"]: s for s in self.ok("/api/office/settings", who="office")["settings"]}
         self.assertIsNone(still["chairman"]["address"], "the address changed before the code was confirmed")
 
-        self.ok("/api/office/settings/finish", {"key": "chairman", "code": start["code"]}, who="office")
+        self.ok("/api/office/settings/finish", {"key": "chairman", "code": code}, who="office")
         after = self.ok("/api/office/settings", who="office")
         chair = next(s for s in after["settings"] if s["key"] == "chairman")
         self.assertEqual((chair["address"], chair["source"]), ("test.chair@cu.ac.bd", "website"))
@@ -537,6 +646,39 @@ class TestSite(unittest.TestCase):
         self.refused("/api/office/settings/start", {"key": "chairman", "address": "test.chair@cu.ac.bd"},
                      who="office", status=400, what="changing to the address it already has")
         self.assertTrue(self.ok("/api/chain")["ok"], "changing an email setting broke the chain")
+
+    def test_24_complaint_goes_to_the_addresses_on_the_settings_page(self):
+        """A complaint is emailed to the chairman address the office set, without the student's name."""
+        self.ok("/api/complaint", {"what": "Fan in room 214 is broken", "why": "It is very hot",
+                                   "fix": "Repair the fan"}, who="student")
+        mails = self.emails_to("test.chair@cu.ac.bd", about="Fan in room 214")
+        self.assertTrue(mails, "the complaint didn't reach the chairman address set on the settings page")
+        self.assertNotIn("Test Student", mails[-1]["body"], "the complaint email shows the student's name")
+        self.assertNotIn(STUDENT_ROLL, mails[-1]["body"], "the complaint email shows the roll number")
+
+    def test_25_password_reset(self):
+        """Forgot password: code to the inbox (never on screen), wrong codes refused, new password works."""
+        self.refused("/api/password/start", {"email": "nobody99@std.cu.ac.bd"}, status=400,
+                     what="resetting an email with no account")
+        start = self.ok("/api/password/start", {"email": STUDENT_EMAIL})
+        self.assertNotIn("code", start, "the reset code must never be shown on screen")
+        code = self.code_sent_to(STUDENT_EMAIL)
+        new_password = secrets.token_urlsafe(12)
+        self.refused("/api/password/finish", {"email": STUDENT_EMAIL, "code": "000000" if code != "000000" else "111111",
+                                              "password": new_password}, status=400, what="a wrong reset code")
+        self.refused("/api/password/finish", {"email": STUDENT_EMAIL, "code": code, "password": "short"},
+                     status=400, what="a too-short new password")
+        old_token = self.tokens["student"]
+        done = self.ok("/api/password/finish", {"email": STUDENT_EMAIL, "code": code, "password": new_password})
+        self.assertEqual(self.site.call("/api/home", token=old_token)[0], 401,
+                         "an old sign-in still works after the password was reset")
+        self.refused("/api/signin", {"email": STUDENT_EMAIL, "password": self.passwords["student"]},
+                     status=400, what="the old password after a reset")
+        self.tokens["student"] = done["token"]
+        self.passwords["student"] = new_password
+        self.ok("/api/home", who="student", what="signing in with the new password")
+        self.refused("/api/password/finish", {"email": STUDENT_EMAIL, "code": code, "password": new_password},
+                     status=400, what="using the same reset code twice")
 
     def test_99_server_had_no_crashes(self):
         """The server stayed up the whole time and wrote no Python errors."""

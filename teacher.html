@@ -246,7 +246,8 @@ function toLanding(){
 async function signOut(){ try { await api('/api/signout', {method:'POST'}); } catch (e) {} toLanding(); }
 
 const view = html => { document.getElementById('view').innerHTML = html; window.scrollTo(0,0); };
-const esc = t => { const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; };
+/* makes text safe to put inside the page: < > & and both quote marks can't start code */
+function esc(t){ return String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 const ordinal = n => n + (['th','st','nd','rd'][n % 10 > 3 || Math.floor(n % 100 / 10) === 1 ? 0 : n % 10] || 'th');
 const initials = name => name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
 

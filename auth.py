@@ -39,13 +39,11 @@ SHORT_HOURS = 12
 # office has already added, checked against the office's record".
 OPEN_REGISTRATION = True
 
-# While email is not set up on a server, show the code on the page instead of
-# hiding it in the server's log. Turn off (SHOW_CODE=0) once email works.
-#   SHOW_CODE=1       show it only when email could not be sent (default)
-#   SHOW_CODE=always  show it even when it was emailed (handy for a live demo)
-#   SHOW_CODE=0       never show it
-SHOW_CODE = os.environ.get("SHOW_CODE", "1").strip().lower()
-SHOW_CODE_WHEN_EMAIL_OFF = SHOW_CODE in ("1", "always")
+# A code is ONLY ever sent to the inbox it is for. It is never shown on the
+# page and never written to the server's log: whoever can read the code can
+# take over that account. If the email can't be sent, the person is told to
+# try again later.
+NO_EMAIL = "We couldn't email your code right now. Please try again in a few minutes."
 
 
 # ------------------------------------------------------------------
@@ -131,13 +129,13 @@ def check_lock(key):
         raise Refused(f"Too many wrong tries. Try again in {mins} minute{'s' if mins != 1 else ''}.")
 
 
-def record_failure(key):
+def record_failure(key, limit=MAX_TRIES):
     row = _one("SELECT count FROM failures WHERE key=?", (key,))
     count = (row[0] if row else 0) + 1
-    until = (_now() + dt.timedelta(minutes=LOCK_MINUTES)).isoformat() if count >= MAX_TRIES else None
+    until = (_now() + dt.timedelta(minutes=LOCK_MINUTES)).isoformat() if count >= limit else None
     _run("INSERT OR REPLACE INTO failures VALUES (?,?,?)",
          (key, 0 if until else count, until))
-    left = MAX_TRIES - count
+    left = limit - count
     return left if not until else 0
 
 
@@ -203,18 +201,16 @@ def start_registration(email, father, mother, name=None, batch=None):
     _run("INSERT OR REPLACE INTO pending VALUES (?,?,?,0)", (email, sha(code), expires))
 
     import mailer
+    # trusted: the code goes only to the university address the person typed
     status, _ = mailer.send(email, "Your EEE Records registration code",
                             f"Your code is {code}\n\nIt works for {CODE_MINUTES} minutes. "
-                            "If you didn't ask for this, you can ignore this email.")
+                            "If you didn't ask for this, you can ignore this email.",
+                            trusted=True)
     if status != "sent":
-        # email isn't available for this address — show it to whoever runs the server
-        print(f"\n  >>> Registration code for {email}: {code}  "
-              f"(email {status}; valid {CODE_MINUTES} minutes)\n", flush=True)
-        if SHOW_CODE_WHEN_EMAIL_OFF:
-            return status, code
-    elif SHOW_CODE == "always":
-        return status, code
-    return status, None
+        _run("DELETE FROM pending WHERE email=?", (email,))
+        print(f"  [auth] registration code for {email} could not be emailed ({status})", flush=True)
+        raise Refused(NO_EMAIL)
+    return status
 
 
 # ------------------------------------------------------------------
@@ -274,12 +270,10 @@ def staff_register_start(email):
                             f"Your code is {code}\n\nIt works for {CODE_MINUTES} minutes. "
                             f"It creates the {TEST_STAFF[email]} account for this email.")
     if status != "sent":
-        print(f"\n  >>> Staff sign-up code for {email}: {code}  (email {status})\n", flush=True)
-        if SHOW_CODE_WHEN_EMAIL_OFF:
-            return status, code
-    elif SHOW_CODE == "always":
-        return status, code
-    return status, None
+        _run("DELETE FROM pending WHERE email=?", (email,))
+        print(f"  [auth] staff sign-up code for {email} could not be emailed ({status})", flush=True)
+        raise Refused(NO_EMAIL)
+    return status
 
 
 def staff_register_finish(email, code, password):
@@ -328,19 +322,31 @@ def create_account(email, role, password):
 # ------------------------------------------------------------------
 # signing in and staying signed in
 # ------------------------------------------------------------------
-def sign_in(email, password, remember):
+# Wrong passwords lock the DEVICE that typed them (5 tries), not the account:
+# a stranger can't lock a student out just by typing their email. A higher
+# limit for the account as a whole (from every device together) still stops
+# anyone guessing passwords from many devices.
+ACCOUNT_TRIES = 25
+
+
+def sign_in(email, password, remember, device=""):
     email = (email or "").strip().lower()
-    key = "signin:" + email
-    check_lock(key)
+    here = f"signin:{email}|{device}"           # this email, from this device
+    everywhere = f"signin:{email}"               # this email, from all devices together
+    check_lock(here)
+    check_lock(everywhere)
 
     row = _one("SELECT salt, pw_hash, role FROM accounts WHERE email=?", (email,))
     if not row or not hmac.compare_digest(hash_password(password or "", row[0]), row[1]):
-        left = record_failure(key)
+        left = record_failure(here)
+        record_failure(everywhere, ACCOUNT_TRIES)
         raise Refused("Wrong email or password."
                       + (f" {left} tr{'ies' if left != 1 else 'y'} left." if left else
-                         f" Locked for {LOCK_MINUTES} minutes."))
+                         f" Locked for {LOCK_MINUTES} minutes on this device.")
+                      + ("" if row else " If you haven't made an account yet, register first."))
 
-    clear_failures(key)
+    clear_failures(here)
+    clear_failures(everywhere)
     token = secrets.token_urlsafe(32)          # the ticket the browser keeps
     life = dt.timedelta(days=REMEMBER_DAYS) if remember else dt.timedelta(hours=SHORT_HOURS)
     _run("INSERT INTO sessions VALUES (?,?,?,?)",
@@ -396,7 +402,8 @@ def reset_start(email):
     status, _ = mailer.send(email, "Your EEE Records password reset code",
                             f"Your code is {code}\n\nIt works for {CODE_MINUTES} minutes. "
                             "If you didn't ask to reset your password, ignore this email — "
-                            "your password stays the same.")
+                            "your password stays the same.",
+                            trusted=True)      # only to an address that already has an account
     if status != "sent":
         _run("DELETE FROM pending WHERE email=?", (key,))
         print(f"\n  >>> Password reset for {email} could not be emailed ({status}).\n", flush=True)
