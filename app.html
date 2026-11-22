@@ -1071,10 +1071,14 @@ async function paymentPage(){
   const dept = d.dept || {amounts:{}, semesters:[]};
   const tk = a => a == null ? '<span class="tiny">not set</span>' : `${d.currency} ${Number(a).toLocaleString('en-US')}`;
   DEPT_AMOUNTS = dept.amounts;
+  // the same shape as the exam fee table: one row per semester, its amount, then the action
+  const dv = dept.amounts.development, sv = dept.amounts.somitee;
+  const total = dv == null && sv == null ? null : (dv || 0) + (sv || 0);
+  const parts = `<div class="tiny" style="margin-top:3px">Development Fund ${dv == null ? 'not set' : 'Tk ' + Number(dv).toLocaleString('en-US')}
+      · EEE Somitee Fund ${sv == null ? 'not set' : 'Tk ' + Number(sv).toLocaleString('en-US')}</div>`;
   const deptRows = dept.semesters.map(n => `<tr>
-      <td><b>${ordinal(n)} semester</b></td>
-      <td class="mono">${tk(dept.amounts.development)}</td>
-      <td class="mono">${tk(dept.amounts.somitee)}</td>
+      <td><b>${ordinal(n)} semester</b> department fees</td>
+      <td class="mono">${tk(total)}${parts}</td>
       <td><button class="btn solid paybtn" type="button" onclick="printDeptReceipts(${n})">Print the form</button></td></tr>`).join('');
   view(`
     <h1 class="page in">Payment</h1>
@@ -1084,11 +1088,11 @@ async function paymentPage(){
       <table class="fees"><tr><th>Semester</th><th>Amount</th><th>Status</th></tr>${rowsHtml}</table>
       <p class="tiny" style="margin-top:12px">Sample: this page is not connected to the bank yet, so finished semesters are shown as paid.</p>
     </div>
-    <h1 class="page in d3" style="margin-top:44px;font-size:34px">Department fees</h1>
-    <p class="lede in d3">Paid at the department office, not at the bank: the Development Fund and the EEE Somitee Fund.
-      Print the money receipt form for a semester, filled in with your details, and take it to the office when you pay.</p>
+    <h1 class="page in d3" style="margin-top:44px">Department fees</h1>
+    <p class="lede in d3">The fee for each semester's Development Fund and EEE Somitee Fund. Pay at the department office;
+      print the money receipt form for that semester, filled in with your details, and take it with you.</p>
     <div class="box in d3">
-      <table class="fees"><tr><th>Semester</th><th>Development Fund</th><th>EEE Somitee Fund</th><th></th></tr>${deptRows}</table>
+      <table class="fees"><tr><th>Semester</th><th>Amount</th><th>Receipt form</th></tr>${deptRows}</table>
       ${dept.amounts.development == null || dept.amounts.somitee == null
         ? '<p class="tiny" style="margin-top:12px">An amount shown as "not set" has not been entered by the office yet; it is left blank on the form.</p>' : ''}
     </div>`);
