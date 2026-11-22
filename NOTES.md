@@ -2,6 +2,45 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — The office sets where its emails go (Email settings)
+
+**What you see (office page):** a new **Email settings** item in the sidebar.
+It shows where emails to the office (tamper alerts, complaints) and to the
+chairman (complaints) go, and lets the office change them:
+1. Type the new address, press **Send a code to this address**.
+2. Open that inbox, type the 6-digit code, press **Confirm and change**.
+3. The old address gets an email saying it was changed (for an office change,
+   the chairman is told too). The change is a block on the chain, and it is
+   listed under "Changes so far".
+
+**Why:** these addresses used to live only in Render's settings
+(`OFFICE_EMAIL`, `CHAIRMAN_EMAIL`). If the site is adopted and an address
+changes years from now, the office won't know Render exists. Now they change
+it themselves. A typo can't send complaints into nowhere (the code must come
+from the new inbox), and nobody can quietly redirect complaints (the old
+address is told, and the chain keeps every change).
+
+**What changed:**
+- `site_settings.py` (new): the two settings, the code step, the warning
+  emails, the chain block (`email_setting_changed`). Two new tables:
+  `email_settings`, `email_settings_pending`.
+- `mailer.py`: `office_address()` and the new `chairman_address()` read the
+  website's setting first; `OFFICE_EMAIL` / `CHAIRMAN_EMAIL` on the server are
+  now only the starting values. `send()` / `send_later()` got `trusted=True`
+  for the settings page's own emails (a new address isn't on the allow-list
+  yet).
+- `complaints.py`: uses `mailer.chairman_address()`.
+- `server.py`: `/api/office/settings`, `/api/office/settings/start`,
+  `/api/office/settings/finish` (office only).
+- `office.html`: the Email settings page.
+- `tests/test_site.py`: check 23. The tests can also run against Postgres
+  (`TEST_DATABASE_URL`, an empty test database), and GitHub now runs them on
+  both SQLite and Postgres.
+
+**Tip for the real thing:** use role addresses like `chairman.eee@cu.ac.bd`
+and an office address on the university domain, not someone's personal Gmail,
+so they don't need changing when people change.
+
 ## 2026-11-22 — Teachers can take back a class; wrong batches are refused
 
 **What you see (teacher page):**

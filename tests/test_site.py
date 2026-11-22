@@ -14,6 +14,8 @@ If any check fails, the whole run fails. On GitHub that shows as a red cross,
 and Render (set to "After CI Checks Pass") will not put that version live.
 
 Run it yourself:   python -m unittest discover -s tests -v
+Against Postgres:  set TEST_DATABASE_URL to an EMPTY test database first
+                   (never the real Supabase one).
 
 The rule: every bug we find gets its own test here, so it can never come back.
 """
@@ -89,6 +91,8 @@ class TestSite(unittest.TestCase):
         port = free_port()
         env.update({"PORT": str(port), "DEMO_TAMPER": "1", "SHOW_CODE": "1",
                     "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8"})
+        if os.environ.get("TEST_DATABASE_URL"):      # an empty Postgres, like Supabase
+            env["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
         cls.env = env
         cls.log = open(os.path.join(cls.folder, "server-test.log"), "w")
         cls.server = subprocess.Popen([sys.executable, "server.py"], cwd=cls.folder, env=env,
@@ -496,6 +500,43 @@ class TestSite(unittest.TestCase):
                      who="teacher", status=400, what="removing a class that has marks")
         self.refused("/api/teach/remove", {"course_id": self.course, "session": self.batch},
                      who="office", status=403, what="the office using the teacher's remove button")
+
+    # ------------------------------------------------------------------
+    # 10. the office's Email settings page
+    # ------------------------------------------------------------------
+    def test_23_email_settings(self):
+        """The office changes the chairman's address: code to the new inbox first, then it's on the chain."""
+        before = {s["key"]: s for s in self.ok("/api/office/settings", who="office")["settings"]}
+        self.assertEqual(set(before), {"office", "chairman"})
+        self.assertEqual(before["chairman"]["source"], "none", "the test server should start with no address")
+
+        self.refused("/api/office/settings", who="teacher", status=403, what="a teacher opening email settings")
+        self.refused("/api/office/settings/start", {"key": "chairman", "address": "x@cu.ac.bd"},
+                     who="student", status=403, what="a student changing email settings")
+        self.refused("/api/office/settings/start", {"key": "chairman", "address": "not-an-email"},
+                     who="office", status=400, what="a badly typed address")
+        self.refused("/api/office/settings/start", {"key": "nobody", "address": "x@cu.ac.bd"},
+                     who="office", status=400, what="a setting that doesn't exist")
+        self.refused("/api/office/settings/finish", {"key": "chairman", "code": "123456"},
+                     who="office", status=400, what="confirming before any code was sent")
+
+        start = self.ok("/api/office/settings/start", {"key": "chairman", "address": "Test.Chair@cu.ac.bd"},
+                        who="office")
+        self.assertIn("code", start, "with email off, the code should be shown to the tester")
+        wrong = "000000" if start["code"] != "000000" else "111111"
+        self.refused("/api/office/settings/finish", {"key": "chairman", "code": wrong},
+                     who="office", status=400, what="a wrong code")
+        still = {s["key"]: s for s in self.ok("/api/office/settings", who="office")["settings"]}
+        self.assertIsNone(still["chairman"]["address"], "the address changed before the code was confirmed")
+
+        self.ok("/api/office/settings/finish", {"key": "chairman", "code": start["code"]}, who="office")
+        after = self.ok("/api/office/settings", who="office")
+        chair = next(s for s in after["settings"] if s["key"] == "chairman")
+        self.assertEqual((chair["address"], chair["source"]), ("test.chair@cu.ac.bd", "website"))
+        self.assertEqual(after["history"][0]["new"], "test.chair@cu.ac.bd")
+        self.refused("/api/office/settings/start", {"key": "chairman", "address": "test.chair@cu.ac.bd"},
+                     who="office", status=400, what="changing to the address it already has")
+        self.assertTrue(self.ok("/api/chain")["ok"], "changing an email setting broke the chain")
 
     def test_99_server_had_no_crashes(self):
         """The server stayed up the whole time and wrote no Python errors."""

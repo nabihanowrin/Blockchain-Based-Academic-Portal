@@ -57,7 +57,15 @@ def _env(name, default=""):
 
 
 def office_address():
-    return _env("OFFICE_EMAIL").lower() or None
+    """The office's address: set on the website's Email settings page, else OFFICE_EMAIL."""
+    import site_settings
+    return site_settings.address("office")
+
+
+def chairman_address():
+    """The chairman's address: set on the website's Email settings page, else CHAIRMAN_EMAIL."""
+    import site_settings
+    return site_settings.address("chairman")
 
 
 def _smtp_secret():
@@ -94,7 +102,7 @@ def allowed(address):
     address = (address or "").strip().lower()
     if "@" not in address:
         return False
-    if address in (office_address(), _env("CHAIRMAN_EMAIL").lower() or None):
+    if address in (office_address(), chairman_address()):
         return True
     import auth                                   # the three test staff inboxes
     if address in auth.TEST_STAFF:
@@ -196,15 +204,18 @@ def _via_gmail(to, subject, text, attachment=None):
         server.send_message(msg)
 
 
-def send(to, subject, body, attachment=None):
+def send(to, subject, body, attachment=None, trusted=False):
     """
     Tries to send one email now. Always returns (status, note):
       sent     — the email service accepted it
       blocked  — the address isn't allowed to receive mail from the prototype
       off      — no way to send email is set up
       failed   — the service refused, or the connection broke
+
+    trusted=True skips the allow-list: only for the Email settings page's own
+    messages (a code to a new address, a warning to the old one).
     """
-    if not allowed(to):
+    if not trusted and not allowed(to):
         return "blocked", "not on the prototype's allow-list"
     how = method()
     if not how:
@@ -237,19 +248,19 @@ _worker = None
 
 def _work():
     while True:
-        to, subject, body, attachment = _queue.get()
-        status, note = send(to, subject, body, attachment)
+        to, subject, body, attachment, trusted = _queue.get()
+        status, note = send(to, subject, body, attachment, trusted)
         print(f"  [mail] {status}: {subject} -> {to} ({note})", flush=True)
         _queue.task_done()
 
 
-def send_later(to, subject, body, attachment=None):
+def send_later(to, subject, body, attachment=None, trusted=False):
     """Queue an email and return at once. Nothing happens if it isn't allowed."""
     global _worker
-    if not allowed(to) or not method():
+    if (not trusted and not allowed(to)) or not method():
         return False
     if _worker is None or not _worker.is_alive():
         _worker = threading.Thread(target=_work, daemon=True)
         _worker.start()
-    _queue.put((to, subject, body, attachment))
+    _queue.put((to, subject, body, attachment, trusted))
     return True

@@ -175,6 +175,7 @@ const ICON = {
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>',
   pic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 7"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
   plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>'
 };
 
@@ -224,6 +225,7 @@ function drawNav(){
     <button class="${PAGE==='chain'?'on':''}" onclick="go('chain')">${ICON.check} Chain check</button>
     <button class="${PAGE==='complaints'?'on':''}" onclick="go('complaints')">${ICON.flag} Complaints</button>
     <button class="${PAGE==='teachers'?'on':''}" onclick="go('teachers')">${ICON.check} Teachers</button>
+    <button class="${PAGE==='settings'?'on':''}" onclick="go('settings')">${ICON.mail} Email settings</button>
     <div class="group">LANDING PAGE</div>
     <button class="${PAGE==='gallery'?'on':''}" onclick="go('gallery')">${ICON.pic} Gallery</button>
     <button class="${PAGE==='achievements'?'on':''}" onclick="go('achievements')">${ICON.star} Achievements</button>
@@ -244,6 +246,7 @@ function go(page){
   if (page === 'newbatch') return newBatchPage();
   if (page === 'gallery') return galleryPage();
   if (page === 'achievements') return achievementsPage();
+  if (page === 'settings') return settingsPage();
 }
 
 /* ============================================================
@@ -544,6 +547,72 @@ async function runCheck(){
       <b>${res.ok ? 'The chain is intact.' : 'The chain has been tampered with.'}</b>${esc(res.message)}
       ${!res.ok && res.alerts && res.email ? '<div class="tiny" style="margin-top:6px">Alert emails are on their way to the student and the office.</div>' : ''}</div>`;
   btn.disabled = false;
+}
+
+/* ============================================================
+   email settings — where the office's and the chairman's emails go.
+   Changing one needs a code sent to the new address; the old address
+   is told; every change is a block on the chain.
+   ============================================================ */
+const FROM = {website: 'set on this page', server: "the server's starting value", none: 'not set: these emails are not sent'};
+
+async function settingsPage(){
+  const d = await api('/api/office/settings');
+  const card = s => `
+    <div class="ask">
+      <div class="top"><h3>Emails to ${esc(s.label)}</h3>
+        <span class="pill ${s.address ? 'ok' : 'no'}">${s.address ? 'on' : 'off'}</span></div>
+      <div class="m">${s.address ? `<b>${esc(s.address)}</b> · ` : ''}${FROM[s.source]}</div>
+      <div class="form" id="form-${s.key}">
+        <div><label for="addr-${s.key}">New address</label>
+          <input id="addr-${s.key}" type="email" placeholder="e.g. ${s.key}.eee@cu.ac.bd"
+                 value="${esc(s.waiting_for || '')}"></div>
+        <div class="row">
+          <button class="btn small" onclick="settingStart('${s.key}')">Send a code to this address</button></div>
+        <div id="code-${s.key}" style="${s.waiting_for ? '' : 'display:none'}">
+          <label for="codein-${s.key}">Code from that inbox</label>
+          <input id="codein-${s.key}" inputmode="numeric" maxlength="6" placeholder="6 digits">
+          <div class="row" style="margin-top:10px">
+            <button class="btn solid small" onclick="settingFinish('${s.key}')">Confirm and change</button></div>
+        </div>
+        <div class="okmsg" id="smsg-${s.key}"></div>
+      </div>
+    </div>`;
+  const past = d.history.map(h => `<div class="lede" style="margin-top:8px;font-size:13.5px">${when(h.at)} · ${esc(h.label)}:
+      ${esc(h.old || '(none)')} → <b>${esc(h.new)}</b> · by ${esc(h.by.replace('office:', ''))} · block #${h.block_no}</div>`).join('');
+  view(`
+    <h1 class="page in">Email settings</h1>
+    <p class="lede in d1">Where the website sends emails meant for the office (tamper alerts, complaints) and for the chairman (complaints).
+      To change one, a code is sent to the new address first, so a typo can't send emails into nowhere. The old address is told about the change,
+      and every change is written to the chain.</p>
+    ${d.email ? '' : '<p class="lede in d1"><b>Email is switched off on this server</b>, so nothing is sent yet. The code will be shown on this page instead.</p>'}
+    <div class="box in d2">${d.settings.map(card).join('')}</div>
+    <div class="box in d3"><h2>Changes so far</h2>${past || '<p class="lede">No changes yet.</p>'}</div>`);
+}
+
+async function settingStart(key){
+  const m = document.getElementById('smsg-' + key);
+  m.className = 'okmsg';
+  const res = await api('/api/office/settings/start', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({key, address: document.getElementById('addr-' + key).value})});
+  if (!res.ok){ m.className = 'okmsg bad'; m.textContent = res.why; return; }
+  document.getElementById('code-' + key).style.display = '';
+  m.className = 'okmsg good';
+  m.textContent = res.code ? `Email is off on this server. The code is ${res.code}.`
+                           : 'A code was sent to that address. Type it in below.';
+}
+
+async function settingFinish(key){
+  const m = document.getElementById('smsg-' + key);
+  const res = await api('/api/office/settings/finish', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({key, code: document.getElementById('codein-' + key).value})});
+  if (!res.ok){ m.className = 'okmsg bad'; m.textContent = res.why; return; }
+  await settingsPage();
+  const done = document.getElementById('smsg-' + key);
+  done.className = 'okmsg good';
+  done.textContent = `Changed. Recorded on the chain as block #${res.block_no}.`;
 }
 
 /* ============================================================

@@ -1,6 +1,9 @@
 # Runs the site's check-up (tests/test_site.py) every time anyone uploads a
 # change. Green tick = all checks passed. Red cross = something broke, and
 # Render (Auto-Deploy set to "After CI Checks Pass") keeps the old version live.
+#
+# It runs twice: once on SQLite (like the laptop version) and once on an empty
+# Postgres (like Supabase, which the live site uses).
 name: Site tests
 
 on:
@@ -9,7 +12,7 @@ on:
   workflow_dispatch:      # also lets you press "Run workflow" by hand on GitHub
 
 jobs:
-  test:
+  sqlite:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -26,5 +29,32 @@ jobs:
       - name: Install what the site needs
         run: pip install -r requirements.txt
 
-      - name: Run the check-up
+      - name: Run the check-up on SQLite
+        run: python -m unittest discover -s tests -v
+
+  postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:                         # a throwaway database, gone after the run
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: eeetest
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install what the site needs
+        run: pip install -r requirements.txt
+
+      - name: Run the check-up on Postgres
+        env:
+          TEST_DATABASE_URL: postgresql://postgres:test@localhost:5432/eeetest
         run: python -m unittest discover -s tests -v

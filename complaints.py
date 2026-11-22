@@ -12,8 +12,8 @@ a leaking roof. Not for complaints about people.
 - Each complaint and each flag is recorded on the chain (only a fingerprint
   of the text, never the text or the name), so complaints cannot be quietly
   deleted or edited.
-- On submit, the chairman (CHAIRMAN_EMAIL) and the office (OFFICE_EMAIL)
-  are emailed.
+- On submit, the chairman and the office are emailed, at the addresses on the
+  office's Email settings page (site_settings.py).
 """
 
 import os
@@ -43,7 +43,8 @@ def _now():
 
 
 def chairman_address():
-    return (os.environ.get("CHAIRMAN_EMAIL") or "").strip().lower() or None
+    """Set on the office's Email settings page, else CHAIRMAN_EMAIL on the server."""
+    return mailer.chairman_address()
 
 
 def _check_photo(photo):

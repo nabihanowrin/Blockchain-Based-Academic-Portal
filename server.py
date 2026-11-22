@@ -23,6 +23,7 @@ import auth
 import mailer
 import notices
 import complaints
+import site_settings
 import faculty
 import resources
 import site_content
@@ -1075,6 +1076,8 @@ class Handler(SimpleHTTPRequestHandler):
                                    "office_email": mailer.office_address()})
             if url.path == "/api/office/batches":
                 return self.reply({"batches": contract.batches()})
+            if url.path == "/api/office/settings":
+                return self.reply({**site_settings.overview(), "email": mailer.method()})
             if url.path == "/api/office/gallery":
                 return self.reply({"pictures": site_content.gallery_list()})
             if url.path == "/api/office/achievements":
@@ -1301,6 +1304,24 @@ class Handler(SimpleHTTPRequestHandler):
             from ledger import add_entry
             add_entry("staff_account", {"email": email, "role": "teacher"}, f"office:{user['email']}")
             return self.reply({"ok": True, "email": email, "password": password})
+
+        # the office's Email settings page: change where office/chairman emails go
+        if url.path in ("/api/office/settings/start", "/api/office/settings/finish"):
+            if user["role"] != "office":
+                return self.reply({"ok": False, "why": "The office only."}, 403)
+            body = json.loads(self.rfile.read(length) or "{}")
+            try:
+                if url.path.endswith("/start"):
+                    status, shown = site_settings.start_change(user["email"], body.get("key"),
+                                                               body.get("address"))
+                    out = {"ok": True, "emailed": status == "sent"}
+                    if shown:
+                        out["code"] = shown          # email is off on this server
+                    return self.reply(out)
+                block_no = site_settings.finish_change(user["email"], body.get("key"), body.get("code"))
+                return self.reply({"ok": True, "block_no": block_no})
+            except Refused as why:
+                return self.reply({"ok": False, "why": str(why)}, 400)
 
         if url.path == "/api/office/complaint-flag":
             if user["role"] != "office":
@@ -1540,6 +1561,7 @@ class Handler(SimpleHTTPRequestHandler):
 init_locker()
 contract.init_teaching()
 complaints.init()
+site_settings.init()
 resources.init()
 site_content.init()
 faculty.apply_course_teachers(connect)
