@@ -2,6 +2,34 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — Automatic check-up on every upload
+
+**What you see:** On GitHub, every upload now gets a green tick (all checks
+passed) or a red cross (something broke). Click it to see which check failed
+and why, in plain words.
+
+**Why:** Bugs like the office "No such request" one only showed up when
+someone clicked the button on the live site. Now a robot clicks through the
+site after every upload, before anyone else has to.
+
+**What changed:**
+- `tests/test_site.py` (new): copies the project into a throwaway folder,
+  starts the site there, makes its own test teacher/office accounts, and acts
+  out the main jobs: student sign-up, a teacher asking for a class, the office
+  approving and turning down, marks and corrections, an objection, attendance,
+  the chain check, an insider edit being caught, 30 people at once, and a typo
+  check on every page's JavaScript. 19 checks. It never touches the real
+  database.
+- `.github/workflows/tests.yml` (new): tells GitHub to run that file on every
+  upload.
+- Run it yourself: `python -m unittest discover -s tests -v`
+
+**The rule from now on:** every bug we find gets its own check in
+`tests/test_site.py`, so it can't come back. The office bug is already check 9.
+
+**Still to do (Nabiha):** Render → eeerecords → Settings → Auto-Deploy →
+"After CI Checks Pass", so a red cross never goes live.
+
 ## 2026-11-22 — Office can approve and turn down class requests again
 
 **What you see:** On the office page, Approve and Turn down on a teacher's

@@ -1,0 +1,30 @@
+# Runs the site's check-up (tests/test_site.py) every time anyone uploads a
+# change. Green tick = all checks passed. Red cross = something broke, and
+# Render (Auto-Deploy set to "After CI Checks Pass") keeps the old version live.
+name: Site tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:      # also lets you press "Run workflow" by hand on GitHub
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4     # only used to check the pages' JavaScript
+        with:
+          node-version: "20"
+
+      - name: Install what the site needs
+        run: pip install -r requirements.txt
+
+      - name: Run the check-up
+        run: python -m unittest discover -s tests -v
