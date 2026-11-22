@@ -270,21 +270,177 @@ body{animation:pageIn .5s ease backwards}
 @keyframes pageIn{from{opacity:0}}
 @media (prefers-reduced-motion:reduce){body{animation:none}}
 </style>
+<style>
+/* ===== Texas A&M web palette (brandguide.tamu.edu): maroon #500000, brand dark #3c001c,
+   brand light #732f2f, grays #f6f6f6 #eaeaea #d1d1d1 #707070 #3e3e3e #202020 ===== */
+:root{
+  --accent:#500000; --accent-dark:#3c001c; --accent-light:#732f2f; --accent-wash:#F3E9E9;
+  --ink:#202020; --ink-2:#3e3e3e; --cream:#f6f6f6; --card:#fff; --text:#202020;
+  --grey:#5E5E5E; --line:#d1d1d1; --soft:#eaeaea;
+}
+body{background:#fff}
+html{background:#fff}
+/* utility bar */
+.util{background:var(--ink);font-size:13px}
+.util .wrap{display:flex;justify-content:flex-end;gap:26px;height:36px;align-items:center}
+.util a{color:#fff;text-decoration:none}
+.util a:hover{text-decoration:underline}
+/* header: maroon, white logo text */
+.nav{background:var(--accent);border:none;color:#fff}
+.nav .wrap{height:84px}
+.nav .brand{color:#fff}
+.nav .brand img{background:#fff;border-radius:50%;padding:3px;height:52px}
+.nav .brand b{font-family:var(--serif);font-size:22px;color:#fff;letter-spacing:0}
+.nav .brand small{color:rgba(255,255,255,.82)}
+.nav .links a{color:#fff;font-size:15px;font-weight:600;letter-spacing:0;text-transform:none;border-bottom:3px solid transparent;padding:8px 0}
+.nav .links a:hover{border-bottom-color:#fff}
+.nav a.cta{background:#fff;color:var(--accent);border-radius:0}
+.nav a.cta:hover{background:var(--soft)}
+.nav .menu{border-color:rgba(255,255,255,.6)}
+.nav .menu span{background:#fff}
+@media (max-width:1000px){
+  .nav.open .links{background:var(--accent-dark);border-bottom:none;top:84px}
+}
+/* hero */
+.hero{border-bottom:none;
+  background:
+    linear-gradient(90deg, rgba(32,32,32,.92) 0%, rgba(32,32,32,.82) 26%, rgba(32,32,32,.45) 44%, rgba(32,32,32,0) 62%),
+    url("photos/building-wide.jpg") right center / max(80%, calc(min(80vh,660px) * 1.78)) auto no-repeat,
+    var(--ink)}
+.hero h1{font-size:clamp(34px,4.2vw,60px)}
+.btn{background:var(--accent);border-radius:0}
+.btn:hover{background:var(--accent-dark)}
+.hero .btn{border-radius:0}
+@media (max-width:820px){
+  .hero{background:var(--ink)}
+  .hero::before{background:linear-gradient(0deg, var(--ink) 0%, rgba(32,32,32,0) 25%), url("photos/building-wide.jpg") center / cover no-repeat}
+  .feat .pic.plain{aspect-ratio:auto;min-height:120px}
+}
+/* feature cards */
+.features{background:var(--cream);padding:56px 0}
+.fgrid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.feat{background:#fff;color:inherit;text-decoration:none;display:flex;flex-direction:column;border-bottom:4px solid var(--accent)}
+.feat .pic{aspect-ratio:4/3;overflow:hidden;background:var(--soft)}
+.feat .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.feat .pic.plain{background:var(--accent);display:flex;align-items:flex-end;padding:20px}
+.feat .pic.plain span{color:#fff;font-family:var(--serif);font-size:34px;font-weight:700}
+.feat .txt{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
+.feat h3{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--accent)}
+.feat p{font-size:14.5px;line-height:1.55;color:#3e3e3e;margin-top:8px}
+.feat .go{margin-top:auto;padding-top:14px;font-size:14px;font-weight:700;color:var(--accent)}
+.feat .go::after{content:" ›"}
+.feat:hover h3{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.feat:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+/* about (was the maroon "what this website gives you") */
+.offer,.about{padding:84px 0;background:#fff;color:var(--text)}
+.sec-k{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.about h2{font-family:var(--serif);font-size:clamp(30px,4vw,44px);font-weight:700;margin-top:8px}
+.about .lead{margin-top:10px;color:var(--grey);font-size:16px}
+.about .cards{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.about .card{background:var(--cream);border-top:4px solid var(--accent);padding:22px}
+.about h3{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--accent)}
+.about ul{padding-left:18px;color:#3e3e3e;font-size:14.5px;line-height:1.55}
+.about li{margin-bottom:6px}
+.about .seal{margin-top:26px;max-width:72ch;color:#3e3e3e;font-size:15px;line-height:1.6}
+/* news + events */
+.ach-wrap{background:var(--cream);padding:80px 0}
+.twocol{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:56px}
+.sec-head{border-bottom:3px solid var(--accent);padding-bottom:12px}
+.sec-head h2{font-family:var(--serif);font-size:30px;font-weight:700}
+.news{margin-top:0;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:36px;border-bottom:none}
+.events{display:flex;flex-direction:column}
+.ev{display:grid;grid-template-columns:64px 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.ev .date{background:var(--accent);color:#fff;text-align:center;padding:8px 4px;align-self:start}
+.ev .date b{display:block;font-family:var(--serif);font-size:24px;line-height:1}
+.ev .date span{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.ev h3{font-family:var(--serif);font-size:18px;font-weight:700;line-height:1.3}
+.ev p{font-size:13.5px;color:var(--grey);margin-top:6px;line-height:1.5}
+a.ev:hover h3{text-decoration:underline;text-underline-offset:3px}
+/* labs */
+.labs-sec{padding:80px 0;background:#fff}
+.labs-sec h2{font-family:var(--serif);font-size:clamp(30px,4vw,44px);font-weight:700}
+.labs-sec .lead{color:var(--grey);margin-top:8px;font-size:16px}
+.labgrid{list-style:none;margin-top:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.labgrid li{border-top:4px solid var(--accent);background:var(--cream);padding:18px 20px;display:grid;gap:6px}
+.labgrid b{font-size:16px;color:var(--accent)}
+.labgrid span{font-size:14px;line-height:1.5;color:#3e3e3e}
+.photos{margin-top:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.photos figure{margin:0;background:var(--soft)}
+.photos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.photos figcaption{font-size:13px;color:var(--grey);padding:8px 2px}
+/* by the numbers: maroon band */
+.facts{background:var(--accent);color:#fff;padding:70px 0;border:none}
+.facts h2{font-family:var(--serif);font-size:30px;font-weight:700;margin-bottom:30px}
+.facts .row{display:grid;grid-template-columns:repeat(4,1fr)}
+.facts .cell{border-left:1px solid rgba(255,255,255,.3)}
+.facts .big{color:#fff;font-family:var(--serif)}
+.facts .big.pending{color:rgba(255,255,255,.7)}
+.facts .lbl{color:#fff}
+.facts p{color:rgba(255,255,255,.82)}
+/* faculty */
+.faculty{padding:80px var(--gut) 40px}
+.faculty h2{font-family:var(--serif)}
+.fcard{border:1px solid var(--line);border-top:3px solid var(--accent)}
+.fcard a{color:var(--accent)}
+.fcard.chair{border-color:var(--accent);box-shadow:none}
+.ftag{background:var(--accent)}
+/* sign in + footer, same parts, new shades */
+.enter{background:#fff}
+.roles{background:var(--ink)}
+.roles button.on{border-left-color:var(--accent)}
+.msg{color:var(--accent)}
+.tabs button.on{border-bottom-color:var(--accent)}
+footer{background:var(--ink)}
+.copybar{background:var(--accent);color:#fff}
+@media (max-width:1000px){
+  .fgrid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .twocol{grid-template-columns:1fr;gap:48px}
+}
+@media (max-width:820px){
+  .news{grid-template-columns:1fr}
+  .labgrid,.photos{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .fgrid4{grid-template-columns:1fr}
+  .util .wrap{justify-content:center;gap:18px;font-size:12.5px}
+  .nav .wrap{height:72px}
+  .nav .brand{gap:10px;min-width:0;flex-shrink:1}
+  .nav .brand span{min-width:0}
+  .nav .brand img{height:40px}
+  .nav .brand b{font-size:15px;line-height:1.2}
+  .nav a.cta{padding:9px 12px;font-size:14px}
+  .nav.open .links{top:72px}
+}
+@media (max-width:900px){
+  .facts .row{grid-template-columns:1fr 1fr;gap:26px 0}
+  .facts .cell{border-left:none;border-top:1px solid rgba(255,255,255,.3)}
+}
+</style>
+
 </head>
 <body>
+
+<!-- ================= UTILITY BAR ================= -->
+<div class="util">
+  <div class="wrap">
+    <a href="https://cu.ac.bd/" target="_blank" rel="noopener">University of Chittagong</a>
+    <a href="https://cu.ac.bd/notice-board/" target="_blank" rel="noopener">Notice Board</a>
+    <a href="#contact">Contact</a>
+  </div>
+</div>
 
 <nav class="nav" id="nav">
   <div class="wrap">
     <a class="brand" href="#top">
       <img src="photos/logo.webp" alt="" onerror="this.remove()">
-      <span><b>University of Chittagong</b><small>Dept. of Electrical &amp; Electronic Engineering</small></span>
+      <span><b>Electrical &amp; Electronic Engineering</b><small>University of Chittagong</small></span>
     </a>
     <div class="links" onclick="document.getElementById('nav').classList.remove('open')">
-      <a href="#what">About</a>
+      <a href="#about">About</a>
       <a href="#news">Achievements</a>
+      <a href="#events">Events</a>
       <a href="#faculty">Faculty</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#faq">Questions</a>
+      <a href="#gallery">Labs</a>
     </div>
     <a class="cta" href="#enter" id="navCta">Sign in</a>
     <button class="menu" type="button" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')"><span></span><span></span><span></span></button>
@@ -296,7 +452,7 @@ body{animation:pageIn .5s ease backwards}
   <div class="wrap">
     <div class="copy">
       <p class="eyebrow">UNIVERSITY OF CHITTAGONG · FACULTY OF ENGINEERING</p>
-      <h1>Electrical and Electronic<br><em>Engineering</em></h1>
+      <h1>Electrical and Electronic Engineering</h1>
       <p class="lede">Sign in with your university account to view your results, attendance and course records.</p>
       <div class="row">
         <a class="btn" href="#enter">Sign in</a>
@@ -306,44 +462,32 @@ body{animation:pageIn .5s ease backwards}
   </div>
 </header>
 
-<section class="facts">
-  <div class="wrap row" id="stats"></div>
-</section>
-
-<!-- ================= ACHIEVEMENTS ================= -->
-<section class="ach-wrap" id="news">
-  <div class="wrap">
-    <div class="ach-head rise">
-      <h2>Achievements</h2>
-      <p>Awards, seminars and alumni news from the department.</p>
-    </div>
-    <div class="news rise d1" id="slider"></div>
+<!-- ================= FEATURE CARDS ================= -->
+<section class="features">
+  <div class="wrap fgrid4">
+    <a class="feat" href="#enter">
+      <div class="pic"><img src="photos/OIP.webp" alt="Students in a lecture at the department" loading="lazy"></div>
+      <div class="txt"><h3>Your academic records</h3><p>Results, attendance, class tests and CATM in one place.</p><span class="go">Sign in</span></div>
+    </a>
+    <a class="feat" href="#about">
+      <div class="pic"><img src="photos/class.jpg" alt="Students at work in the department" loading="lazy"></div>
+      <div class="txt"><h3>What this website gives you</h3><p>For students, teachers, the office and examiners.</p><span class="go">Learn more</span></div>
+    </a>
+    <a class="feat" href="#news">
+      <div class="pic"><img src="photos/building.webp" alt="The Department of EEE building" loading="lazy"></div>
+      <div class="txt"><h3>Achievements</h3><p>Awards, alumni and news from the department.</p><span class="go">Read the news</span></div>
+    </a>
+    <a class="feat" href="#gallery">
+      <div class="pic plain"><span>Fab Lab</span></div>
+      <div class="txt"><h3>Fab Lab</h3><p>A workspace for turning designs into working prototypes.</p><span class="go">See the labs</span></div>
+    </a>
   </div>
 </section>
 
-<!-- ================= GALLERY ================= -->
-<section class="drift dark" id="gallery">
-  <div class="wrap grid">
-    <div class="intro rise">
-      <h2>Around the department</h2>
-      <p>Labs, classrooms and the people in them. Hover to stop the movement.</p>
-      <h3 class="labs-h">Labs and facilities</h3>
-      <ul class="labs">
-        <li><b>Electronics Lab</b><span>Building and testing circuits with diodes, transistors and op-amps.</span></li>
-        <li><b>Machines Lab</b><span>Hands-on work with transformers, motors and generators.</span></li>
-        <li><b>Signals and Circuits Lab</b><span>Measuring how circuits and signals behave, from basic networks to filters.</span></li>
-        <li><b>Computer Lab</b><span>Programming, simulation and design software for coursework and projects.</span></li>
-        <li><b>Physics Lab</b><span>The first-year experiments that the engineering courses build on.</span></li>
-        <li><b>Fab Lab</b><span>A workspace for turning designs into working prototypes.</span></li>
-      </ul>
-    </div>
-    <div class="col rise d1"><div class="strip down" id="galA"></div></div>
-    <div class="col rise d2"><div class="strip up" id="galB"></div></div>
-  </div>
-</section>
-
-<section class="offer" id="what">
+<!-- ================= ABOUT ================= -->
+<section class="about" id="about">
   <div class="wrap">
+    <p class="sec-k rise">About</p>
     <h2 class="rise">What this website gives you</h2>
     <p class="lead rise d1">One place for the department's academic records, for every role.</p>
     <div class="cards rise d2">
@@ -382,6 +526,45 @@ body{animation:pageIn .5s ease backwards}
       </div>
     </div>
     <p class="seal rise d3"><b>How changes are caught:</b> every entry is saved with a fingerprint linked to the entry before it. If anyone changes a record outside this website, the check shows exactly which record was changed, and copies kept on other computers still hold the original.</p>
+  </div>
+</section>
+
+<!-- ================= NEWS + EVENTS ================= -->
+<section class="ach-wrap" id="news">
+  <div class="wrap twocol">
+    <div class="col-news">
+      <div class="sec-head"><h2>Achievements and News</h2></div>
+      <div class="news" id="slider"></div>
+    </div>
+    <div class="col-events" id="events">
+      <div class="sec-head"><h2>Seminars and Events</h2></div>
+      <div class="events" id="eventList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LABS ================= -->
+<section class="labs-sec" id="gallery">
+  <div class="wrap">
+    <h2 class="rise">Labs and facilities</h2>
+    <p class="lead rise d1">Labs, classrooms and the people in them.</p>
+    <ul class="labgrid rise d1">
+      <li><b>Electronics Lab</b><span>Building and testing circuits with diodes, transistors and op-amps.</span></li>
+      <li><b>Machines Lab</b><span>Hands-on work with transformers, motors and generators.</span></li>
+      <li><b>Signals and Circuits Lab</b><span>Measuring how circuits and signals behave, from basic networks to filters.</span></li>
+      <li><b>Computer Lab</b><span>Programming, simulation and design software for coursework and projects.</span></li>
+      <li><b>Physics Lab</b><span>The first-year experiments that the engineering courses build on.</span></li>
+      <li><b>Fab Lab</b><span>A workspace for turning designs into working prototypes.</span></li>
+    </ul>
+    <div class="photos rise d2" id="galA"></div>
+  </div>
+</section>
+
+<!-- ================= BY THE NUMBERS ================= -->
+<section class="facts" id="numbers">
+  <div class="wrap">
+    <h2>By the numbers</h2>
+    <div class="row" id="stats"></div>
   </div>
 </section>
 
@@ -561,7 +744,7 @@ body{animation:pageIn .5s ease backwards}
 <footer>
   <div class="wrap">
     <div class="cols">
-      <div>
+      <div id="contact">
         <h3>Contact us</h3>
         <p>Department of Electrical and Electronic Engineering<br>Faculty of Engineering<br>University of Chittagong<br>Chittagong-4331, Bangladesh</p>
         <p style="margin-top:14px">
@@ -654,7 +837,7 @@ fetch('/api/landing').then(r => r.json()).then(d => {
     o.textContent = `${b.name} (${ordinal(b.semester)} semester)`;
     sel.appendChild(o);
   });
-  fill(d.gallery, x => `<figure class="shot"><img src="${x.image}" alt="" loading="lazy">${x.caption ? `<figcaption class="cap">${esc(x.caption)}</figcaption>` : ''}</figure>`, 'galA', 'galB');
+  document.getElementById('galA').innerHTML = (d.gallery || []).slice(0, 6).map(x => `<figure><img src="${esc(x.image)}" alt="${esc(x.caption || 'The Department of EEE')}" loading="lazy">${x.caption ? `<figcaption>${esc(x.caption)}</figcaption>` : ''}</figure>`).join('');
 });
 
 /* ---------- counters: 0 up to the number, fast, as soon as the page opens ---------- */
@@ -701,13 +884,28 @@ function countUp(el){
 }
 
 /* ---------- achievements slider: arrows, drag, and a progress bar ---------- */
+const EVENT_KINDS = /^(Seminar|Symposium|Workshop|Talk|Event)$/i;
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function splitTitle(t){
+  // "Seminar: \"Title\"" -> kind "Seminar", title "Title"
+  const m = /^(Seminar|Symposium|Workshop|Talk|Alumnus|Alumna|Award|Event)\s*:\s*/i.exec(t || '');
+  return { kind: m ? m[1] : 'News',
+           title: (m ? t.slice(m[0].length) : (t || '')).replace(/^["“](.*)["”]$/, '$1') };
+}
+
+function eventDate(a){
+  // the first "16 July 2026" in the detail text, if there is one
+  const m = new RegExp('(\\d{1,2})(?:st|nd|rd|th)?\\s+(' + MONTHS.join('|') + ')\\s+(\\d{4})').exec(a.detail || '');
+  return m ? { day: +m[1], mon: MONTHS.indexOf(m[2]), year: +m[3] } : null;
+}
+
 function drawSlides(list){
-  document.getElementById('slider').innerHTML = list.map(a => {
-    // "Seminar: \"Title\"" -> label "Seminar", title "Title"
-    const m = /^(Seminar|Symposium|Workshop|Talk|Alumnus|Alumna|Award|Event)\s*:\s*/i.exec(a.title || '');
-    const kind = m ? m[1] : 'News';
-    const title = (m ? a.title.slice(m[0].length) : a.title).replace(/^["“](.*)["”]$/, '$1');
-    const src = sourceName(a.link);
+  const news = [], events = [];
+  list.forEach(a => (EVENT_KINDS.test(splitTitle(a.title).kind) ? events : news).push(a));
+
+  document.getElementById('slider').innerHTML = news.map(a => {
+    const {kind, title} = splitTitle(a.title), src = sourceName(a.link);
     const inner = `
       <div class="kicker">${esc(kind)} <span>· ${esc(a.year)}</span></div>
       <h3>${esc(title)}</h3><p>${esc(a.detail)}</p>
@@ -716,6 +914,15 @@ function drawSlides(list){
       ? `<a class="item" href="${esc(a.link)}" target="_blank" rel="noopener">${inner}</a>`
       : `<article class="item">${inner}</article>`;
   }).join('');
+
+  const key = a => { const d = eventDate(a); return d ? d.year * 10000 + d.mon * 100 + d.day : a.year * 10000; };
+  events.sort((x, y) => key(y) - key(x));
+  document.getElementById('eventList').innerHTML = events.map(a => {
+    const {kind, title} = splitTitle(a.title), d = eventDate(a);
+    const box = d ? `<b>${d.day}</b><span>${MONTHS[d.mon].slice(0,3)} ${d.year}</span>` : `<b>${esc(a.year)}</b><span>${esc(kind)}</span>`;
+    const inner = `<div class="date">${box}</div><div><h3>${esc(title)}</h3><p>${esc(kind)}${sourceName(a.link) ? ' · ' + esc(sourceName(a.link)) : ''}</p></div>`;
+    return a.link ? `<a class="ev" href="${esc(a.link)}" target="_blank" rel="noopener">${inner}</a>` : `<div class="ev">${inner}</div>`;
+  }).join('') || '<p style="color:var(--grey);padding:20px 0">No events yet.</p>';
 }
 
 function sourceName(link){
