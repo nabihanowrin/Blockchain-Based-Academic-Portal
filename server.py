@@ -14,10 +14,11 @@ import hashlib
 import hmac
 import datetime as dt
 from urllib.parse import unquote, quote
-from http.server import SimpleHTTPRequestHandler, HTTPServer
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
 from ledger import connect, verify_chain
+import ledger
 from compute import read_scores
 import contract
 import auth
@@ -38,17 +39,91 @@ PORT = int(os.environ.get("PORT", "8080"))
 # detection on a server where nobody can open a terminal. DEMO_TAMPER=0 hides them.
 DEMO_TAMPER = os.environ.get("DEMO_TAMPER", "1") == "1"
 
-# first start on a fresh machine (e.g. a cloud server): begin from the
-# anonymous demo database, so no real student data ever leaves a laptop
 import db
-if db.using_postgres():
-    # online: the records live in Postgres (Supabase) and survive restarts.
-    # The very first start copies the demo database in.
-    print(f"  Database: Postgres ({db.bootstrap_postgres()}); "
-          f"{db.restore_files()} saved files put back on disk", flush=True)
-elif not os.path.exists("records.db") and os.path.exists("demo_records.db"):
-    import shutil
-    shutil.copyfile("demo_records.db", "records.db")
+import threading
+import time
+import traceback
+
+# Set once the database has answered and every table is ready. Until then the
+# site still opens, but says the records are unavailable instead of crashing.
+READY = threading.Event()
+
+
+def prepare_database():
+    """Everything that needs the database before the site can answer.
+    Raises if the database can't be reached (e.g. Supabase paused)."""
+    if db.using_postgres():
+        # online: the records live in Postgres (Supabase) and survive restarts.
+        # The very first start copies the demo database in.
+        print(f"  Database: Postgres ({db.bootstrap_postgres()}); "
+              f"{db.restore_files()} saved files put back on disk", flush=True)
+    elif not os.path.exists("records.db") and os.path.exists("demo_records.db"):
+        # first start on a fresh laptop: begin from the anonymous demo database,
+        # so no real student data ever leaves a laptop
+        import shutil
+        shutil.copyfile("demo_records.db", "records.db")
+    init_locker()
+    contract.init_teaching()
+    complaints.init()
+    site_settings.init()
+    resources.init()
+    site_content.init()
+    faculty.apply_course_teachers(connect)
+    auth.init_auth()
+
+
+def keep_trying_database(first_problem):
+    """The database didn't answer at start-up. Try again every 30 seconds;
+    the moment it answers, the site works normally again."""
+    problem = first_problem
+    while not READY.is_set():
+        wait = float(os.environ.get("DB_RETRY_SECONDS") or 30)
+        print(f"  [database] not reachable ({type(problem).__name__}: {str(problem)[:150]}). "
+              f"Trying again in {wait:g} seconds.", flush=True)
+        time.sleep(wait)
+        try:
+            prepare_database()
+            READY.set()
+            notices.start()
+            print("  [database] reachable again. The site is working normally.", flush=True)
+        except Exception as e:
+            problem = e
+
+
+# The "Check the chain" button: re-reading and re-hashing every block is heavy,
+# and it can send alert emails. However often anyone presses it, the real check
+# runs at most once a minute; in between, everyone gets the latest result.
+# Any new block (or the insider-edit demo) clears the remembered result.
+_LAST_CHECK = {"at": 0.0, "result": None}
+_CHECK_LOCK = threading.Lock()
+
+
+def recent_check():
+    with _CHECK_LOCK:
+        if _LAST_CHECK["result"] and time.time() - _LAST_CHECK["at"] < 60:
+            return {**_LAST_CHECK["result"], "remembered": True}
+        ok, message = verify_chain()
+        alerts = notices.check_now()          # email anyone affected, right away
+        _LAST_CHECK.update(at=time.time(), result={"ok": ok, "message": message, "alerts": alerts})
+        return dict(_LAST_CHECK["result"])
+
+
+def forget_last_check(*_):
+    _LAST_CHECK["result"] = None
+
+
+ledger.ON_ADD.append(forget_last_check)      # a new block: the next check must really run
+
+
+OFFLINE_PAGE = """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="30"><title>EEE Records: back soon</title>
+<style>body{font-family:system-ui,sans-serif;background:#F6EFEA;color:#1C1A19;display:grid;
+place-items:center;min-height:100vh;margin:0;padding:24px;text-align:center}
+h1{font-size:24px}p{color:#6E6764;max-width:46ch;line-height:1.6}</style></head>
+<body><div><h1>The records are not reachable right now</h1>
+<p>The website is up, but it can't reach its database at the moment. Nothing has been lost.
+This page tries again by itself every 30 seconds.</p></div></body></html>"""
 DAYS = {6: "Sunday", 0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday"}
 
 # the other laptops holding a copy, and what each last told us it has.
@@ -965,7 +1040,56 @@ class Handler(SimpleHTTPRequestHandler):
         user, _ = self.signed_in()
         return (user and user["role"] == "office") or self.is_peer()
 
+    # ---- every request goes through here first ----------------------------
     def do_GET(self):
+        self.guarded(self.answer_get)
+
+    def do_POST(self):
+        self.guarded(self.answer_post)
+
+    # at most this many requests do work at the same time; the rest wait their
+    # turn for a moment. Keeps the free database's connection limit safe.
+    BUSY = threading.BoundedSemaphore(int(os.environ.get("MAX_AT_ONCE") or 8))
+
+    def guarded(self, answer):
+        with self.BUSY:
+            self._guarded(answer)
+
+    def _guarded(self, answer):
+        """Before the database is ready: pages say so, the API answers 503.
+        If anything goes wrong while answering: log it for us, and give the
+        visitor a plain message (never the Python error itself)."""
+        path = urlparse(self.path).path
+        if not READY.is_set():
+            if path.startswith("/api/"):
+                return self.reply({"ok": False, "offline": True,
+                                   "why": "The records are not reachable right now. "
+                                          "Please try again in a few minutes."}, 503)
+            if path == "/" or path.endswith(".html"):
+                body = OFFLINE_PAGE.encode()
+                self.send_response(503)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.send_header("Retry-After", "30")
+                self.end_headers()
+                self.wfile.write(body)
+                return
+        try:
+            answer()
+        except (BrokenPipeError, ConnectionResetError):
+            pass                                  # the visitor closed the page; nothing to say
+        except Exception as e:
+            traceback.print_exc()
+            lost_db = type(e).__name__ in ("OperationalError", "InterfaceError", "PoolTimeout")
+            try:
+                self.reply({"ok": False, "offline": lost_db,
+                            "why": "The records are not reachable right now. Please try again in a few minutes."
+                            if lost_db else "Something went wrong on our side. Please try again."},
+                           503 if lost_db else 500)
+            except Exception:
+                pass
+
+    def answer_get(self):
         url = urlparse(self.path)
         q = parse_qs(url.query)
         one = lambda k: q.get(k, [None])[0]
@@ -1089,10 +1213,7 @@ class Handler(SimpleHTTPRequestHandler):
 
         # anyone signed in may check the chain — that is what it is for
         if url.path == "/api/verify":
-            ok, message = verify_chain()
-            alerts = notices.check_now()          # email anyone affected, right away
-            return self.reply({"ok": ok, "message": message, "alerts": alerts,
-                               "email": mailer.method()})
+            return self.reply({**recent_check(), "email": mailer.method()})
 
         # ---------------- examiner ----------------
         if url.path.startswith("/api/exam/"):
@@ -1220,7 +1341,7 @@ class Handler(SimpleHTTPRequestHandler):
 
         return self.reply({"ok": False, "why": "No such endpoint."}, 404)
 
-    def do_POST(self):
+    def answer_post(self):
         url = urlparse(self.path)
         q = parse_qs(url.query)
         one = lambda k: q.get(k, [None])[0]
@@ -1246,14 +1367,14 @@ class Handler(SimpleHTTPRequestHandler):
             body = json.loads(self.rfile.read(length) or "{}")
             try:
                 if url.path == "/api/password/start":
-                    auth.reset_start(body.get("email"))
+                    auth.reset_start(body.get("email"), self.device())
                     return self.reply({"ok": True})
                 if url.path == "/api/password/finish":
                     email = auth.reset_finish(body.get("email"), body.get("code"), body.get("password"))
                     token, role = auth.sign_in(email, body.get("password"), body.get("remember"), self.device())
                     return self.reply({"ok": True, "token": token, "role": role})
                 if url.path == "/api/register/staff-start":
-                    auth.staff_register_start(body.get("email"))
+                    auth.staff_register_start(body.get("email"), self.device())
                     return self.reply({"ok": True, "emailed": True})
                 if url.path == "/api/register/staff-finish":
                     email, role = auth.staff_register_finish(body.get("email"), body.get("code"),
@@ -1263,7 +1384,7 @@ class Handler(SimpleHTTPRequestHandler):
                 if url.path == "/api/register/start":
                     auth.start_registration(
                         body.get("email"), body.get("father"), body.get("mother"),
-                        body.get("name"), body.get("batch"))
+                        body.get("name"), body.get("batch"), self.device())
                     return self.reply({"ok": True, "emailed": True})
                 if url.path == "/api/register/finish":
                     email = auth.finish_registration(body.get("email"), body.get("code"),
@@ -1284,6 +1405,15 @@ class Handler(SimpleHTTPRequestHandler):
         if url.path == "/api/signout":
             auth.sign_out(token)
             return self.reply({"ok": True})
+
+        if url.path == "/api/account/delete":
+            if user["role"] != "student":
+                return self.reply({"ok": False, "why": "Students only."}, 403)
+            body = json.loads(self.rfile.read(length) or "{}")
+            try:
+                return self.reply({"ok": True, "block_no": auth.delete_account(user["email"], body.get("password"))})
+            except Refused as why:
+                return self.reply({"ok": False, "why": str(why)}, 400)
 
         if url.path == "/api/resources/upload":
             try:
@@ -1430,6 +1560,7 @@ class Handler(SimpleHTTPRequestHandler):
                             (json.dumps(after, sort_keys=True, separators=(",", ":")), block_no))
                 con.commit()
                 con.close()
+                forget_last_check()
                 return self.reply({"ok": True, "block_no": block_no, "roll": before.get("roll"),
                                    "item_id": before.get("item_id"),
                                    "was": before.get("value"), "now": after["value"]})
@@ -1441,6 +1572,7 @@ class Handler(SimpleHTTPRequestHandler):
             con.execute("UPDATE blocks SET payload=? WHERE block_no=?", (kept["payload"], kept["block_no"]))
             con.commit()
             con.close()
+            forget_last_check()
             db.delete_file(demo_tamper.KEPT)
             notices.check_now()                   # chain is whole again: refresh the watchdog
             return self.reply({"ok": True, "block_no": kept["block_no"]})
@@ -1632,14 +1764,6 @@ class Handler(SimpleHTTPRequestHandler):
         pass
 
 
-init_locker()
-contract.init_teaching()
-complaints.init()
-site_settings.init()
-resources.init()
-site_content.init()
-faculty.apply_course_teachers(connect)
-
 def my_address():
     """This laptop's address on the Wi-Fi, so other people can be told it.
     Nothing is sent anywhere — the socket only asks Windows which card it
@@ -1656,8 +1780,15 @@ def my_address():
 
 
 if __name__ == "__main__":
-    auth.init_auth()
-    every = notices.start()
+    # The site opens even if the database is down (e.g. Supabase paused): it
+    # says so on every page and keeps trying, instead of crashing for good.
+    try:
+        prepare_database()
+        READY.set()
+        every = notices.start()
+    except Exception as problem:
+        every = float(os.environ.get("CHECK_MINUTES") or 2)
+        threading.Thread(target=keep_trying_database, args=(problem,), daemon=True).start()
     here = my_address()
     print(f"\n  On this laptop : http://localhost:{PORT}/landing.html")
     if here:
@@ -1668,5 +1799,10 @@ if __name__ == "__main__":
     print(f"\n  Email: {mailer.method() or 'off'} · watchdog checks the chain every {every:g} min")
     print("\n  Press Ctrl+C to stop.\n")
 
-    # 0.0.0.0 means every network card, not just this laptop
-    HTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
+    # 0.0.0.0 means every network card, not just this laptop.
+    # Threading: each visitor gets their own thread, so one slow phone no longer
+    # makes everyone else wait (Handler.BUSY still caps how many work at once).
+    ThreadingHTTPServer.request_queue_size = 128   # how many new visitors may wait to be let in (Python's default: 5)
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+    server.daemon_threads = True
+    server.serve_forever()

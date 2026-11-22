@@ -1223,9 +1223,33 @@ async function homePage(){
         <div id="addBox"></div>
       </div>
       ${projectColumns(HOME.projects)}
+    </div>
+
+    <div class="box rise" style="margin-top:44px">
+      <h2>Delete my account</h2>
+      <p class="lede">This deletes your sign-in only. Your marks, attendance and their history belong to your roll number,
+        so they stay with your teachers and the department. If you register again with the same email, you will see them again.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px">
+        <input id="delPw" type="password" placeholder="Your password" autocomplete="current-password"
+               style="padding:10px 13px;border:1px solid var(--line);border-radius:10px;font-size:14px;min-width:220px">
+        <button class="btn small" onclick="deleteAccount()">Delete my account</button>
+        <span id="delMsg" style="font-size:13px;color:#A4343F"></span>
+      </div>
     </div>`);
 
   watchRise();
+}
+
+async function deleteAccount(){
+  const msg = document.getElementById('delMsg');
+  msg.textContent = '';
+  const password = document.getElementById('delPw').value;
+  if (!password){ msg.textContent = 'Type your password first.'; return; }
+  if (!confirm('Delete your account?\n\nYou will be signed out and can no longer sign in. Your marks stay with the department.')) return;
+  const res = await api('/api/account/delete', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password})});
+  if (!res.ok){ msg.textContent = res.why; return; }
+  toLanding();
 }
 
 /* ---------- GPA chart: bars per semester, line for running CGPA ---------- */

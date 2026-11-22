@@ -75,6 +75,12 @@ def file(roll, what, why, fix, photo=None):
     if today >= PER_DAY:
         con.close()
         raise Refused(f"You can send up to {PER_DAY} complaints a day.")
+    # pressing Send twice: the same words from the same student in the last 10 minutes
+    recent = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=10)).isoformat()
+    if con.execute("SELECT 1 FROM complaints WHERE roll=? AND what=? AND why=? AND fix=? AND created_at>?",
+                   (roll, what, why, fix, recent)).fetchone():
+        con.close()
+        raise Refused("You have just sent this complaint. It only needs sending once.")
     attachment = _check_photo(photo)
     cur = con.execute("INSERT INTO complaints (roll, what, why, fix, image, created_at) VALUES (?,?,?,?,?,?)",
                       (roll, what, why, fix, "emailed" if attachment else None, _now()))

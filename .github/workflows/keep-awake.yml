@@ -1,0 +1,30 @@
+# Visits the live site every 3 days, so the free Supabase database never sits
+# idle for a week (Supabase pauses a free project after about 7 quiet days,
+# which is what took the site down on 22 Nov 2026). /api/landing reads from the
+# database, so one visit counts as activity. It also wakes Render up.
+#
+# Note: GitHub switches scheduled jobs off in a repository with no new commits
+# for 60 days. If that happens, GitHub emails the owner; press "Enable" on the
+# Actions tab.
+name: Keep the database awake
+
+on:
+  schedule:
+    - cron: "17 3 */3 * *"     # 03:17 UTC (9:17 AM in Bangladesh), every 3rd day
+  workflow_dispatch:            # or press "Run workflow" by hand
+
+jobs:
+  visit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Visit the site (Render may need a minute to wake up)
+        run: |
+          for try in 1 2 3 4 5 6; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 https://eeerecords.onrender.com/api/landing || true)
+            echo "try $try: HTTP $code"
+            if [ "$code" = "200" ]; then exit 0; fi
+            sleep 30
+          done
+          echo "The site did not answer with 200. Check Render and Supabase."
+          exit 1

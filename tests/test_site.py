@@ -425,6 +425,8 @@ class TestSite(unittest.TestCase):
         no_reason = self.call("/api/teach/marks", self.entry(out_of - 2), "teacher")[1]
         self.assertFalse(no_reason["ok"], "a mark was changed without a reason")
         self.ok("/api/teach/marks", self.entry(out_of - 2, "Re-checked the script"), who="teacher")
+        again = self.call("/api/teach/marks", self.entry(out_of - 2, "Re-checked the script"), "teacher")[1]
+        self.assertFalse(again["ok"], "pressing Save twice wrote the same correction twice")
 
         # a teacher can't put marks into a class they don't have
         other = {**self.entry(1, "x"), "course_id": self.other_course}
@@ -530,6 +532,28 @@ class TestSite(unittest.TestCase):
             statuses = list(pool.map(lambda j: self.call(j[0], who=j[1])[0], jobs))
         self.assertEqual(statuses, [200] * len(jobs), f"some requests failed: {statuses}")
         self.assertLess(time.time() - started, 60, "30 requests at once took over a minute")
+
+    def test_17b_many_saves_at_once_keep_the_chain_whole(self):
+        """20 mark changes saved at the same moment: every one gets its own block, and the chain stays valid."""
+        cls_ = self.ok(f"/api/teach/class?course_id={self.course}&session={urllib.request.quote(self.batch)}",
+                       who="teacher")
+        rolls = [st["roll"] for st in cls_["students"] if st["roll"] != STUDENT_ROLL][:20]
+        item = cls_["items"][0]
+        before = self.ok("/api/chain")["count"]
+
+        def save(roll):
+            body = {"course_id": self.course, "session": self.batch,
+                    "entries": [{"roll": roll, "item_id": item["item_id"], "value": 1, "reason": "parallel test"}]}
+            return self.call("/api/teach/marks", body, "teacher")[1]
+
+        with ThreadPoolExecutor(max_workers=20) as pool:
+            answers = list(pool.map(save, rolls))
+        blocks = [r["block_no"] for a in answers for r in a["results"] if r["ok"]]
+        self.assertEqual(len(blocks), len(rolls), f"some saves failed: {answers}")
+        self.assertEqual(len(set(blocks)), len(blocks), "two saves got the same block number")
+        chain = self.ok("/api/chain")
+        self.assertTrue(chain["ok"], chain["message"])
+        self.assertEqual(chain["count"], before + len(rolls))
 
     # ------------------------------------------------------------------
     # 8. the pages' own code
@@ -651,6 +675,9 @@ class TestSite(unittest.TestCase):
         """A complaint is emailed to the chairman address the office set, without the student's name."""
         self.ok("/api/complaint", {"what": "Fan in room 214 is broken", "why": "It is very hot",
                                    "fix": "Repair the fan"}, who="student")
+        self.refused("/api/complaint", {"what": "Fan in room 214 is broken", "why": "It is very hot",
+                                        "fix": "Repair the fan"}, who="student", status=400,
+                     what="sending the same complaint twice")
         mails = self.emails_to("test.chair@cu.ac.bd", about="Fan in room 214")
         self.assertTrue(mails, "the complaint didn't reach the chairman address set on the settings page")
         self.assertNotIn("Test Student", mails[-1]["body"], "the complaint email shows the student's name")
@@ -698,10 +725,107 @@ class TestSite(unittest.TestCase):
             done = subprocess.run([node, "--check", os.path.join(ROOT, "loader.js")], capture_output=True, text=True)
             self.assertEqual(done.returncode, 0, f"loader.js has a JavaScript error:\n{done.stderr[-1500:]}")
 
+    def test_27_codes_cant_flood_an_inbox(self):
+        """Asking for codes again and again stops after a few, so nobody's inbox can be flooded."""
+        email = "99999077@std.cu.ac.bd"
+        form = {"email": email, "name": "Flood Test", "father": "F", "mother": "M", "batch": self.batch}
+        results = [self.call("/api/register/start", form)[0] for _ in range(7)]
+        self.assertEqual(results[:5], [200] * 5)
+        self.assertEqual(results[5:], [400, 400], "more than 5 codes an hour went to one address")
+        self.assertLessEqual(len(self.emails_to(email, about="code")), 5)
+
+    def test_28_chain_check_button(self):
+        """Pressing "check the chain" many times re-uses the recent result; a new block makes it check again."""
+        first = self.ok("/api/verify", who="office")
+        again = self.ok("/api/verify", who="office")
+        self.assertTrue(again.get("remembered"), "the full check ran again straight away")
+        self.ok("/api/office/demo-tamper", {}, who="office")
+        try:
+            status, caught = self.call("/api/verify", who="office")
+            self.assertEqual(status, 200)
+            self.assertFalse(caught["ok"], "after the insider edit, the check still said everything was fine")
+        finally:
+            self.ok("/api/office/demo-undo", {}, who="office")
+        self.assertTrue(self.ok("/api/verify", who="office")["ok"])
+
+    def test_29_delete_account_keeps_the_marks(self):
+        """A student deletes their login; the marks stay; registering again brings everything back."""
+        item_id = self.item["item_id"]
+        mark_before = next(i["value"] for i in self.ok(f"/api/course?course_id={self.course}", who="student")
+                           ["main"]["items"] if i["item_id"] == item_id)
+        self.refused("/api/account/delete", {"password": "wrong-password"}, who="student", status=400,
+                     what="deleting with the wrong password")
+        self.refused("/api/account/delete", {"password": self.passwords["teacher"]}, who="teacher", status=403,
+                     what="a teacher using the student delete button")
+        old_token = self.tokens["student"]
+        self.ok("/api/account/delete", {"password": self.passwords["student"]}, who="student")
+
+        self.assertEqual(self.site.call("/api/home", token=old_token)[0], 401, "still signed in after deleting")
+        self.refused("/api/signin", {"email": STUDENT_EMAIL, "password": self.passwords["student"]},
+                     status=400, what="signing in to a deleted account")
+        self.assertTrue(self.emails_to(STUDENT_EMAIL, about="account was deleted"),
+                        "the student wasn't told their account was deleted")
+        # the teacher still sees the student and the mark
+        cls_ = self.ok(f"/api/teach/class?course_id={self.course}&session={urllib.request.quote(self.batch)}",
+                       who="teacher")
+        self.assertIn(STUDENT_ROLL, [st["roll"] for st in cls_["students"]], "the student vanished from the class")
+        self.assertEqual(cls_["marks"][STUDENT_ROLL][item_id]["value"], mark_before, "the mark changed or vanished")
+        self.assertTrue(self.ok("/api/chain")["ok"])
+
+        # registering again: same email, the parents' names the office already has
+        self.ok("/api/register/start", {"email": STUDENT_EMAIL, "name": "Test Student", "father": "Test Father",
+                                        "mother": "Test Mother", "batch": self.batch})
+        code = self.code_sent_to(STUDENT_EMAIL)
+        done = self.ok("/api/register/finish", {"email": STUDENT_EMAIL, "code": code,
+                                                "password": self.passwords["student"]})
+        self.tokens["student"] = done["token"]
+        mark_after = next(i["value"] for i in self.ok(f"/api/course?course_id={self.course}", who="student")
+                          ["main"]["items"] if i["item_id"] == item_id)
+        self.assertEqual(mark_after, mark_before, "the old mark didn't come back after registering again")
+
     def test_99_server_had_no_crashes(self):
         """The server stayed up the whole time and wrote no Python errors."""
         self.assertIsNone(self.server.poll(), "the server stopped during the tests")
         self.assertNotIn("Traceback", self.server_log(), "the server hit an error:\n" + self.server_log())
+
+
+class TestDatabaseDown(unittest.TestCase):
+    """22 Nov 2026: Supabase paused, the server crashed at start-up, and the whole site
+    showed Render's "Application loading" forever. Now it must open anyway."""
+
+    def test_site_opens_and_says_the_records_are_unreachable(self):
+        """With no database, pages explain the problem, the API answers 503, and nothing crashes."""
+        folder = tempfile.mkdtemp(prefix="eee-nodb-")
+        shutil.copytree(ROOT, folder, dirs_exist_ok=True,
+                        ignore=shutil.ignore_patterns(".git", "records.db", "__pycache__", "tests"))
+        port = free_port()
+        env = {k: v for k, v in os.environ.items() if not k.startswith(("GMAIL_", "MAIL_"))}
+        env.update({"PORT": str(port), "DB_RETRY_SECONDS": "60", "PYTHONUNBUFFERED": "1",
+                    "DATABASE_URL": "postgresql://nobody:nothing@127.0.0.1:1/none"})   # nothing listens there
+        log = open(os.path.join(folder, "server.log"), "w")
+        server = subprocess.Popen([sys.executable, "server.py"], cwd=folder, env=env,
+                                  stdout=log, stderr=subprocess.STDOUT)
+        site = Site(port)
+        try:
+            for _ in range(120):
+                self.assertIsNone(server.poll(), "the server crashed because the database is down")
+                try:
+                    status, page = site.call("/landing.html")
+                    break
+                except OSError:
+                    time.sleep(0.5)
+            else:
+                self.fail("the server never opened")
+            self.assertEqual(status, 503)
+            self.assertIn("not reachable", page)
+            status, answer = site.call("/api/landing")
+            self.assertEqual((status, answer.get("offline")), (503, True))
+            self.assertEqual(site.call("/loader.js")[0], 200, "the loading screen should still load")
+        finally:
+            server.terminate()
+            server.wait(timeout=10)
+            log.close()
+            shutil.rmtree(folder, ignore_errors=True)
 
 
 if __name__ == "__main__":

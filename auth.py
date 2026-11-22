@@ -63,6 +63,8 @@ def init_auth():
         email TEXT PRIMARY KEY, name TEXT, batch TEXT, father TEXT, mother TEXT)""")
     cur.execute("""CREATE TABLE IF NOT EXISTS failures (
         key TEXT PRIMARY KEY, count INTEGER, locked_until TEXT)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS code_requests (
+        key TEXT, asked_at TEXT)""")
     con.commit()
     con.close()
 
@@ -144,6 +146,29 @@ def clear_failures(key):
 
 
 # ------------------------------------------------------------------
+# a limit on emailed codes: pressing "send code" again and again must not
+# flood someone's inbox or use up the site's daily email allowance
+# ------------------------------------------------------------------
+CODES_PER_ADDRESS = 5        # to one email address, per hour
+CODES_PER_DEVICE = 15        # from one device, to any addresses, per hour
+
+
+def limit_codes(address, device=""):
+    hour_ago = (_now() - dt.timedelta(hours=1)).isoformat()
+    _run("DELETE FROM code_requests WHERE asked_at < ?",
+         ((_now() - dt.timedelta(days=1)).isoformat(),))          # forget old ones
+    checks = [("code:" + address.lower(), CODES_PER_ADDRESS)]
+    if device:
+        checks.append(("device:" + device, CODES_PER_DEVICE))
+    for key, most in checks:
+        asked = _one("SELECT COUNT(*) FROM code_requests WHERE key=? AND asked_at > ?", (key, hour_ago))[0]
+        if asked >= most:
+            raise Refused("Too many codes have been asked for. Please wait an hour and try again.")
+    for key, _ in checks:
+        _run("INSERT INTO code_requests VALUES (?,?)", (key, _now().isoformat()))
+
+
+# ------------------------------------------------------------------
 # registration, step 1: who you are
 # ------------------------------------------------------------------
 def batches():
@@ -155,8 +180,8 @@ def batches():
     return out
 
 
-def start_registration(email, father, mother, name=None, batch=None):
-    """Returns (status, code_to_show). code_to_show is None unless email is off."""
+def start_registration(email, father, mother, name=None, batch=None, device=""):
+    """Checks who you are, then emails a code. The code is never returned."""
     email, roll = roll_from_email(email)
     key = "register:" + email
     check_lock(key)
@@ -196,6 +221,7 @@ def start_registration(email, father, mother, name=None, batch=None):
         raise Refused("That roll number is not on the enrolment list.")
 
     clear_failures(key)
+    limit_codes(email, device)
     code = f"{secrets.randbelow(1_000_000):06d}"
     expires = (_now() + dt.timedelta(minutes=CODE_MINUTES)).isoformat()
     _run("INSERT OR REPLACE INTO pending VALUES (?,?,?,0)", (email, sha(code), expires))
@@ -253,7 +279,49 @@ def finish_registration(email, code, password):
     return email
 
 
-def staff_register_start(email):
+# ------------------------------------------------------------------
+# deleting an account: the LOGIN goes, the RECORDS stay
+# ------------------------------------------------------------------
+def delete_account(email, password):
+    """A student deletes their own login. Their marks, attendance and history
+    belong to their roll number, not to the login, so they stay exactly where
+    they are, for the teacher and on the chain. If the student registers again
+    with the same university email, everything is there again.
+
+    Needs the password, so someone who just finds an open laptop can't do it.
+    The deletion is itself a block on the chain, and the student is emailed."""
+    email = (email or "").strip().lower()
+    key = "delete:" + email
+    check_lock(key)
+    row = _one("SELECT salt, pw_hash, role, roll FROM accounts WHERE email=?", (email,))
+    if not row:
+        raise Refused("There is no account with this email.")
+    if row[2] != "student":
+        raise Refused("Staff accounts can't be deleted here.")
+    if not hmac.compare_digest(hash_password(password or "", row[0]), row[1]):
+        left = record_failure(key)
+        raise Refused("That password is not right."
+                      + (f" {left} tr{'ies' if left != 1 else 'y'} left." if left else
+                         f" Locked for {LOCK_MINUTES} minutes."))
+    clear_failures(key)
+    roll = row[3]
+
+    from ledger import add_entry
+    block_no, _ = add_entry("account_deleted", {"roll": roll}, "student:" + roll)
+    for table in ("accounts", "sessions", "pending", "pending_profile"):
+        _run(f"DELETE FROM {table} WHERE email=?", (email,))       # every sign-in ends now
+
+    import mailer
+    mailer.send_later(email, "Your EEE Records account was deleted",
+                      "Your EEE Records account was deleted. You can no longer sign in.\n\n"
+                      "Your marks, attendance and their history were not deleted: they belong to your "
+                      "roll number and stay with your teachers and the department. If you register "
+                      "again with this email, you will see them again.\n\n"
+                      "If you didn't do this, contact the academic office straight away.", trusted=True)
+    return block_no
+
+
+def staff_register_start(email, device=""):
     """A test staff inbox asks for a sign-up code. Returns (status, code_to_show)."""
     email = (email or "").strip().lower()
     if email not in TEST_STAFF:
@@ -262,6 +330,7 @@ def staff_register_start(email):
     check_lock(key)
     if _one("SELECT 1 FROM accounts WHERE email=?", (email,)):
         raise Refused("This email already has an account. Sign in instead.")
+    limit_codes(email, device)
     code = f"{secrets.randbelow(1_000_000):06d}"
     expires = (_now() + dt.timedelta(minutes=CODE_MINUTES)).isoformat()
     _run("INSERT OR REPLACE INTO pending VALUES (?,?,?,0)", (email, sha(code), expires))
@@ -376,7 +445,7 @@ def sign_out(token):
 # ------------------------------------------------------------------
 # forgotten password: a code sent to the inbox proves it's you
 # ------------------------------------------------------------------
-def reset_start(email):
+def reset_start(email, device=""):
     """
     Emails a 6-digit reset code. Returns "sent" or the reason it couldn't.
 
@@ -393,6 +462,7 @@ def reset_start(email):
 
     if not _one("SELECT 1 FROM accounts WHERE email=?", (email,)):
         raise Refused("There is no account with this email. Check it, or register instead.")
+    limit_codes(email, device)
 
     code = f"{secrets.randbelow(1_000_000):06d}"
     expires = (_now() + dt.timedelta(minutes=CODE_MINUTES)).isoformat()

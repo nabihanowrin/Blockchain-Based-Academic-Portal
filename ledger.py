@@ -1,5 +1,6 @@
 import hashlib
 import json
+import threading
 from datetime import datetime, timezone
 
 # connect() opens Postgres (Supabase) when DATABASE_URL is set, otherwise
@@ -92,7 +93,18 @@ def compute_hash(block_no, entry_type, payload, actor, created_at, prev_hash):
 ON_ADD = []
 
 
+# The server now answers many people at once. Two of them saving at the same
+# moment must never both read "the last block is #41" and both write #42, so
+# only one block is written at a time.
+_WRITE_LOCK = threading.Lock()
+
+
 def add_entry(entry_type, payload, actor):
+    with _WRITE_LOCK:
+        return _add_entry(entry_type, payload, actor)
+
+
+def _add_entry(entry_type, payload, actor):
     con = connect()
     cur = con.cursor()
 

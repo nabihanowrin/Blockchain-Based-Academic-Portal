@@ -41,7 +41,7 @@ def using_postgres():
 def connect():
     if DATABASE_URL:
         return _PgConnection(_take())
-    return sqlite3.connect(DB_FILE)
+    return sqlite3.connect(DB_FILE, timeout=30)      # wait for another writer instead of failing
 
 
 # ------------------------------------------------------------------

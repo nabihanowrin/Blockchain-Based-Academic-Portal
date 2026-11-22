@@ -112,6 +112,8 @@ def start_change(office_email, key, new):
         raise Refused("That doesn't look like an email address.")
     if new == address(key):
         raise Refused(f"That is already the address for {KEYS[key][1]}.")
+    import auth
+    auth.limit_codes(new)
 
     code = f"{secrets.randbelow(1_000_000):06d}"
     expires = (_now() + dt.timedelta(minutes=CODE_MINUTES)).isoformat()

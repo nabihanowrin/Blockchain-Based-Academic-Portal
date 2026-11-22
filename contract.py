@@ -786,6 +786,9 @@ def enter_score(teacher_id, course_id, session, roll, item_id, value, absent=Fal
             raise Refused("Changing a mark that is already in needs a reason the student can read.")
         payload["reason"] = reason.strip()
         before = notices.previous_value(course_id, roll, item_id)
+        if before == (value, bool(absent)):
+            # e.g. Save pressed twice: don't write the same correction again
+            raise Refused("That is already the mark, so nothing was changed.")
         block_no = add_entry("correction", payload, teacher_id)[0]
         notices.mark_saved("correction", payload, teacher_id, before)
         return block_no

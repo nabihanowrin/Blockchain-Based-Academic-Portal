@@ -2,6 +2,49 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — Security round 2, and Delete my account
+
+**1. The site stays up when the database is down.** (What happened this
+morning when Supabase paused.) The server now opens anyway: pages show "The
+records are not reachable right now" and try again every 30 seconds, the API
+answers 503, and the moment the database is back the site works normally by
+itself. If something unexpected goes wrong while answering, the visitor gets a
+plain message and the error goes to the server log, never to the screen.
+(`server.py`: `prepare_database`, `keep_trying_database`, `guarded`.)
+
+**2. Keep the database awake.** `.github/workflows/keep-awake.yml` visits the
+live site every 3 days, so Supabase never sees a quiet week. GitHub switches
+scheduled jobs off after 60 days without commits; it emails the owner, and
+"Enable" on the Actions tab turns it back on.
+
+**3. Many people at once.** The server answers each visitor in their own thread
+(`ThreadingHTTPServer`), with at most 8 doing work at once (`MAX_AT_ONCE`) to
+protect the free database, and room for 128 waiting to be let in. Blocks are
+written one at a time (`ledger._WRITE_LOCK`), so two saves at the same moment
+can never get the same block number. SQLite waits for another writer instead of
+failing.
+
+**4. Pressing a button twice.** The same complaint within 10 minutes is refused;
+saving a mark that is already that mark is refused (no duplicate correction).
+
+**5. Codes can't flood an inbox.** At most 5 codes an hour to one address and
+15 an hour from one device, for registration, staff sign-up, password reset
+and the Email settings page (`auth.limit_codes`, new table `code_requests`).
+
+**6. The chain check button.** However often anyone presses it, the full check
+runs at most once a minute; in between, everyone gets the latest result. A new
+block or the insider-edit demo makes the next press check for real.
+
+**7. Delete my account** (bottom of the student home page). Needs the
+password. Deletes the sign-in only: marks, attendance and their history belong
+to the roll number, so they stay with the teacher and on the chain. The
+deletion is a block on the chain, the student is emailed, and registering again
+with the same email brings everything back. Staff accounts can't be deleted
+here. (`auth.delete_account`, `/api/account/delete`, `app.html`.)
+
+**Tests:** 17b, 27, 28, 29 and the database-down check are new; 11 and 24 check
+double presses. 35 checks, on SQLite and Postgres.
+
 ## 2026-11-22 — The loading screen plays on every move between the homepage and an account
 
 **What you see:** Nabiha's logo loading screen now plays:
