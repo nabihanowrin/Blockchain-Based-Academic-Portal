@@ -2,6 +2,34 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — Nightly backups to Google Drive
+
+**What happens:** every night at 3:13 AM (Bangladesh), GitHub makes a full copy
+of the live database (every table: records, the chain, accounts, uploaded
+files) and saves it to the folder **"EEE Records backups"** in the project
+Google Drive. Copies older than 30 days are deleted, but the newest 7 always
+stay. The copy is checked before it is uploaded.
+
+**Files:** `scripts/backup.py` (the job, explained at the top) and
+`.github/workflows/backup.yml` (when it runs). Run it by hand: GitHub →
+Actions → "Nightly database backup" → Run workflow.
+
+**Settings (GitHub → Settings → Secrets and variables → Actions):**
+`BACKUP_DATABASE_URL` (same as `DATABASE_URL` on Render), `GDRIVE_CLIENT_ID`,
+`GDRIVE_CLIENT_SECRET` (same as the Gmail ones), `GDRIVE_REFRESH_TOKEN` (OAuth
+Playground, scope `drive.file`: the job can only see files it made itself).
+Until they are set, the job does nothing and says so.
+
+**Putting a backup back** (needs PostgreSQL's tools): download the `.dump`
+file from the Drive, then
+`pg_restore --clean --if-exists --no-owner --dbname "<database address>" <file>.dump`.
+Tested: a copy put back into an empty database had the same 96 blocks and a
+valid chain.
+
+**Test:** `tests/test_backup.py` runs the job against a stand-in for Google
+Drive and checks the copy restores with a valid chain (in the Postgres job on
+GitHub).
+
 ## 2026-11-22 — Security round 2, and Delete my account
 
 **1. The site stays up when the database is down.** (What happened this
