@@ -581,6 +581,63 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
   .hero3 .h-dark{display:flex;order:3;padding:36px var(--gut)}
 }
 </style>
+<style>
+/* ===== three colours only, top to bottom: maroon, off-white, and the sky blue of the
+   building photo (#69A0E0). No charcoal, no grays. ===== */
+:root{
+  --cream:#F6F2EE; --soft:#EFE8E2; --line:#E2D8D1;
+  --sky:#69A0E0; --sky-deep:#2E5E8E; --sky-pale:#E3EEF9;
+  --ink:#3c001c; --ink-2:#500000; --text:#1C1A19; --grey:#5E5653;
+}
+html,body{background:var(--cream)}
+.util{background:var(--accent-dark)}
+/* hero: pale sky | off-white | photo */
+.h-dark{background:var(--sky-pale)!important;color:var(--text)}
+.h-dark h2{color:var(--accent)}
+.h-dark .bar{background:var(--sky)}
+.h-dark .d-t{color:#3a3533}
+.d-btn{background:var(--accent);color:#fff;border-color:var(--accent)}
+.d-btn:hover{background:var(--accent-dark)}
+.h-panel{background:var(--cream)}
+.h-k{color:var(--sky-deep)}
+/* news */
+.newsx{background:var(--cream)}
+.nitem.lead .lk{color:#BFD6F3}
+.nitem .pic.none{background:var(--sky-pale)}
+.morebtn{background:var(--accent)}
+/* numbers band stays maroon */
+.facts{background:var(--accent)}
+.facts .cell{border-left-color:rgba(255,255,255,.28)}
+/* around the department: pale sky instead of charcoal */
+.drift.dark{background:var(--sky-pale)}
+.dark .intro h2{color:var(--accent)}
+.dark .intro p{color:#3a3533}
+.labs-h{color:var(--sky-deep)}
+.labs{border-top-color:#C6D9F0}
+.labs li{border-bottom-color:#C6D9F0}
+.labs b{color:var(--text)}
+.labs span{color:#4a4442}
+.shot{background:#fff}
+.shot .cap{color:#4a4442}
+/* what this website gives you: maroon, as at first */
+.offer{background:var(--accent)}
+/* faculty */
+.faculty{background:var(--cream)}
+.fcard{border-color:var(--line);border-top:3px solid var(--sky)}
+.fcard.chair{border-color:var(--accent);border-top-color:var(--accent)}
+/* sign in and footer: dark maroon instead of charcoal */
+.enter{background:var(--cream)}
+.roles{background:var(--accent-dark)}
+footer{background:var(--accent-dark);color:#E6D3D7}
+footer a{color:#E6D3D7}
+footer .cols{border-bottom-color:rgba(255,255,255,.14)}
+details{border-top-color:rgba(255,255,255,.16)}
+details:last-child{border-bottom-color:rgba(255,255,255,.16)}
+summary::after{color:#E6D3D7}
+.legal{border-top-color:rgba(255,255,255,.16);color:#CDB5BA}
+footer ul.bullets li::marker{color:var(--sky)}
+.copybar{background:var(--accent)}
+</style>
 </head>
 <body>
 
