@@ -255,8 +255,18 @@ class TestSite(unittest.TestCase):
         home = self.ok("/api/teach/home", who="teacher")
         semester = self.ok("/api/semester", who="student")["semester"]
         mine = [c for c in home["courses"] if c["semester"] == semester]
-        self.assertGreaterEqual(len(mine), 2, "not enough courses in the student's semester")
+        self.assertGreaterEqual(len(mine), 3, "not enough courses in the student's semester")
         TestSite.course, TestSite.other_course = mine[0]["course_id"], mine[1]["course_id"]
+        TestSite.spare_course = mine[2]["course_id"]
+
+        # Bug of 22 Nov 2026: CSE 517 (5th semester) was asked for under 2025-26, a batch
+        # in its 1st semester, so the approved class had no students. Now it is refused.
+        wrong = next((b["name"] for b in self.ok("/api/landing")["batches"]
+                      if b.get("semester") != semester), None)
+        if wrong:
+            why = self.refused("/api/teach/request", {"course_id": self.course, "session": wrong},
+                               who="teacher", status=400, what="asking for a class under the wrong batch")
+            self.assertIn("No students of", why.get("why", ""))
 
         self.refused(f"/api/teach/class?course_id={self.course}&session={urllib.request.quote(self.batch)}",
                      who="teacher", status=403, what="opening a class before the office gives it")
@@ -443,7 +453,51 @@ class TestSite(unittest.TestCase):
             finally:
                 os.unlink(js.name)
 
-    def test_19_server_had_no_crashes(self):
+    # ------------------------------------------------------------------
+    # 9. taking a class back
+    # ------------------------------------------------------------------
+    def test_20_teacher_withdraws_a_waiting_request(self):
+        """The teacher withdraws a request before the office answers; the office can't approve it after."""
+        asked = self.ok("/api/teach/request", {"course_id": self.spare_course, "session": self.batch},
+                        who="teacher")["request_id"]
+        self.ok("/api/teach/withdraw", {"request_id": asked}, who="teacher")
+        status = {r["id"]: r["status"] for r in self.ok("/api/office/requests", who="office")["requests"]}
+        self.assertEqual(status.get(asked), "withdrawn")
+        self.refused("/api/teach/withdraw", {"request_id": asked}, who="teacher", status=400,
+                     what="withdrawing the same request twice")
+        self.refused("/api/office/decide", {"request_id": asked, "approve": True, "note": ""},
+                     who="office", status=400, what="approving a withdrawn request")
+
+    def test_21_teacher_removes_an_unused_class(self):
+        """An approved class with nothing entered yet can be removed, and asked for again later."""
+        asked = self.ok("/api/teach/request", {"course_id": self.spare_course, "session": self.batch},
+                        who="teacher")["request_id"]
+        self.ok("/api/office/decide", {"request_id": asked, "approve": True, "note": ""}, who="office")
+        home = self.ok("/api/teach/home", who="teacher")
+        card = next(c for c in home["classes"] if c["course_id"] == self.spare_course)
+        self.assertTrue(card["removable"], "an unused class should show the Remove button")
+
+        self.ok("/api/teach/remove", {"course_id": self.spare_course, "session": self.batch}, who="teacher")
+        quoted = urllib.request.quote(self.batch)
+        self.refused(f"/api/teach/class?course_id={self.spare_course}&session={quoted}", who="teacher",
+                     status=403, what="opening a class after removing it")
+        status = {r["id"]: r["status"] for r in self.ok("/api/office/requests", who="office")["requests"]}
+        self.assertEqual(status.get(asked), "removed", "the office should see the class was removed")
+        self.assertTrue(self.ok("/api/chain")["ok"], "removing a class broke the chain")
+        self.ok("/api/teach/request", {"course_id": self.spare_course, "session": self.batch},
+                who="teacher", what="asking again after removing")
+
+    def test_22_class_with_marks_stays(self):
+        """A class with marks already in it can't be removed, and others can't remove it either."""
+        home = self.ok("/api/teach/home", who="teacher")
+        card = next(c for c in home["classes"] if c["course_id"] == self.course)
+        self.assertFalse(card["removable"], "a class with marks should not offer Remove")
+        self.refused("/api/teach/remove", {"course_id": self.course, "session": self.batch},
+                     who="teacher", status=400, what="removing a class that has marks")
+        self.refused("/api/teach/remove", {"course_id": self.course, "session": self.batch},
+                     who="office", status=403, what="the office using the teacher's remove button")
+
+    def test_99_server_had_no_crashes(self):
         """The server stayed up the whole time and wrote no Python errors."""
         self.assertIsNone(self.server.poll(), "the server stopped during the tests")
         self.assertNotIn("Traceback", self.server_log(), "the server hit an error:\n" + self.server_log())

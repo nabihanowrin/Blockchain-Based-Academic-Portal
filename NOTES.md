@@ -2,6 +2,36 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — Teachers can take back a class; wrong batches are refused
+
+**What you see (teacher page):**
+- **Remove this class** under a class card, as long as no marks or attendance
+  have been entered in it. The office's list then shows that request as
+  "removed by the teacher".
+- **Withdraw request** under a request the office hasn't answered yet.
+- In "Add a class", each batch shows its semester, e.g. "2023–24 (5th
+  semester now)", and picking a course selects the right batch by itself.
+- The sidebar shows the batch next to each class (CSE 517 · 2023–24).
+
+**Why:** CSE 517 was asked for under 2025–26 (the list started with the newest
+batch). 2025–26 is in its 1st semester, so the approved class had no students,
+and there was no way to undo it. Also, if a teacher had the same course for two
+batches, clicking either one always opened the first.
+
+**What changed:**
+- `contract.py`: `request_class` refuses a batch with no students in that
+  course and says which batch is in that semester now. New `withdraw_request`,
+  `class_in_use` and `remove_class`. Nothing is deleted from the chain: a
+  withdrawal is a new `class_decision` block, a removal is a new
+  `class_removed` block; only the quick-lookup `teaching` table loses the row.
+  A class with marks or attendance in it can't be removed.
+- `server.py`: new `/api/teach/withdraw` and `/api/teach/remove`; the teacher
+  home now sends each batch's semester and whether each class can be removed.
+- `teacher.html`: the buttons, the batch picker, and classes opened by position
+  instead of by course code.
+- `office.html`: shows "withdrawn" and "removed by the teacher".
+- `tests/test_site.py`: checks 20–22, plus the wrong-batch check in check 8.
+
 ## 2026-11-22 — Automatic check-up on every upload
 
 **What you see:** On GitHub, every upload now gets a green tick (all checks

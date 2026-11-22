@@ -586,13 +586,18 @@ def class_card(course_id, session, status="approved", request_id=None, note=""):
 def teacher_home(email, teacher_id):
     mine = [class_card(c["course_id"], c["session"]) for c in contract.approved_classes(teacher_id)]
     waiting = [class_card(r["course_id"], r["session"], r["status"], r["id"], r["note"])
-               for r in contract.class_requests(teacher_id) if r["status"] != "approved"]
+               for r in contract.class_requests(teacher_id) if r["status"] in ("waiting", "rejected")]
     courses = [{"course_id": c, "code": code, "title": t, "semester": sem}
                for c, code, t, sem in rows(
                    "SELECT course_id, code, title, semester FROM courses ORDER BY semester, code")]
-    sessions = [n for (n,) in rows("SELECT name FROM academic_sessions ORDER BY name DESC")]
+    batches = [{"name": n, "semester": sem} for n, sem in
+               rows("SELECT name, current_semester FROM academic_sessions ORDER BY name DESC")]
+    sessions = [b["name"] for b in batches]
+    for c in mine:                       # can it still be removed? (nothing entered yet)
+        c["removable"] = not contract.class_in_use(teacher_id, c["course_id"], c["session"])
     return {"profile": {"name": staff_name(email), "email": email, "teacher_id": teacher_id},
-            "classes": mine, "waiting": waiting, "courses": courses, "sessions": sessions}
+            "classes": mine, "waiting": waiting, "courses": courses, "sessions": sessions,
+            "batches": batches}
 
 
 def attending_group(course_id, day):
@@ -1350,6 +1355,7 @@ class Handler(SimpleHTTPRequestHandler):
                         "/api/teach/attendance", "/api/teach/attendance/correct",
                         "/api/teach/cancel", "/api/teach/objection/close",
                         "/api/teach/marks", "/api/teach/out-of",
+                        "/api/teach/withdraw", "/api/teach/remove",
                         "/api/office/batch", "/api/office/student"):
             body = json.loads(self.rfile.read(length) or "{}")
             tid = "teacher:" + user["roll"]
@@ -1402,6 +1408,13 @@ class Handler(SimpleHTTPRequestHandler):
                 if url.path == "/api/teach/request":
                     asked = contract.request_class(tid, body.get("course_id"), body.get("session"))
                     return self.reply({"ok": True, "request_id": asked})
+                if url.path == "/api/teach/withdraw":
+                    block_no = contract.withdraw_request(tid, body.get("request_id"))
+                    return self.reply({"ok": True, "block_no": block_no})
+                if url.path == "/api/teach/remove":
+                    block_no = contract.remove_class(tid, body.get("course_id"), body.get("session"),
+                                                     body.get("reason", ""))
+                    return self.reply({"ok": True, "block_no": block_no})
                 if user["role"] != "office":
                     return self.reply({"ok": False, "why": "The office only."}, 403)
 

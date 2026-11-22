@@ -432,11 +432,14 @@ async function doRemove(roll, reason){
    class requests — the office's first job
    ============================================================ */
 function askCard(r){
-  const state = r.status === 'approved' ? `<span class="pill ok">approved</span>`
-              : r.status === 'waiting'  ? `<span class="pill wait">waiting</span>`
-              :                           `<span class="pill no">turned down</span>`;
+  const NAMES = {approved: ['ok', 'approved', 'Approved'], waiting: ['wait', 'waiting', ''],
+                 rejected: ['no', 'turned down', 'Turned down'],
+                 withdrawn: ['no', 'withdrawn', 'Withdrawn'],
+                 removed: ['no', 'removed by the teacher', 'Removed']};
+  const [tone, label, verb] = NAMES[r.status] || ['no', r.status, r.status];
+  const state = `<span class="pill ${tone}">${label}</span>`;
   const decided = r.status === 'waiting' ? '' :
-    `<div class="m">${r.status === 'approved' ? 'Approved' : 'Turned down'} by ${esc(r.decided_by || '')} · ${when(r.decided_at)}${r.note ? `<br>“${esc(r.note)}”` : ''}</div>`;
+    `<div class="m">${verb} by ${esc(r.decided_by || '')} · ${when(r.decided_at)}${r.note ? `<br>“${esc(r.note)}”` : ''}</div>`;
   const buttons = r.status !== 'waiting' ? '' : `
     <div class="row">
       <input id="note-${r.id}" placeholder="A reason, needed only when you turn it down">

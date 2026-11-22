@@ -34,6 +34,19 @@ def _one(sql, args):
     return row
 
 
+def _rows(sql, args):
+    con = connect()
+    cur = con.cursor()
+    cur.execute(sql, args)
+    found = cur.fetchall()
+    con.close()
+    return found
+
+
+def _ordinal(n):
+    return f"{n}{'st' if n == 1 else 'nd' if n == 2 else 'rd' if n == 3 else 'th'}"
+
+
 def _role(actor):
     """A staff member's role, looked up by their email. None if unknown."""
     row = _one("SELECT role FROM accounts WHERE email=?", (actor,))
@@ -145,7 +158,8 @@ def class_requests(teacher_id=None):
     con = connect()
     cur = con.cursor()
     cur.execute("""SELECT block_no, entry_type, payload, actor, created_at FROM blocks
-                   WHERE entry_type IN ('class_request','class_decision') ORDER BY block_no""")
+                   WHERE entry_type IN ('class_request','class_decision','class_removed')
+                   ORDER BY block_no""")
     rows = cur.fetchall()
     con.close()
 
@@ -157,6 +171,16 @@ def class_requests(teacher_id=None):
                              "course_id": p["course_id"], "session": p["session"],
                              "status": "waiting", "asked_at": at,
                              "decided_by": None, "decided_at": None, "note": ""}
+            continue
+        if kind == "class_removed":
+            # the teacher gave the class back: the approved request it came from
+            # now reads "removed". The approval block itself stays on the chain.
+            for asked in sorted(out.values(), key=lambda r: r["id"], reverse=True):
+                if (asked["teacher_id"], asked["course_id"], asked["session"], asked["status"]) == \
+                        (p["teacher_id"], p["course_id"], p["session"], "approved"):
+                    asked.update(status="removed", decided_by=actor, decided_at=at,
+                                 note=p.get("reason", ""))
+                    break
             continue
         asked = out.get(p.get("request_id"))
         if asked:
@@ -189,6 +213,15 @@ def request_class(teacher_id, course_id, session):
         raise Refused("No such session.")
     if teacher_teaches(teacher_id, course_id, session):
         raise Refused("You already have this class.")
+    if not class_list(course_id, session):
+        # e.g. CSE 517 (a 5th-semester course) asked for 2025-26, a batch in its 1st semester
+        semester = _one("SELECT semester FROM courses WHERE course_id=?", (course_id,))[0]
+        code = _one("SELECT code FROM courses WHERE course_id=?", (course_id,))[0]
+        now = [n for (n,) in _rows("SELECT name FROM academic_sessions WHERE current_semester=? "
+                                   "ORDER BY name DESC", (semester,))]
+        hint = f" {' and '.join(now)} {'is' if len(now) == 1 else 'are'} in that semester now." if now else ""
+        raise Refused(f"No students of {session} take {code}. It is a {_ordinal(semester)}-semester "
+                      f"course.{hint}")
     for r in class_requests(teacher_id):
         if (r["course_id"], r["session"], r["status"]) == (course_id, session, "waiting"):
             raise Refused(f"Request #{r['id']} for this class is already with the office.")
@@ -230,6 +263,65 @@ def decide_class(office_email, request_id, approve, note=""):
                     (asked["teacher_id"], asked["course_id"], asked["session"]))
         con.commit()
         con.close()
+    return block_no
+
+
+def withdraw_request(teacher_id, request_id):
+    """A teacher takes back a request the office hasn't answered yet.
+    The request stays on the chain; a new block says it was withdrawn."""
+    found = [r for r in class_requests(teacher_id) if r["id"] == request_id]
+    if not found:
+        raise Refused("No such request.")
+    if found[0]["status"] != "waiting":
+        raise Refused(f"Request #{request_id} was already {found[0]['status']}.")
+    block_no, _ = add_entry(
+        "class_decision",
+        {"request_id": request_id, "teacher_id": teacher_id,
+         "course_id": found[0]["course_id"], "session": found[0]["session"],
+         "status": "withdrawn", "note": "Withdrawn by the teacher"},
+        teacher_id,
+    )
+    return block_no
+
+
+def class_in_use(teacher_id, course_id, session):
+    """Has this teacher written anything for this class: a mark, a register,
+    a cancelled class, an answer to an objection?"""
+    rolls = {s["roll"] for s in class_list(course_id, session)}
+    for (text,) in _rows("SELECT payload FROM blocks WHERE actor=? AND entry_type NOT IN "
+                         "('class_request','class_decision','class_removed')", (teacher_id,)):
+        p = json.loads(text)
+        if p.get("course_id") != course_id:
+            continue
+        if p.get("session") == session or p.get("roll") in rolls \
+                or rolls & set((p.get("marks") or {}).keys()):
+            return True
+    return False
+
+
+def remove_class(teacher_id, course_id, session, reason=""):
+    """A teacher gives back a class, e.g. one asked for under the wrong batch.
+
+    Only while it is unused: once a mark or a register is in, those blocks
+    point at this teacher and this class, so the class can't just disappear.
+    Nothing is deleted from the chain. A new block records the removal, and
+    only the quick-lookup teaching table loses the row."""
+    if not teacher_teaches(teacher_id, course_id, session):
+        raise Refused("You don't have this class.")
+    if class_in_use(teacher_id, course_id, session):
+        raise Refused("You have already entered marks or attendance in this class, "
+                      "so it can't be removed.")
+    block_no, _ = add_entry(
+        "class_removed",
+        {"teacher_id": teacher_id, "course_id": course_id, "session": session,
+         "reason": (reason or "").strip() or "Removed by the teacher"},
+        teacher_id,
+    )
+    con = connect()
+    con.execute("DELETE FROM teaching WHERE teacher_id=? AND course_id=? AND session=?",
+                (teacher_id, course_id, session))
+    con.commit()
+    con.close()
     return block_no
 
 
