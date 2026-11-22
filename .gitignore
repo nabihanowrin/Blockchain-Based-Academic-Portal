@@ -1,0 +1,14 @@
+# Python's temporary files: made automatically, never needed in the repo
+__pycache__/
+*.pyc
+
+# the laptop's own database and anything secret: never upload these
+records.db
+mail_secret.txt
+peer_key.txt
+.env
+outbox.jsonl
+chain_copy.json
+copy_of_the_chain.json
+diary.json
+uploads/
