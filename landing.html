@@ -608,6 +608,17 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
   .facts .cell:nth-child(even){padding-left:20px;border-left:1px solid rgba(255,255,255,.3)}
 }
 </style>
+<style>
+/* sign in: the chosen role's white tab runs end to end and joins the form, with no stripe on its left */
+.roles{padding:26px 0}
+.roles button{border-left:none!important;padding:13px 28px;margin:0;width:100%}
+.roles button.on{background:var(--card);color:var(--text);border-left:none!important;box-shadow:none}
+@media (max-width:900px){
+  .roles{padding:0;flex-direction:row}
+  .roles button{width:auto;flex:1;text-align:center;padding:14px 10px;border-bottom:none!important}
+  .roles button.on{border-bottom:none!important}
+}
+</style>
 </head>
 <body>
 
