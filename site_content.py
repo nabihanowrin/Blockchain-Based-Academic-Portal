@@ -8,6 +8,7 @@ kept in Postgres and put back on disk after every Render restart.
 """
 
 import hashlib
+import json
 import os
 import datetime as dt
 
@@ -34,8 +35,36 @@ def init():
         con.execute("UPDATE achievements SET link=? WHERE title=? AND (link IS NULL OR link='')",
                     (link, title))
     con.commit()
+    # news added from here, once: never again if the office has removed it
+    # (its "achievement_add" stays on the chain, so it is not put back)
+    new = []
+    for title, detail, year, link in SEED_POSTS:
+        there = con.execute("SELECT 1 FROM achievements WHERE title=?", (title,)).fetchone()
+        added_before = con.execute(
+            "SELECT 1 FROM blocks WHERE entry_type='achievement_add' AND payload LIKE ?",
+            ('%"title":' + json.dumps(title) + '%',)).fetchone()
+        if not there and not added_before:
+            con.execute("INSERT INTO achievements (title, detail, year, image, added_by, link) "
+                        "VALUES (?, ?, ?, '', 'office:seed', ?)", (title, detail, year, link))
+            new.append((title, year, link))
+    con.commit()
     con.close()
+    for title, year, link in new:
+        _log("achievement_add", {"title": title, "year": year, "image": "", "link": link}, "seed")
     db.forget_tables()
+
+
+SEED_POSTS = [
+    ("Symposium: Winter Symposium on Silicon Photonics and Nanofabrication",
+     "Organised by the Optica Student Chapter, University of Chittagong · 11 November 2026, "
+     "auditorium of the Faculty of Marine Sciences and Fisheries, CU · about 150 students, "
+     "researchers and teachers from six universities in Chittagong · talks on light on a chip, "
+     "silicon photonics for biosensing, thin-film materials and nanofabrication, with hands-on "
+     "tutorials on Ansys Lumerical INTERCONNECT, GPU-accelerated FDTD and Tidy3D · speakers "
+     "included Sumit Majumder, Ariful Islam and Mohammad Shuhrawardy",
+     2026,
+     "https://www.facebook.com/ictcu/posts/1554550206708224/"),
+]
 
 
 SOURCE_LINKS = [

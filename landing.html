@@ -704,7 +704,7 @@ function countUp(el){
 function drawSlides(list){
   document.getElementById('slider').innerHTML = list.map(a => {
     // "Seminar: \"Title\"" -> label "Seminar", title "Title"
-    const m = /^(Seminar|Workshop|Talk|Alumnus|Alumna|Award|Event)\s*:\s*/i.exec(a.title || '');
+    const m = /^(Seminar|Symposium|Workshop|Talk|Alumnus|Alumna|Award|Event)\s*:\s*/i.exec(a.title || '');
     const kind = m ? m[1] : 'News';
     const title = (m ? a.title.slice(m[0].length) : a.title).replace(/^["“](.*)["”]$/, '$1');
     const src = sourceName(a.link);
@@ -721,7 +721,11 @@ function drawSlides(list){
 function sourceName(link){
   try {
     const u = new URL(link), h = u.hostname.replace(/^www\./, '');
-    if (h.endsWith('facebook.com')) return /IEEESBCU/i.test(u.pathname) ? 'IEEE SB CU on Facebook' : 'Facebook';
+    if (h.endsWith('facebook.com')) {
+      if (/^\/IEEESBCU\b/i.test(u.pathname)) return 'IEEE SB CU on Facebook';
+      if (/^\/ictcu\b/i.test(u.pathname)) return 'University of Chittagong on Facebook';
+      return 'Facebook';
+    }
     if (h.endsWith('linkedin.com')) return 'LinkedIn';
     if (h.endsWith('dhakatribune.com')) return 'Dhaka Tribune';
     if (h.endsWith('charlotte.edu')) return 'UNC Charlotte';
