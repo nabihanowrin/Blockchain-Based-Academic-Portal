@@ -543,6 +543,27 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
   .nitem.lead .ltxt{padding:28px 24px 32px}
 }
 </style>
+<style>
+/* gentle movement: the hero's words come up one after another, the photo settles,
+   news posts slide up as they come into view, pictures ease in a little on hover */
+@keyframes heroUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes heroSettle{from{transform:scale(1.06)}to{transform:scale(1)}}
+.h-panel .h-k{animation:heroUp .8s cubic-bezier(.16,.84,.34,1) .1s both}
+.h-panel h1{animation:heroUp .9s cubic-bezier(.16,.84,.34,1) .22s both}
+.h-panel .lede{animation:heroUp .9s cubic-bezier(.16,.84,.34,1) .38s both}
+.h-panel .row{animation:heroUp .9s cubic-bezier(.16,.84,.34,1) .52s both}
+.h-photo img{animation:heroSettle 1.8s cubic-bezier(.16,.84,.34,1) both}
+.nitem .pic img{transition:transform .7s cubic-bezier(.16,.84,.34,1)}
+.nitem:hover .pic img{transform:scale(1.04)}
+.nitem.rise{transform:translateY(40px)}
+.nitem.rise.seen{transform:none}
+.ctitle.rise{transform:translateY(24px)}
+@media (prefers-reduced-motion:reduce){
+  .h-panel .h-k,.h-panel h1,.h-panel .lede,.h-panel .row,.h-photo img{animation:none}
+  .nitem .pic img{transition:none}.nitem:hover .pic img{transform:none}
+  .nitem.rise,.ctitle.rise{transform:none}
+}
+</style>
 </head>
 <body>
 
@@ -591,7 +612,7 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
 <!-- ================= NEWS ================= -->
 <section class="newsx" id="news">
   <div class="wrap">
-    <h2 class="ctitle">Electrical and Electronic Engineering News</h2>
+    <h2 class="ctitle rise">Electrical and Electronic Engineering News</h2>
     <div class="news-grid" id="slider"></div>
     <div class="more-wrap"><button class="morebtn" type="button" id="moreNews" hidden onclick="showAllNews()">View more news</button></div>
   </div>
@@ -1009,10 +1030,11 @@ function drawSlides(list){
     const head = a.link
       ? `<h3><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(title)}</a></h3>`
       : `<h3>${esc(title)}</h3>`;
-    if (i === 0) return `<article class="nitem lead">${pic}<div class="ltxt"><p class="lk">Latest news · ${esc(a.year)}</p>${head}<p>${esc(a.detail)}</p></div></article>`;
-    return `<article class="nitem${i > 3 ? ' later' : ''}">${pic}${head}<p>${esc(a.detail)}</p></article>`;
+    if (i === 0) return `<article class="nitem lead rise">${pic}<div class="ltxt"><p class="lk">Latest news · ${esc(a.year)}</p>${head}<p>${esc(a.detail)}</p></div></article>`;
+    return `<article class="nitem rise${i > 3 ? ' later' : ''}" style="transition-delay:${((i - 1) % 3) * 0.12}s">${pic}${head}<p>${esc(a.detail)}</p></article>`;
   }).join('');
   document.getElementById('moreNews').hidden = list.length <= 4;
+  document.querySelectorAll('#slider .rise').forEach(el => io.observe(el));   // slide up as they come into view
 }
 
 function showAllNews(){
