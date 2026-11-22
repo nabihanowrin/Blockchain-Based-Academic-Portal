@@ -1117,7 +1117,7 @@ async function printDeptReceipts(){
       ${line('The sum of Taka (in words):', '')}
       ${line('Amount (Tk.):', '')}
       ${line('Payment Mode (Cash/Cheque/bKash):', '')}
-      <div class="row acc"><b>On account of:</b><span>${f.onAccount} for the session/year ${esc(p.session || '')}</span></div>
+      <div class="row acc oa"><b>On account of:</b><span>${f.onAccount} for the session/year</span></div>
       <div class="row acc"><b>Deposited to Account:</b><span>${f.account} &nbsp;|&nbsp; A/C No.: ${f.no}</span></div>
       <div class="sign"><div><i></i>Signature of Depositor</div><div><i></i>Received by</div></div>
     </section>`;
@@ -1129,7 +1129,7 @@ async function printDeptReceipts(){
       @page{size:A4;margin:12mm}
       *{box-sizing:border-box}
       body{margin:0;font-family:"Times New Roman",Times,serif;color:#000;font-size:11pt}
-      .slip{height:130mm;padding:5mm 8mm 4mm;border:1px solid #000;display:flex;flex-direction:column;overflow:hidden}
+      .slip{height:130mm;padding:5mm 2mm 4mm;display:flex;flex-direction:column;overflow:hidden;border-bottom:1px solid #000}
       .slip + .slip{margin-top:6mm}
       header{text-align:center;margin-bottom:2.5mm}
       h1{font-size:13pt;margin:0}h2{font-size:12pt;margin:1.5mm 0 0;letter-spacing:.04em}
@@ -1137,15 +1137,15 @@ async function printDeptReceipts(){
       .row{display:flex;gap:3mm;align-items:baseline;margin:1.1mm 0}
       .row b{white-space:nowrap}
       .val{flex:1;border-bottom:1px dotted #000;min-height:4.6mm;padding-left:2mm;font-family:Arial,Helvetica,sans-serif;font-size:10.5pt}
-      .acc span{flex:1;font-size:10pt}
+      .acc span{flex:1}
+      .oa{border-bottom:1px dotted #000;padding-bottom:1.5mm;font-weight:bold}
       .sign{margin-top:auto;display:flex;justify-content:space-between;gap:20mm}
       .sign div{flex:1;text-align:center}
-      .sign i{display:block;margin-bottom:1mm;height:9mm;border-bottom:1px solid #000}
+      .sign i{display:block;height:9mm}
       .note{font-family:Arial,Helvetica,sans-serif;font-size:8pt;color:#444;text-align:center;margin:2mm 0 0}
       @media screen{body{background:#eee}.page{width:210mm;margin:10mm auto;background:#fff;padding:12mm}}
     </style></head><body><div class="page">
       ${DEPT_FUNDS.map(slip).join('')}
-      <p class="note">Filled in from EEE Records. This is not a receipt until the department office has signed and stamped it.</p>
     </div><script>window.onload = () => setTimeout(() => window.print(), 300);<\/script></body></html>`);
   w.document.close();
 }
