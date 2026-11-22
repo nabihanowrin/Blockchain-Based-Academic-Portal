@@ -751,6 +751,7 @@ def office_requests():
         acct = rows("SELECT email FROM accounts WHERE 'teacher:' || roll = ?", (r["teacher_id"],))
         card["teacher"] = staff_name(acct[0][0] if acct else r["teacher_id"].replace("teacher:", ""))
         card["teacher_id"] = r["teacher_id"]
+        card["id"] = r["id"]   # the office page reads the request number from "id"
         card["asked_at"] = r["asked_at"]
         card["decided_by"] = r["decided_by"]
         card["decided_at"] = r["decided_at"]

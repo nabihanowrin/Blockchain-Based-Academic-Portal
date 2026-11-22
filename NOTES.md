@@ -2,6 +2,19 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — Office can approve and turn down class requests again
+
+**What you see:** On the office page, Approve and Turn down on a teacher's
+class request now work. Before, Approve said "No such request" and Turn down
+did nothing.
+
+**Why it broke:** The office page looks for each request's number in a field
+called `id`, but the server only sent it as `request_id`. So the page sent no
+number at all, and the server could not find the request.
+
+**What changed in `server.py`:** in `office_requests()`, each request card now
+also carries `id` (the same number). One line.
+
 ## 2026-11-22 — Payment is one item in the sidebar
 
 **What you see:** Payment now sits once in the sidebar, right under Complaint
