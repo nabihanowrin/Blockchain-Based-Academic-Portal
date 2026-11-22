@@ -232,6 +232,7 @@ function drawNav(){
     <div class="group">LANDING PAGE</div>
     <button class="${PAGE==='gallery'?'on':''}" onclick="go('gallery')">${ICON.pic} Gallery</button>
     <button class="${PAGE==='achievements'?'on':''}" onclick="go('achievements')">${ICON.star} Achievements</button>
+    <button class="${PAGE==='alumni'?'on':''}" onclick="go('alumni')">${ICON.star} Alumni stories</button>
     <div class="group">BATCHES</div>
     ${BATCHES.map(b => `<button class="code ${PAGE==='batch' && BATCH===b.name ? 'on' : ''}"
         onclick="openBatch('${b.name}')">${b.name}<small>${b.students}</small></button>`).join('')}
@@ -249,6 +250,7 @@ function go(page){
   if (page === 'newbatch') return newBatchPage();
   if (page === 'gallery') return galleryPage();
   if (page === 'achievements') return achievementsPage();
+  if (page === 'alumni') return alumniPage();
   if (page === 'settings') return settingsPage();
   if (page === 'fees') return feesPage();
 }
@@ -802,6 +804,79 @@ async function removePicture(id){
 /* ============================================================
    landing page: achievements, each with a photo and a link
    ============================================================ */
+/* ============================================================
+   alumni stories — former students on the homepage
+   ============================================================ */
+async function alumniPage(){
+  const d = await api('/api/office/alumni');
+  const list = d.stories.map(a => `
+    <div class="achrow">
+      ${a.image ? `<img src="${esc(a.image)}" alt="">` : '<img alt="">'}
+      <div>
+        <b>${esc(a.name)}</b>
+        <p>${esc(a.date)} · ${esc(a.headline)}${a.batch ? ' · ' + esc(a.batch) : ''}${a.field ? ' · ' + esc(a.field) : ''}</p>
+        ${a.link ? `<p><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.link)}</a></p>` : ''}
+        <div class="linkrow"><button class="btn small" onclick="removeAlumni(${a.id})">Remove</button></div>
+      </div>
+    </div>`).join('');
+  view(`
+    <h1 class="page in">Alumni stories</h1>
+    <p class="lede in d1">Former students of the department, shown in "Alumni stories" on the homepage, newest first.
+      Add only real stories you can check, and give the link to where the facts come from (a profile page or a news report).</p>
+    <div class="box in d2">
+      <h2>Add a story</h2>
+      <div class="upl">
+        <div><label for="alName">Name</label><input id="alName" type="text" maxlength="120" placeholder="e.g. Dr. Md. Hafizul Islam Chowdhury"></div>
+        <div><label for="alHead">Headline</label><input id="alHead" type="text" maxlength="200" placeholder="e.g. Assistant Professor, Electrical & Computer Engineering, UNC Charlotte"></div>
+        <div><label for="alBatch">Batch or degree years (optional)</label><input id="alBatch" type="text" maxlength="80" placeholder="e.g. B.Sc. 2017, M.Sc. 2019"></div>
+        <div><label for="alField">Where they work now</label>
+          <select id="alField" style="max-width:260px"><option value="">(choose)</option>
+            <option value="academia">Academia (teaching, a university)</option><option value="industry">Industry (a company)</option>
+            <option value="research">Research (a lab, an institute)</option><option value="entrepreneurship">Entrepreneurship (their own company)</option>
+            <option value="government">Government</option></select>
+          <div class="hint">The homepage's topic buttons filter the stories by this.</div></div>
+        <div><label for="alStory">The story</label><textarea id="alStory" maxlength="1200" placeholder="A few lines: what they did here, where they went, what they do now"></textarea></div>
+        <div><label for="alDate">Date</label><input id="alDate" type="date" value="${new Date().toISOString().slice(0,10)}" style="max-width:200px"></div>
+        <div><label for="alLink">Link to the source</label><input id="alLink" type="url" placeholder="https://…">
+          <div class="hint">Must start with https:// or http://</div></div>
+        <div><label for="alFile">Photo (optional)</label><input id="alFile" type="file" accept=".jpg,.jpeg,.png,.webp">
+          <div class="hint">JPG, PNG or WEBP, under 5 MB.</div></div>
+        <div><button class="btn solid" id="alBtn" onclick="addAlumni()">Add story</button></div>
+      </div>
+      <div class="okmsg" id="alMsg"></div>
+    </div>
+    <div class="box in d3">
+      <h2>On the homepage <span class="r">${d.stories.length}</span></h2>
+      ${list || '<p class="lede">No stories yet. The section stays hidden on the homepage until the first one is added.</p>'}
+    </div>`);
+}
+
+async function addAlumni(){
+  const msg = document.getElementById('alMsg');
+  const file = document.getElementById('alFile').files[0];
+  msg.className = 'okmsg';
+  if (!document.getElementById('alName').value.trim()){ msg.className = 'okmsg bad'; msg.textContent = 'Give the name.'; return; }
+  if (!document.getElementById('alHead').value.trim()){ msg.className = 'okmsg bad'; msg.textContent = 'Give a headline.'; return; }
+  const btn = document.getElementById('alBtn');
+  btn.disabled = true; msg.textContent = 'Saving…';
+  const enc = id => encodeURIComponent(document.getElementById(id).value);
+  const res = await api('/api/office/alumni/add', {method: 'POST', body: file || '', headers: {
+    'X-Filename': encodeURIComponent(file ? file.name : ''), 'X-Name': enc('alName'), 'X-Headline': enc('alHead'),
+    'X-Batch': enc('alBatch'), 'X-Field': enc('alField'), 'X-Story': enc('alStory'), 'X-Date': enc('alDate'), 'X-Link': enc('alLink')}});
+  btn.disabled = false;
+  if (!res.ok){ msg.className = 'okmsg bad'; msg.textContent = res.why; return; }
+  await alumniPage();
+  const m = document.getElementById('alMsg'); m.className = 'okmsg good'; m.textContent = 'Added. It is on the homepage now.';
+}
+
+async function removeAlumni(id){
+  const res = await api('/api/office/alumni/remove', {method: 'POST',
+    headers: {'Content-Type': 'application/json'}, body: JSON.stringify({id})});
+  if (!res.ok){ const m = document.getElementById('alMsg'); m.className = 'okmsg bad'; m.textContent = res.why; return; }
+  await alumniPage();
+  const m = document.getElementById('alMsg'); m.className = 'okmsg good'; m.textContent = 'Removed from the homepage.';
+}
+
 async function achievementsPage(){
   const d = await api('/api/office/achievements');
   const list = d.achievements.map(a => `

@@ -135,7 +135,8 @@ def _drop_picture(path):
         return
     con = connect()
     used = (con.execute("SELECT COUNT(*) FROM gallery WHERE image=?", (path,)).fetchone()[0]
-            + con.execute("SELECT COUNT(*) FROM achievements WHERE image=?", (path,)).fetchone()[0])
+            + con.execute("SELECT COUNT(*) FROM achievements WHERE image=?", (path,)).fetchone()[0]
+            + con.execute("SELECT COUNT(*) FROM alumni_stories WHERE image=?", (path,)).fetchone()[0])
     con.close()
     if not used:
         db.delete_file(path)

@@ -28,6 +28,7 @@ import complaints
 import site_settings
 import assistant
 import dept_fees
+import alumni
 import clock
 import faculty
 import resources
@@ -69,6 +70,7 @@ def prepare_database():
     complaints.init()
     site_settings.init()
     dept_fees.init()
+    alumni.init()
     resources.init()
     site_content.init()
     assistant.init()
@@ -594,6 +596,7 @@ def landing_view():
              for k, l, v, n in rows("SELECT key, label, value, note FROM stats ORDER BY rowid")]
     return {"achievements": ach, "gallery": pics, "stats": stats,
             "faculty": faculty.listing(), "contact": faculty.CONTACT,
+            "alumni": alumni.listing(),
             "batches": auth.batches(), "open_registration": auth.OPEN_REGISTRATION}
 
 
@@ -970,6 +973,7 @@ class Handler(SimpleHTTPRequestHandler):
     # The ONLY files a browser may download. Everything else in the folder
     # (code, databases, notes, tests, scripts) is never served to anyone.
     PAGES = {"/landing.html", "/app.html", "/teacher.html", "/office.html", "/exam.html",
+             "/alumni.html",                                 # one alumni story, opened from the homepage
              "/google6089bfc9267fdecb.html",                 # Google Search Console's check
              "/loader.js"}                                   # the loading screen, used by every page
     PHOTO_TYPES = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg")
@@ -1293,6 +1297,8 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.reply({**site_settings.overview(), "email": mailer.method()})
             if url.path == "/api/office/fees":
                 return self.reply(dept_fees.overview())
+            if url.path == "/api/office/alumni":
+                return self.reply({"stories": alumni.listing()})
             if url.path == "/api/office/gallery":
                 return self.reply({"pictures": site_content.gallery_list()})
             if url.path == "/api/office/achievements":
@@ -1537,6 +1543,26 @@ class Handler(SimpleHTTPRequestHandler):
             from ledger import add_entry
             add_entry("staff_account", {"email": email, "role": "teacher"}, f"office:{user['email']}")
             return self.reply({"ok": True, "email": email, "password": password})
+
+        # the office's Alumni stories page: add (with an optional photo) and remove
+        if url.path in ("/api/office/alumni/add", "/api/office/alumni/remove"):
+            if user["role"] != "office":
+                return self.reply({"ok": False, "why": "The office only."}, 403)
+            head = lambda k: unquote(self.headers.get(k, ""))
+            try:
+                if url.path.endswith("/add"):
+                    if length > site_content.MAX_UPLOAD:
+                        raise Refused("The picture must be under 5 MB.")
+                    data = self.rfile.read(length) if length else None
+                    alumni.add(user["email"], head("X-Name"), head("X-Headline"), head("X-Batch"),
+                               head("X-Story"), head("X-Date"), head("X-Link"), head("X-Filename"), data,
+                               field=head("X-Field"))
+                else:
+                    body = json.loads(self.rfile.read(length) or "{}")
+                    alumni.remove(user["email"], int(body.get("id") or 0))
+                return self.reply({"ok": True})
+            except Refused as why:
+                return self.reply({"ok": False, "why": str(why)}, 400)
 
         # the office's Department fees page: one amount per fund, for every semester
         if url.path == "/api/office/fees":

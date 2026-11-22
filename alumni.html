@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alumni story — EEE Records, University of Chittagong</title>
+<meta name="description" content="An alumni story from the Department of Electrical and Electronic Engineering, University of Chittagong.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Oswald:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#7E2233;--cream:#F6F2EE;--line:#E4DCD6;--text:#1C1A19;--grey:#6E6764;
+  --os:"Open Sans",Arial,Helvetica,sans-serif;--gut:clamp(20px,4.5vw,88px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--text);font-family:var(--os)}
+.top{background:#fff;border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:76px;padding:0 var(--gut)}
+.top a{display:flex;align-items:center;gap:12px;color:var(--text);text-decoration:none}
+.top img{height:44px}
+.top b{display:block;font-size:17px}
+.top small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin-top:3px}
+main{max-width:860px;margin:0 auto;padding:48px var(--gut) 80px}
+.back{display:inline-block;font-size:14.5px;font-weight:600;color:var(--accent);text-decoration:none;margin-bottom:28px}
+.back:hover{text-decoration:underline}
+.pic{aspect-ratio:16/9;background:#EFE8E2;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.pic svg{display:block;width:100%;height:100%;padding:12% 34% 0;fill:#C9BFB8}
+.date{font-size:14px;color:var(--grey);margin-top:24px}
+h1{font-family:"Oswald",var(--os);font-weight:500;font-size:clamp(30px,4vw,44px);color:var(--accent);line-height:1.15;margin-top:6px}
+.head{font-size:18px;font-weight:600;margin-top:10px;line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tags span{font-size:12.5px;color:var(--accent);background:#F4E8EA;padding:3px 10px;border-radius:3px}
+.story{font-size:17px;line-height:1.8;margin-top:24px;white-space:pre-line}
+.src{margin-top:28px;font-size:15px;color:var(--grey)}
+.src a{color:var(--accent);font-weight:600}
+.missing{font-size:17px;color:var(--grey)}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a href="landing.html"><img src="photos/logo.webp" alt="" onerror="this.remove()">
+    <span><b>University of Chittagong</b><small>Dept. of Electrical &amp; Electronic Engineering</small></span></a>
+</div></header>
+<main>
+  <a class="back" href="landing.html#alumni">← Alumni</a>
+  <article id="story"><p class="missing">Loading…</p></article>
+</main>
+<script>
+function esc(t){ return String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function day(t){
+  const d = new Date(t + 'T00:00:00'); if (isNaN(d)) return esc(t);
+  const n = d.getDate(), s = (n % 10 === 1 && n !== 11) ? 'st' : (n % 10 === 2 && n !== 12) ? 'nd' : (n % 10 === 3 && n !== 13) ? 'rd' : 'th';
+  return `${n}${s} ${d.toLocaleString('en-GB', {month: 'short'})} ${d.getFullYear()}`;
+}
+const id = new URLSearchParams(location.search).get('id');
+fetch('/api/landing').then(r => r.json()).then(d => {
+  const a = (d.alumni || []).find(x => String(x.id) === String(id));
+  const box = document.getElementById('story');
+  if (!a){ box.innerHTML = '<p class="missing">This story is not on the website any more.</p>'; return; }
+  document.title = `${a.name} — Alumni story, EEE, University of Chittagong`;
+  const person = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.2" r="4.2"/><path d="M3.6 21.5c.6-4.6 4.1-7.4 8.4-7.4s7.8 2.8 8.4 7.4z"/></svg>';
+  box.innerHTML = `
+    <div class="pic">${a.image ? `<img src="${esc(a.image)}" alt="${esc(a.name)}">` : person}</div>
+    <p class="date">${day(a.date)}</p>
+    <h1>${esc(a.name)}</h1>
+    <p class="head">${esc(a.headline)}</p>
+    <div class="tags"><span>alumni</span>${a.batch ? `<span>${esc(a.batch)}</span>` : ''}</div>
+    ${a.story ? `<p class="story">${esc(a.story)}</p>` : ''}
+    ${a.link ? `<p class="src">Source: <a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.link)}</a></p>` : ''}`;
+}).catch(() => { document.getElementById('story').innerHTML = '<p class="missing">The story could not be loaded. Please try again.</p>'; });
+</script>
+</body>
+</html>

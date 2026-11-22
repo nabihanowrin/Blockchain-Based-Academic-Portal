@@ -438,6 +438,37 @@ body{animation:pageIn .5s ease backwards}
 .fgrid .pcard{flex:0 0 220px;scroll-snap-align:start;user-select:none}
 .fgrid .pcard img{-webkit-user-drag:none}
 @media (max-width:560px){.fhead{margin-top:12px;justify-content:flex-start}.fgrid .pcard{flex-basis:62vw}}
+/* alumni: a title band with a line drawing, a topics row, and bordered cards */
+.alum{background:#fff;padding:0 0 80px;border-top:1px solid var(--line)}
+.alum[hidden],#navAlumni[hidden]{display:none}
+.al-band{background:#EEF0F2}
+.al-band-in{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:300px}
+.al-band h2{font-family:var(--os);font-weight:700;font-size:clamp(40px,5vw,64px);letter-spacing:-.01em;color:#1C1A19}
+.al-art{width:min(420px,42vw);height:auto;color:var(--accent);opacity:.75;flex-shrink:0}
+.al-topics{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:34px}
+.al-topics .lbl{font-family:var(--os);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin-right:8px}
+.al-topics .pill{font-family:var(--os);font-size:15px;color:#2D2E33;background:#fff;border:1px solid #BFC4C9;border-radius:999px;padding:7px 18px;cursor:pointer}
+.al-topics .pill:hover{border-color:var(--accent);color:var(--accent)}
+.al-topics .pill.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.alum-list{margin-top:30px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
+.alcard{border:1px solid #E3E6E9;background:#fff;display:flex;flex-direction:column;overflow:hidden}
+.alcard.later{display:none}
+.alcard:hover{box-shadow:0 6px 22px rgba(0,0,0,.07)}
+.alcard .apic{display:block;aspect-ratio:4/3;overflow:hidden;background:#EFE8E2}
+.alcard .apic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+.alcard:hover .apic img{transform:scale(1.04)}
+.alcard svg.none{display:block;width:100%;height:100%;padding:14% 30% 0;fill:#C9BFB8}
+.abody{padding:16px 18px 20px}
+.adate{font-family:var(--os);font-size:14px;color:var(--grey)}
+.alcard h3{font-family:var(--os);font-weight:700;font-size:19px;line-height:1.3;margin-top:6px}
+.alcard h3 a{color:#1C1A19;text-decoration:none}
+.alcard h3 a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:4px}
+.ahead{font-family:var(--os);font-size:14.5px;line-height:1.5;color:#4a4442;margin-top:6px}
+.atags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.atags span{font-family:var(--os);font-size:12.5px;color:var(--accent);border:1px solid #E3C9CE;border-radius:999px;padding:2px 10px}
+@media (max-width:1100px){.alum-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:800px){.alum-list{grid-template-columns:repeat(2,minmax(0,1fr))}.al-band-in{min-height:200px}}
+@media (max-width:520px){.alum-list{grid-template-columns:1fr}.al-art{width:44vw}}
 </style>
 </head>
 <body>
@@ -452,7 +483,7 @@ body{animation:pageIn .5s ease backwards}
       <a href="#what">About</a>
       <a href="#news">News</a>
       <a href="#faculty">Faculty</a>
-      <a href="#alumni">Alumni</a>
+      <a href="#alumni" id="navAlumni">Alumni</a>
       <a href="#gallery">Gallery</a>
       <a href="#faq">Questions</a>
     </div>
@@ -568,18 +599,28 @@ body{animation:pageIn .5s ease backwards}
 </section>
 
 <!-- ================= ALUMNI ================= -->
-<section class="alumni" id="alumni">
-  <h2 class="rise">Alumni</h2>
-  <p class="lede rise d1">Where our graduates are now</p>
-  <div class="agrid rise d2">
-    <div class="acard">
-      <img src="photos/alumni-hafizul.jpg" alt="Dr. Hafizul Islam Chowdhury" loading="lazy">
-      <div>
-        <b>Dr. Hafizul Islam Chowdhury</b>
-        <span class="yr">B.Sc. 2017 · M.Sc. 2019</span>
-        <p>Assistant Professor, Electrical and Computer Engineering, UNC Charlotte</p>
-      </div>
+<section class="alum" id="alumni">
+  <div class="al-band">
+    <div class="wrap al-band-in">
+      <h2 class="rise">Alumni</h2>
+      <svg class="al-art" viewBox="0 -14 420 214" aria-hidden="true">
+        <!-- a graduation cap over a sine wave: our own line drawing -->
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M210 38 L292 70 L210 102 L128 70 Z"/>
+          <path d="M162 84 V112 C162 128 258 128 258 112 V84"/>
+          <path d="M292 70 V108"/><circle cx="292" cy="114" r="5"/>
+          <path d="M8 168 C28 150 48 150 68 168 S108 186 128 168 S168 150 188 168"/>
+          <path d="M232 168 C252 150 272 150 292 168 S332 186 352 168 S392 150 412 168"/>
+          <path d="M210 128 V176"/><circle cx="210" cy="180" r="3.5"/>
+          <path d="M168 14 a60 60 0 0 1 84 0" opacity=".55"/><path d="M184 26 a36 36 0 0 1 52 0" opacity=".55"/>
+        </g>
+      </svg>
     </div>
+  </div>
+  <div class="wrap">
+    <div class="al-topics" id="alTopics"><span class="lbl">Topics</span></div>
+    <div class="alum-list" id="alumList"></div>
+    <div class="more-wrap"><button class="morebtn" type="button" id="moreAlumni" hidden onclick="showAllAlumni()">View all</button></div>
   </div>
 </section>
 
@@ -882,6 +923,7 @@ function dragToScroll(el){
 fetch('/api/landing').then(r => r.json()).then(d => {
   drawStats(d.stats);
   drawSlides(d.achievements);
+  drawAlumni(d.alumni || []);
   drawFaculty(d.faculty || []);
   const sel = document.getElementById('rBatch');
   (d.batches || []).forEach(b => {
@@ -974,6 +1016,43 @@ function drawSlides(list){
 function showAllNews(){
   document.querySelectorAll('#slider .later').forEach(el => el.classList.remove('later'));
   document.getElementById('moreNews').hidden = true;
+}
+
+/* alumni stories: one full-width row each, as on a department's alumni news page */
+let ALUMNI = [], AL_TOPIC = '';
+function drawAlumni(list){
+  ALUMNI = list;
+  document.getElementById('alumni').hidden = !list.length;
+  document.getElementById('navAlumni').hidden = !list.length;
+  if (!list.length) return;
+  const fields = [...new Set(list.map(a => a.field).filter(Boolean))];
+  document.getElementById('alTopics').innerHTML = '<span class="lbl">Topics</span>' +
+    ['', ...fields].map(f => `<button type="button" class="pill${f === AL_TOPIC ? ' on' : ''}" onclick="alumniTopic('${f}')">${f || 'all'}</button>`).join('');
+  const day = t => { const d = new Date(t + 'T00:00:00'); if (isNaN(d)) return esc(t);
+    const n = d.getDate(), s = (n % 10 === 1 && n !== 11) ? 'st' : (n % 10 === 2 && n !== 12) ? 'nd' : (n % 10 === 3 && n !== 13) ? 'rd' : 'th';
+    return `${n}${s} ${d.toLocaleString('en-GB', {month: 'short'})} ${d.getFullYear()}`; };
+  const person = `<svg class="none" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.2" r="4.2"/><path d="M3.6 21.5c.6-4.6 4.1-7.4 8.4-7.4s7.8 2.8 8.4 7.4z"/></svg>`;
+  const shown = list.filter(a => !AL_TOPIC || a.field === AL_TOPIC);
+  document.getElementById('alumList').innerHTML = shown.map((a, i) => {
+    const page = `alumni.html?id=${encodeURIComponent(a.id)}`;
+    return `<article class="alcard${i > 7 ? ' later' : ''}">
+      <a class="apic" href="${page}" tabindex="-1" aria-hidden="true">${a.image ? `<img src="${esc(a.image)}" alt="" loading="lazy">` : person}</a>
+      <div class="abody">
+        <p class="adate">${day(a.date)}</p>
+        <h3><a href="${page}">${esc(a.name)}</a></h3>
+        <p class="ahead">${esc(a.headline)}</p>
+        <div class="atags">${a.field ? `<span>${esc(a.field)}</span>` : ''}<span>alumni</span></div>
+      </div>
+    </article>`;
+  }).join('');
+  document.getElementById('moreAlumni').hidden = shown.length <= 8;
+}
+
+function alumniTopic(f){ AL_TOPIC = f; drawAlumni(ALUMNI); }
+
+function showAllAlumni(){
+  document.querySelectorAll('#alumList .later').forEach(el => el.classList.remove('later'));
+  document.getElementById('moreAlumni').hidden = true;
 }
 
 function sourceName(link){
