@@ -477,6 +477,7 @@ boot();
 function drawNav(){
   let h = `<button class="${PAGE==='home'?'on':''}" onclick="go('home')">${ICON.home} Home</button>
            <button class="${PAGE==='complaint'?'on':''}" onclick="go('complaint')">${ICON.flag} Complaint box</button>
+           <button class="${PAGE==='payment'?'on':''}" onclick="go('payment')">${ICON.pay} Payment</button>
            <div class="group">SEMESTERS</div>`;
   SEM.semesters.forEach(sm => {
     const open = OPEN.has(sm.n);
@@ -493,8 +494,7 @@ function drawNav(){
       h += `<button class="sub deep ${PAGE==='course' && COURSE===c.course_id ? 'on' : ''}"
               onclick="openCourse('${c.course_id}', ${sm.n})">${c.code}</button>`;
     });
-    h += `<button class="sub ${here('timetable')?'on':''}" onclick="showSem(${sm.n},'timetable')">${ICON.time} Timetable</button>
-          <button class="sub ${here('payment')?'on':''}" onclick="showSem(${sm.n},'payment')">${ICON.pay} Payment</button>`;
+    h += `<button class="sub ${here('timetable')?'on':''}" onclick="showSem(${sm.n},'timetable')">${ICON.time} Timetable</button>`;
   });
   document.getElementById('nav').innerHTML = h;
 }

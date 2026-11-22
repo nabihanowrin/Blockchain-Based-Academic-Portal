@@ -2,6 +2,19 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — Payment is one item in the sidebar
+
+**What you see:** Payment now sits once in the sidebar, right under Complaint
+box. It is no longer repeated inside every semester. The semesters still show
+Courses and Timetable as before.
+
+**Why:** The payment page already lists every semester's fee in one table, so
+one button is enough.
+
+**What changed in `app.html`:** in `drawNav()`, a Payment button was added
+under the Complaint box button, and the Payment button inside each semester
+was removed. The payment page itself did not change.
+
 ## 2026-09-24 — Three laptops, three copies
 
 **What happens now.** The other two laptops each run `peer.py`. Every ten
