@@ -1102,7 +1102,9 @@ async function printDeptReceipts(){
   const p = h.profile, sem = h.standing && h.standing.current;
   const t = new Date(), dd = String(t.getDate()).padStart(2,'0'), mm = String(t.getMonth()+1).padStart(2,'0');
   const date = `${dd}.${mm}.${String(t.getFullYear()).slice(-2)}`;
-  const id = p.student_id && p.student_id !== p.roll ? `${p.roll} / ${p.student_id}` : p.roll;
+  const id = p.roll;   // the roll number the student signs in with
+  // a name typed in small letters prints as 'Nabiha Nowrin'; words already capitalised (MD, McKay) stay as typed
+  const name = String(p.name || '').trim().split(/\s+/).map(w => w === w.toLowerCase() ? w.charAt(0).toUpperCase() + w.slice(1) : w).join(' ');
   const line = (label, value) => `<div class="row"><b>${label}</b><span class="val">${value ? esc(value) : ''}</span></div>`;
   const slip = f => `
     <section class="slip">
@@ -1110,7 +1112,7 @@ async function printDeptReceipts(){
         <p>University of Chittagong</p><h2>MONEY RECEIPT</h2><p class="fund">( ${f.title} )</p></header>
       ${line('Receipt No.:', '')}
       ${line('Date:', date)}
-      ${line('Mr./Ms.:', p.name)}
+      ${line('Mr./Ms.:', name)}
       ${line('Session:', p.session)}
       ${line('Roll / Student ID:', id)}
       ${line('Semester:', sem ? ordinal(sem) : '')}
