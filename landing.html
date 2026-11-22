@@ -19,7 +19,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@300;400;600;700;800&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#1C1A19; --ink-2:#2A2624; --cream:#F6F2EE; --card:#fff;
@@ -497,6 +497,35 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
 .feat:hover{box-shadow:0 0 0 1px var(--line) inset}
 .feat:hover .ico{background:var(--accent-dark)}
 </style>
+<style>
+/* ===== Resources and News, set out as on the Texas A&M ECE page ===== */
+.ctitle{font-family:"Oswald",var(--os);font-weight:500;font-size:clamp(32px,3.6vw,48px);color:var(--accent);text-align:center;letter-spacing:-.005em}
+.res{background:var(--soft);padding:80px 0}
+.res-grid,.news-grid{margin-top:52px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:56px 60px}
+.res-item .pic,.nitem .pic{aspect-ratio:16/9;overflow:hidden;background:var(--line)}
+.res-item img,.nitem img{width:100%;height:100%;object-fit:cover;display:block}
+.res-item h3,.nitem h3{font-family:var(--os);font-weight:700;font-size:clamp(22px,1.9vw,30px);line-height:1.3;margin-top:44px}
+.res-item h3 a,.nitem h3 a{color:var(--accent);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.res-item h3 a::after,.nitem h3 a::after{content:"\00a0»";display:inline-block;text-decoration:none}
+.res-item h3 a:hover,.nitem h3 a:hover{color:var(--accent-dark)}
+.res-item p,.nitem p{font-family:var(--os);font-size:17px;line-height:1.75;color:#202020;margin-top:12px}
+.nitem p{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.newsx{background:#fff;padding:80px 0}
+.nitem.later{display:none}
+.nitem .pic.none{display:grid;place-items:center;background:var(--soft)}
+.nitem .pic.none img{width:auto;height:58%;object-fit:contain;opacity:.85}
+.more-wrap{text-align:center;margin-top:56px}
+.morebtn{background:var(--accent);color:#fff;border:none;padding:16px 30px;font-family:var(--os);font-weight:800;font-size:17px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.morebtn::after{content:"\00a0\00a0»"}
+.morebtn:hover{background:var(--accent-dark)}
+.morebtn[hidden]{display:none}
+/* the sections below are back to how they first were */
+.offer{background:var(--accent);color:#fff;padding:90px 0}
+.offer .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22)}
+.drift.dark{background:var(--ink)}
+@media (max-width:1000px){.res-grid,.news-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 36px}}
+@media (max-width:640px){.res-grid,.news-grid{grid-template-columns:1fr;gap:44px}.res-item h3,.nitem h3{margin-top:22px}}
+</style>
 </head>
 <body>
 
@@ -516,12 +545,12 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
       <span class="bt"><small>University of Chittagong</small><b><span class="long">Department of Electrical<br>&amp; Electronic Engineering</span><span class="short">Department of EEE</span></b></span>
     </a>
     <div class="links" onclick="document.getElementById('nav').classList.remove('open')">
-      <a href="#about">About</a>
-      <a href="#news">Achievements</a>
-      <a href="#events">Events</a>
+      <a href="#resources">Resources</a>
+      <a href="#news">News</a>
+      <a href="#numbers">Students</a>
+      <a href="#what">About</a>
       <a href="#faculty">Faculty</a>
-      <a href="#gallery">Labs</a>
-      <a href="#numbers">Facts</a>
+      <a href="#gallery">Gallery</a>
     </div>
     <a class="cta" href="#enter" id="navCta">Sign in</a>
     <button class="menu" type="button" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')"><span></span><span></span><span></span></button>
@@ -543,32 +572,70 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
   <div class="h-photo"><img src="photos/building-wide.jpg" alt="The Department of EEE building, University of Chittagong"></div>
 </header>
 
-<!-- ================= FEATURE CARDS ================= -->
-<section class="features">
-  <div class="wrap fgrid4">
-    <a class="feat" href="#enter">
-      <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>
-      <div class="txt"><h3>Your academic records</h3><p>Results, attendance, class tests and CATM in one place.</p><span class="go">Sign in</span></div>
-    </a>
-    <a class="feat" href="#about">
-      <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7.5v.5"/></svg></div>
-      <div class="txt"><h3>About this website</h3><p>For students, teachers, the office and examiners.</p><span class="go">Learn more</span></div>
-    </a>
-    <a class="feat" href="#news">
-      <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></div>
-      <div class="txt"><h3>Achievements</h3><p>Awards, alumni and news from the department.</p><span class="go">Read the news</span></div>
-    </a>
-    <a class="feat" href="https://fablab.cu.ac.bd/" target="_blank" rel="noopener">
-      <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1.5V4M15 1.5V4M9 20v2.5M15 20v2.5M1.5 9H4M1.5 15H4M20 9h2.5M20 15h2.5"/></svg></div>
-      <div class="txt"><h3>Fab Lab CU</h3><p>A space for digital fabrication and prototyping, being set up under the ATF sub-project of the HEAT initiative.</p><span class="go">Visit Fab Lab CU</span></div>
-    </a>
+<!-- ================= RESOURCES ================= -->
+<section class="res" id="resources">
+  <div class="wrap">
+    <h2 class="ctitle">Resources</h2>
+    <div class="res-grid">
+      <div class="res-item">
+        <div class="pic"><img src="photos/class.jpg" alt="Students working on a project in the department" loading="lazy"></div>
+        <h3><a href="#enter">Student Projects</a></h3>
+        <p>Students add their projects from their own account, with a picture and a short summary.</p>
+      </div>
+      <div class="res-item">
+        <div class="pic"><img src="photos/OIP.webp" alt="Students in a lecture at the Department of EEE" loading="lazy"></div>
+        <h3><a href="#enter">Find Your Academic Records</a></h3>
+        <p>Results, attendance, class tests and CATM, with the full history of every mark.</p>
+      </div>
+      <div class="res-item">
+        <div class="pic"><img src="photos/hq720.jpg" alt="A seminar at the Department of EEE" loading="lazy"></div>
+        <h3><a href="#faculty">Explore Our Areas of Research</a></h3>
+        <p>See who works on what: the department's faculty members and their seminars.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ================= ABOUT ================= -->
-<section class="about" id="about">
+<!-- ================= NEWS ================= -->
+<section class="newsx" id="news">
   <div class="wrap">
-    <p class="sec-k rise">About</p>
+    <h2 class="ctitle">Electrical and Electronic Engineering News</h2>
+    <div class="news-grid" id="slider"></div>
+    <div class="more-wrap"><button class="morebtn" type="button" id="moreNews" hidden onclick="showAllNews()">View more news</button></div>
+  </div>
+</section>
+
+<!-- ================= STUDENTS AND GRADUATION ================= -->
+<section class="facts" id="numbers">
+  <div class="wrap">
+    <h2>Students and graduation</h2>
+    <div class="row" id="stats"></div>
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section class="drift dark" id="gallery">
+  <div class="wrap grid">
+    <div class="intro rise">
+      <h2>Around the department</h2>
+      <p>Labs, classrooms and the people in them. Hover to stop the movement.</p>
+      <h3 class="labs-h">Labs and facilities</h3>
+      <ul class="labs">
+        <li><b>Electronics Lab</b><span>Building and testing circuits with diodes, transistors and op-amps.</span></li>
+        <li><b>Machines Lab</b><span>Hands-on work with transformers, motors and generators.</span></li>
+        <li><b>Signals and Circuits Lab</b><span>Measuring how circuits and signals behave, from basic networks to filters.</span></li>
+        <li><b>Computer Lab</b><span>Programming, simulation and design software for coursework and projects.</span></li>
+        <li><b>Physics Lab</b><span>The first-year experiments that the engineering courses build on.</span></li>
+        <li><b>Fab Lab</b><span>A workspace for turning designs into working prototypes.</span></li>
+      </ul>
+    </div>
+    <div class="col rise d1"><div class="strip down" id="galA"></div></div>
+    <div class="col rise d2"><div class="strip up" id="galB"></div></div>
+  </div>
+</section>
+
+<section class="offer" id="what">
+  <div class="wrap">
     <h2 class="rise">What this website gives you</h2>
     <p class="lead rise d1">One place for the department's academic records, for every role.</p>
     <div class="cards rise d2">
@@ -607,45 +674,6 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
       </div>
     </div>
     <p class="seal rise d3"><b>How changes are caught:</b> every entry is saved with a fingerprint linked to the entry before it. If anyone changes a record outside this website, the check shows exactly which record was changed, and copies kept on other computers still hold the original.</p>
-  </div>
-</section>
-
-<!-- ================= NEWS + EVENTS ================= -->
-<section class="ach-wrap" id="news">
-  <div class="wrap twocol">
-    <div class="col-news">
-      <div class="sec-head"><h2>Achievements and News</h2></div>
-      <div class="news" id="slider"></div>
-    </div>
-    <div class="col-events" id="events">
-      <div class="sec-head"><h2>Seminars and Events</h2></div>
-      <div class="events" id="eventList"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= LABS ================= -->
-<section class="labs-sec" id="gallery">
-  <div class="wrap">
-    <h2 class="rise">Labs and facilities</h2>
-    <p class="lead rise d1">Labs, classrooms and the people in them.</p>
-    <ul class="labgrid rise d1">
-      <li><b>Electronics Lab</b><span>Building and testing circuits with diodes, transistors and op-amps.</span></li>
-      <li><b>Machines Lab</b><span>Hands-on work with transformers, motors and generators.</span></li>
-      <li><b>Signals and Circuits Lab</b><span>Measuring how circuits and signals behave, from basic networks to filters.</span></li>
-      <li><b>Computer Lab</b><span>Programming, simulation and design software for coursework and projects.</span></li>
-      <li><b>Physics Lab</b><span>The first-year experiments that the engineering courses build on.</span></li>
-      <li><b>Fab Lab CU</b><span>Digital fabrication and prototyping, being set up under the HEAT initiative. <a href="https://fablab.cu.ac.bd/" target="_blank" rel="noopener">fablab.cu.ac.bd</a></span></li>
-    </ul>
-    <div class="photos rise d2" id="galA"></div>
-  </div>
-</section>
-
-<!-- ================= BY THE NUMBERS ================= -->
-<section class="facts" id="numbers">
-  <div class="wrap">
-    <h2>By the numbers</h2>
-    <div class="row" id="stats"></div>
   </div>
 </section>
 
@@ -918,7 +946,7 @@ fetch('/api/landing').then(r => r.json()).then(d => {
     o.textContent = `${b.name} (${ordinal(b.semester)} semester)`;
     sel.appendChild(o);
   });
-  document.getElementById('galA').innerHTML = (d.gallery || []).slice(0, 6).map(x => `<figure><img src="${esc(x.image)}" alt="${esc(x.caption || 'The Department of EEE')}" loading="lazy">${x.caption ? `<figcaption>${esc(x.caption)}</figcaption>` : ''}</figure>`).join('');
+  fill(d.gallery, x => `<figure class="shot"><img src="${x.image}" alt="" loading="lazy">${x.caption ? `<figcaption class="cap">${esc(x.caption)}</figcaption>` : ''}</figure>`, 'galA', 'galB');
 });
 
 /* ---------- counters: 0 up to the number, fast, as soon as the page opens ---------- */
@@ -982,28 +1010,21 @@ function eventDate(a){
 }
 
 function drawSlides(list){
-  const news = [], events = [];
-  list.forEach(a => (EVENT_KINDS.test(splitTitle(a.title).kind) ? events : news).push(a));
-
-  document.getElementById('slider').innerHTML = news.map(a => {
-    const {kind, title} = splitTitle(a.title), src = sourceName(a.link);
-    const inner = `
-      <div class="kicker">${esc(kind)} <span>· ${esc(a.year)}</span></div>
-      <h3>${esc(title)}</h3><p>${esc(a.detail)}</p>
-      ${a.link ? `<div class="src">${src ? `<span>Source: ${esc(src)}</span>` : ''}<span class="more">Read the full story →</span></div>` : ''}`;
-    return a.link
-      ? `<a class="item" href="${esc(a.link)}" target="_blank" rel="noopener">${inner}</a>`
-      : `<article class="item">${inner}</article>`;
+  document.getElementById('slider').innerHTML = list.map((a, i) => {
+    const {title} = splitTitle(a.title);
+    const pic = a.image ? `<div class="pic"><img src="${esc(a.image)}" alt="" loading="lazy"></div>`
+                        : `<div class="pic none"><img src="photos/logo.webp" alt="" loading="lazy"></div>`;   // same height when a post has no picture
+    const head = a.link
+      ? `<h3><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(title)}</a></h3>`
+      : `<h3>${esc(title)}</h3>`;
+    return `<article class="nitem${i > 2 ? ' later' : ''}">${pic}${head}<p>${esc(a.detail)}</p></article>`;
   }).join('');
+  document.getElementById('moreNews').hidden = list.length <= 3;
+}
 
-  const key = a => { const d = eventDate(a); return d ? d.year * 10000 + d.mon * 100 + d.day : a.year * 10000; };
-  events.sort((x, y) => key(y) - key(x));
-  document.getElementById('eventList').innerHTML = events.map(a => {
-    const {kind, title} = splitTitle(a.title), d = eventDate(a);
-    const box = d ? `<b>${d.day}</b><span>${MONTHS[d.mon].slice(0,3)} ${d.year}</span>` : `<b>${esc(a.year)}</b><span>${esc(kind)}</span>`;
-    const inner = `<div class="date">${box}</div><div><h3>${esc(title)}</h3><p>${esc(kind)}${sourceName(a.link) ? ' · ' + esc(sourceName(a.link)) : ''}</p></div>`;
-    return a.link ? `<a class="ev" href="${esc(a.link)}" target="_blank" rel="noopener">${inner}</a>` : `<div class="ev">${inner}</div>`;
-  }).join('') || '<p style="color:var(--grey);padding:20px 0">No events yet.</p>';
+function showAllNews(){
+  document.querySelectorAll('#slider .later').forEach(el => el.classList.remove('later'));
+  document.getElementById('moreNews').hidden = true;
 }
 
 function sourceName(link){
