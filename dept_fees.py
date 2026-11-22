@@ -20,21 +20,19 @@ FUNDS = {"development": "Development Fund",
 MAX_AMOUNT = 100000            # Tk; anything above this is surely a typo
 
 
-# starting amounts, used once if the office hasn't set that fee yet (the office's own
-# amount always wins, and a starting amount is never put back once it has been changed)
-START = {"development": 750}
-
-
 def init():
     con = connect()
     con.execute("""CREATE TABLE IF NOT EXISTS dept_fees (
         fund TEXT PRIMARY KEY, amount INTEGER, changed_at TEXT, changed_by TEXT)""")
+    # no starting amounts: a fee is "not set" until the office types it in. An amount the
+    # site itself put in earlier (by "seed") is taken off; one the office set stays.
+    seeded = [f for (f,) in con.execute("SELECT fund FROM dept_fees WHERE changed_by='seed'").fetchall()]
+    for fund in seeded:
+        con.execute("DELETE FROM dept_fees WHERE fund=? AND changed_by='seed'", (fund,))
     con.commit()
-    missing = [f for f in START
-               if not con.execute("SELECT 1 FROM dept_fees WHERE fund=?", (f,)).fetchone()]
     con.close()
-    for fund in missing:
-        set_amount("seed", fund, START[fund])
+    for fund in seeded:
+        add_entry("dept_fee_set", {"fund": fund, "old": "seed amount", "new": None}, "seed")
 
 
 def amounts():
