@@ -101,22 +101,22 @@ button,input,select{font-family:inherit}
 .ach-head .arrows{margin-left:auto;display:flex;gap:10px}
 .arrow{width:48px;height:48px;border-radius:2px;border:1px solid var(--line);background:var(--card);font-size:20px;cursor:pointer;transition:background .2s ease,color .2s ease}
 .arrow:hover{background:var(--ink);color:#fff}
-.slider{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
+.slider{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
   padding:34px var(--gut) 26px;margin:0 calc(-1 * var(--gut));cursor:grab;scrollbar-width:none}
 .slider::-webkit-scrollbar{display:none}
 .slider.drag{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
-.slide{flex:0 0 min(520px,82vw);scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:0;overflow:hidden;user-select:none;display:flex;flex-direction:column}
-.slide .pic{aspect-ratio:3/2;background:var(--ink);display:flex;align-items:flex-end;padding:26px;position:relative;overflow:hidden}
-.slide .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.slide .pic .yr{position:relative;font-family:var(--serif);font-weight:600;font-size:84px;line-height:.8;color:rgba(255,255,255,.14)}
-.slide:nth-child(4n+2) .pic{background:#3B4A3F}
-.slide:nth-child(4n+3) .pic{background:#5A2A33}
-.slide:nth-child(4n+4) .pic{background:#46505A}
-.slide .body{padding:28px 30px 32px;flex:1}
-.slide h3{font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.2}
-.slide p{font-size:15px;line-height:1.6;color:#4E4845;margin-top:12px}
+.slide{flex:0 0 min(380px,80vw);scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:0;overflow:hidden;user-select:none;display:flex;flex-direction:column}
+.slide .pic{aspect-ratio:16/9;background:#E9E4E0;position:relative;overflow:hidden;border-bottom:3px solid var(--accent)}
+.slide .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.slide .body{padding:20px 22px 22px;flex:1;display:flex;flex-direction:column}
+.slide .kicker{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide .kicker span{color:var(--grey);font-weight:600}
+.slide h3{font-family:var(--serif);font-size:21px;font-weight:700;line-height:1.25;margin-top:8px}
+.slide p{font-size:14px;line-height:1.55;color:#4E4845;margin-top:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.slide .src{margin-top:auto;padding-top:16px;font-size:12.5px;color:var(--grey)}
 a.slide{color:inherit;text-decoration:none}
-a.slide .more{display:inline-block;margin-top:16px;font-size:14px;font-weight:600;color:var(--accent)}
+a.slide .more{display:block;margin-top:6px;font-size:14px;font-weight:700;color:var(--accent)}
+a.slide:hover{border-color:#BFB3AC}
 a.slide:hover h3{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 a.slide:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .track{height:3px;background:var(--line);border-radius:0;margin-top:6px;position:relative;overflow:hidden}
@@ -721,10 +721,16 @@ function countUp(el){
 function drawSlides(list){
   const slider = document.getElementById('slider');
   slider.innerHTML = list.map(a => {
+    // "Seminar: \"Title\"" -> kicker "Seminar", title "Title"
+    const m = /^(Seminar|Workshop|Talk|Alumnus|Alumna|Award|Event)\s*:\s*/i.exec(a.title || '');
+    const kind = m ? m[1] : 'News';
+    const title = (m ? a.title.slice(m[0].length) : a.title).replace(/^["“](.*)["”]$/, '$1');
+    const src = sourceName(a.link);
     const inner = `
-      <div class="pic">${a.image ? `<img src="${esc(a.image)}" alt="" draggable="false">` : ''}<span class="yr">${a.year}</span></div>
-      <div class="body"><h3>${esc(a.title)}</h3><p>${esc(a.detail)}</p>
-        ${a.link ? '<span class="more">Read more →</span>' : ''}</div>`;
+      <div class="pic">${a.image ? `<img src="${esc(a.image)}" alt="" draggable="false" loading="lazy">` : ''}</div>
+      <div class="body"><div class="kicker">${esc(kind)} <span>· ${esc(a.year)}</span></div>
+        <h3>${esc(title)}</h3><p>${esc(a.detail)}</p>
+        ${a.link ? `<div class="src">${src ? 'Source: ' + esc(src) : ''}<span class="more">Read the full story →</span></div>` : ''}</div>`;
     return a.link
       ? `<a class="slide link" href="${esc(a.link)}" target="_blank" rel="noopener" draggable="false">${inner}</a>`
       : `<article class="slide">${inner}</article>`;
@@ -737,10 +743,21 @@ function drawSlides(list){
   moveThumb();
 }
 
+function sourceName(link){
+  try {
+    const u = new URL(link), h = u.hostname.replace(/^www\./, '');
+    if (h.endsWith('facebook.com')) return /IEEESBCU/i.test(u.pathname) ? 'IEEE SB CU on Facebook' : 'Facebook';
+    if (h.endsWith('linkedin.com')) return 'LinkedIn';
+    if (h.endsWith('dhakatribune.com')) return 'Dhaka Tribune';
+    if (h.endsWith('charlotte.edu')) return 'UNC Charlotte';
+    return h;
+  } catch (e) { return ''; }
+}
+
 function slideBy(dir){
   const slider = document.getElementById('slider');
   const card = slider.querySelector('.slide');
-  if (card) slider.scrollBy({left: dir * (card.offsetWidth + 26)});
+  if (card) slider.scrollBy({left: dir * (card.offsetWidth + 22)});
 }
 
 function moveThumb(){

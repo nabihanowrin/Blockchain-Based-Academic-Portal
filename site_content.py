@@ -28,8 +28,24 @@ def init():
         con.rollback()
         con.execute("ALTER TABLE achievements ADD COLUMN link TEXT")
         con.commit()
+    # where each of the first real posts can be read in full. Only fills a
+    # link that is still empty, so a link the office sets later always wins.
+    for title, link in SOURCE_LINKS:
+        con.execute("UPDATE achievements SET link=? WHERE title=? AND (link IS NULL OR link='')",
+                    (link, title))
+    con.commit()
     con.close()
     db.forget_tables()
+
+
+SOURCE_LINKS = [
+    ("Champions of VLSIthon 3.0",
+     "https://www.dhakatribune.com/feature/youth/419078/ulkasemi%E2%80%99s-vlsithon-3.0-ends-with-cu%E2%80%99s-%E2%80%98deviation%E2%80%99"),
+    ("Alumnus: Dr. Hafizul Islam Chowdhury", "https://ece.charlotte.edu/?p=6101"),
+    ('Seminar: "Integrated Photonics for Next-Generation Optical Communication and Sensing"',
+     "https://www.facebook.com/IEEESBCU/"),
+    ('Seminar: "Autonomous Biomedical Machines"', "https://www.facebook.com/IEEESBCU/"),
+]
 
 
 def _save_picture(filename, data):
