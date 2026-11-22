@@ -846,6 +846,26 @@ def display_name(user):
 
 
 # ------------------------------------------------------------------
+# for search engines (served at /robots.txt and /sitemap.xml)
+# ------------------------------------------------------------------
+SITE = "https://eeerecords.onrender.com"
+
+SEO_ROBOTS = f"""User-agent: *
+Allow: /api/landing
+Disallow: /api/
+Allow: /
+
+Sitemap: {SITE}/sitemap.xml
+"""
+
+SEO_SITEMAP = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>{SITE}/landing.html</loc></url>
+</urlset>
+"""
+
+
+# ------------------------------------------------------------------
 # the request handler
 # ------------------------------------------------------------------
 class Handler(SimpleHTTPRequestHandler):
@@ -872,9 +892,20 @@ class Handler(SimpleHTTPRequestHandler):
         one = lambda k: q.get(k, [None])[0]
 
         if url.path == "/":
-            self.send_response(302)
+            self.send_response(301)                  # permanent, so Google lists landing.html
             self.send_header("Location", "/landing.html")
             self.end_headers()
+            return
+
+        # for search engines: what to crawl, and the one public page
+        if url.path in ("/robots.txt", "/sitemap.xml"):
+            body = (SEO_ROBOTS if url.path == "/robots.txt" else SEO_SITEMAP).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8" if url.path == "/robots.txt"
+                             else "application/xml; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
             return
 
         if not url.path.startswith("/api/"):
