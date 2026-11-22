@@ -26,7 +26,7 @@ def init():
 
 
 # where a story's person works now: the "topics" row on the homepage filters by these
-FIELDS = ("academia", "industry", "research", "entrepreneurship", "government")
+FIELDS = ("academia", "power", "industry", "government", "research", "entrepreneurship")
 
 
 # the first stories, from each person's own LinkedIn profile (screenshots sent by
@@ -46,6 +46,12 @@ SEED = [
               "in 2024 and stayed there as a postdoctoral fellow, before joining UNC Charlotte. His "
               "research covers computer architecture, secure processors, AI/ML and hardware security.",
      "link": "https://ece.charlotte.edu/?p=6101"},
+    {"name": "Muhammad Sajjad",
+     "headline": "BCS Foreign Affairs Cadre (41st BCS); Trainee, Foreign Service Academy, Bangladesh",
+     "batch": "EEE, University of Chittagong", "field": "government",
+     "story": "He joined the Ministry of Foreign Affairs, Bangladesh as an Assistant Secretary in "
+              "April 2025 through the 41st BCS (Foreign Affairs cadre), and has been a trainee at the "
+              "Foreign Service Academy in Dhaka since January 2026."},
     {"name": "Momshad Dinury",
      "headline": "Software Engineer, Brain Station 23",
      "batch": "EEE, University of Chittagong", "field": "industry",

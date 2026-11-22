@@ -830,11 +830,14 @@ async function alumniPage(){
         <div><label for="alHead">Headline</label><input id="alHead" type="text" maxlength="200" placeholder="e.g. Assistant Professor, Electrical & Computer Engineering, UNC Charlotte"></div>
         <div><label for="alBatch">Batch or degree years (optional)</label><input id="alBatch" type="text" maxlength="80" placeholder="e.g. B.Sc. 2017, M.Sc. 2019"></div>
         <div><label for="alField">Where they work now</label>
-          <select id="alField" style="max-width:260px"><option value="">(choose)</option>
-            <option value="academia">Academia (teaching, a university)</option><option value="industry">Industry (a company)</option>
-            <option value="research">Research (a lab, an institute)</option><option value="entrepreneurship">Entrepreneurship (their own company)</option>
-            <option value="government">Government</option></select>
-          <div class="hint">The homepage's topic buttons filter the stories by this.</div></div>
+          <select id="alField" style="max-width:280px"><option value="">(choose)</option>
+            <option value="academia">Academia (teaching, a university)</option>
+            <option value="power">Power sector (PDB, PGCB, power plants)</option>
+            <option value="industry">Industry (a company)</option>
+            <option value="government">BCS &amp; Government</option>
+            <option value="research">Research (a lab, an institute)</option>
+            <option value="entrepreneurship">Entrepreneurship (their own company)</option></select>
+          <div class="hint">The homepage shows the stories in sections by this.</div></div>
         <div><label for="alStory">The story</label><textarea id="alStory" maxlength="1200" placeholder="A few lines: what they did here, where they went, what they do now"></textarea></div>
         <div><label for="alDate">Date</label><input id="alDate" type="date" value="${new Date().toISOString().slice(0,10)}" style="max-width:200px"></div>
         <div><label for="alLink">Link to the source</label><input id="alLink" type="url" placeholder="https://…">
