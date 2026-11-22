@@ -26,6 +26,7 @@ import mailer
 import notices
 import complaints
 import site_settings
+import dept_fees
 import clock
 import faculty
 import resources
@@ -66,6 +67,7 @@ def prepare_database():
     contract.init_teaching()
     complaints.init()
     site_settings.init()
+    dept_fees.init()
     resources.init()
     site_content.init()
     faculty.apply_course_teachers(connect)
@@ -506,7 +508,11 @@ def payments_view(roll):
     for n in range(1, min(st["current"], 8) + 1):
         out.append({"semester": n, "amount": FEES["odd" if n % 2 else "even"],
                     "paid": n < st["current"]})
-    return {"fees": out, "link": SONALI_LINK, "currency": "Tk"}
+    # the department's own fees (set by the office), the same every semester
+    dept = dept_fees.amounts()
+    return {"fees": out, "link": SONALI_LINK, "currency": "Tk",
+            "dept": {"amounts": dept, "labels": dept_fees.FUNDS,
+                     "semesters": list(range(1, min(st["current"], 8) + 1))}}
 
 
 def home_view(roll):
@@ -1281,6 +1287,8 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.reply({"batches": contract.batches()})
             if url.path == "/api/office/settings":
                 return self.reply({**site_settings.overview(), "email": mailer.method()})
+            if url.path == "/api/office/fees":
+                return self.reply(dept_fees.overview())
             if url.path == "/api/office/gallery":
                 return self.reply({"pictures": site_content.gallery_list()})
             if url.path == "/api/office/achievements":
@@ -1512,6 +1520,17 @@ class Handler(SimpleHTTPRequestHandler):
             from ledger import add_entry
             add_entry("staff_account", {"email": email, "role": "teacher"}, f"office:{user['email']}")
             return self.reply({"ok": True, "email": email, "password": password})
+
+        # the office's Department fees page: one amount per fund, for every semester
+        if url.path == "/api/office/fees":
+            if user["role"] != "office":
+                return self.reply({"ok": False, "why": "The office only."}, 403)
+            body = json.loads(self.rfile.read(length) or "{}")
+            try:
+                block_no = dept_fees.set_amount(user["email"], body.get("fund"), body.get("amount"))
+                return self.reply({"ok": True, "block_no": block_no})
+            except Refused as why:
+                return self.reply({"ok": False, "why": str(why)}, 400)
 
         # the office's Email settings page: change where office/chairman emails go
         if url.path in ("/api/office/settings/start", "/api/office/settings/finish"):

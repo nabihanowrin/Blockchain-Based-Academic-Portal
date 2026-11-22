@@ -748,6 +748,24 @@ class TestSite(unittest.TestCase):
             self.ok("/api/office/demo-undo", {}, who="office")
         self.assertTrue(self.ok("/api/verify", who="office")["ok"])
 
+    def test_28b_department_fees(self):
+        """The office sets each department fee once; the student's Payment page shows it for every
+        semester; only the office may change it, and the amount must be a sensible number."""
+        pay = self.ok("/api/payments", who="student")
+        self.assertIn("dept", pay)
+        self.assertTrue(pay["dept"]["semesters"], "no semesters listed for the department fees")
+        self.refused("/api/office/fees", {"fund": "development", "amount": 700}, who="student", status=403)
+        self.refused("/api/office/fees", {"fund": "development", "amount": "seven hundred"}, who="office")
+        self.refused("/api/office/fees", {"fund": "development", "amount": -5}, who="office")
+        self.refused("/api/office/fees", {"fund": "no-such-fund", "amount": 5}, who="office")
+        saved = self.ok("/api/office/fees", {"fund": "development", "amount": "700"}, who="office")
+        self.assertIn("block_no", saved)
+        self.ok("/api/office/fees", {"fund": "somitee", "amount": 500}, who="office")
+        listed = {f["key"]: f["amount"] for f in self.ok("/api/office/fees", who="office")["funds"]}
+        self.assertEqual(listed, {"development": 700, "somitee": 500})
+        pay = self.ok("/api/payments", who="student")
+        self.assertEqual(pay["dept"]["amounts"], {"development": 700, "somitee": 500})
+
     def test_29_delete_account_keeps_the_marks(self):
         """A student deletes their login; the marks stay; registering again brings everything back."""
         item_id = self.item["item_id"]

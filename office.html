@@ -228,6 +228,7 @@ function drawNav(){
     <button class="${PAGE==='complaints'?'on':''}" onclick="go('complaints')">${ICON.flag} Complaints</button>
     <button class="${PAGE==='teachers'?'on':''}" onclick="go('teachers')">${ICON.check} Teachers</button>
     <button class="${PAGE==='settings'?'on':''}" onclick="go('settings')">${ICON.mail} Email settings</button>
+    <button class="${PAGE==='fees'?'on':''}" onclick="go('fees')">${ICON.check} Department fees</button>
     <div class="group">LANDING PAGE</div>
     <button class="${PAGE==='gallery'?'on':''}" onclick="go('gallery')">${ICON.pic} Gallery</button>
     <button class="${PAGE==='achievements'?'on':''}" onclick="go('achievements')">${ICON.star} Achievements</button>
@@ -249,6 +250,7 @@ function go(page){
   if (page === 'gallery') return galleryPage();
   if (page === 'achievements') return achievementsPage();
   if (page === 'settings') return settingsPage();
+  if (page === 'fees') return feesPage();
 }
 
 /* ============================================================
@@ -557,6 +559,43 @@ async function runCheck(){
    is told; every change is a block on the chain.
    ============================================================ */
 const FROM = {website: 'set on this page', server: "the server's starting value", none: 'not set: these emails are not sent'};
+
+/* ============================================================
+   department fees — one amount per fund, for every semester
+   ============================================================ */
+async function feesPage(){
+  const d = await api('/api/office/fees');
+  const card = f => `
+    <div class="ask">
+      <div class="top"><h3>${esc(f.label)}</h3>
+        <span class="pill ${f.amount != null ? 'ok' : 'no'}">${f.amount != null ? 'Tk ' + Number(f.amount).toLocaleString('en-US') : 'not set'}</span></div>
+      <div class="m">${f.changed_at ? `Last changed ${when(f.changed_at)} by ${esc(f.changed_by || '')}` : 'Not set yet: students see it as "not set" and the form is left blank.'}</div>
+      <div class="form">
+        <div><label for="fee-${f.key}">Amount for each semester (Tk)</label>
+          <input id="fee-${f.key}" inputmode="numeric" placeholder="e.g. 700" value="${f.amount ?? ''}"></div>
+        <div class="row"><button class="btn small" onclick="saveFee('${f.key}')">Save</button></div>
+      </div>
+      <div class="okmsg" id="fmsg-${f.key}"></div>
+    </div>`;
+  view(`
+    <h1 class="page in">Department fees</h1>
+    <p class="lede in d1">The fees paid at the department office. Type each amount once; it holds for every semester,
+      shows on each student's Payment page, and is printed on the money receipt form, in figures and in words.
+      Every change is written to the chain.</p>
+    <div class="box in d2">${d.funds.map(card).join('')}</div>`);
+}
+
+async function saveFee(fund){
+  const m = document.getElementById('fmsg-' + fund);
+  const res = await api('/api/office/fees', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({fund, amount: document.getElementById('fee-' + fund).value})});
+  if (!res.ok){ m.className = 'okmsg bad'; m.textContent = res.why; return; }
+  await feesPage();
+  const done = document.getElementById('fmsg-' + fund);
+  done.className = 'okmsg good';
+  done.textContent = `Saved. Recorded on the chain as block #${res.block_no}.`;
+}
 
 async function settingsPage(){
   const d = await api('/api/office/settings');
