@@ -1,0 +1,12 @@
+# Private: never upload
+mail_secret.txt
+.env
+
+# Local data and per-laptop copies
+records.db
+copy_*.json
+diary_*.json
+
+# Python
+__pycache__/
+*.pyc
