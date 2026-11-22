@@ -42,6 +42,21 @@ def init():
         con.execute("UPDATE achievements SET image=? WHERE title=? AND "
                     "(image IS NULL OR image='' OR image=?)", (new_image, title, old))
     con.commit()
+    # posts taken off the homepage (their pictures were poster screenshots). Each is removed
+    # once, through achievement_remove so the chain records it; if the office adds one back
+    # later, it stays.
+    gone = []
+    for title in REMOVE_ONCE:
+        found = con.execute("SELECT id FROM achievements WHERE title=?", (title,)).fetchone()
+        removed_before = con.execute(
+            "SELECT 1 FROM blocks WHERE entry_type='achievement_remove' AND payload LIKE ?",
+            ('%"title":' + json.dumps(title) + '%',)).fetchone()
+        if found and not removed_before:
+            gone.append(found[0])
+    con.close()
+    for ach_id in gone:
+        achievement_remove("seed", ach_id)
+    con = connect()
     # news added from here, once: never again if the office has removed it
     # (its "achievement_add" stays on the chain, so it is not put back)
     new = []
@@ -60,6 +75,12 @@ def init():
         _log("achievement_add", {"title": title, "year": year, "image": image, "link": link}, "seed")
     db.forget_tables()
 
+
+REMOVE_ONCE = [
+    'Seminar: "Integrated Photonics for Next-Generation Optical Communication and Sensing"',
+    'Seminar: "Autonomous Biomedical Machines"',
+    "Alumnus: Dr. Hafizul Islam Chowdhury",
+]
 
 SOURCE_IMAGES = [
     ("Symposium: Winter Symposium on Silicon Photonics and Nanofabrication", "",
