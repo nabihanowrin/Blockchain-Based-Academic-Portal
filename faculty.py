@@ -11,7 +11,7 @@ CHAIRMAN = "Dr. Kazi Tanvir Ahmmed"
 
 # (name, designation, email, on study leave)
 FACULTY = [
-    ("Dr. Kazi Tanvir Ahmmed",          "Associate Professor", "tanvir@cu.ac.bd",            False),
+    ("Dr. Kazi Tanvir Ahmmed",          "Professor",           "tanvir@cu.ac.bd",            False),
     ("Dr. Md. Fazlul Kader",            "Professor",           "fkader@cu.ac.bd",            False),
     ("Dr. Jamal Uddin Ahamed",          "Professor",           "ahamed.jamal@cu.ac.bd",      False),
     ("Dr. Hasan Khaled Rouf",           "Professor",           "hasan.rouf@cu.ac.bd",        False),
@@ -63,9 +63,47 @@ CONTACT = {
 }
 
 
+# Each teacher's photo and official profile, from the department's faculty page
+# on the university website (cu.ac.bd/dept/facultyprofile.php?menumapno=130&secno=21).
+# The photos are shown straight from cu.ac.bd; nothing is copied here.
+# name: (photo file under CU_PHOTO, profile number "ein" for CU_PROFILE)
+CU_PHOTO = "https://cu.ac.bd/assets/image/faculty_staff_users/"
+CU_PROFILE = "https://cu.ac.bd/public_profile/index.php?ein="
+CU_PAGE = {
+    "Dr. Kazi Tanvir Ahmmed":             ("77_PUXXQ2UGQM.jpg", 4825),
+    "Dr. Md. Fazlul Kader":               ("74_7MIXYSG5Q5.jpg", 4605),
+    "Dr. Jamal Uddin Ahamed":             ("70_QWDQ8I0YES.jpg", 4446),
+    "Dr. Hasan Khaled Rouf":              ("68_T3ZVZ6184E.jpg", 4164),
+    "Dr. Mohammad Abdul Alim":            ("71_TTMFGSR8ZB.jpg", 4547),
+    "Dr. Mohammad Arif Iftakher Mahmood": ("73_AADLW2047D.jpg", 4227),
+    "Dr. Md. Murshadul Hoque":            ("72_Y957SIJ2Y2.jpg", 4603),
+    "Dr. Md. Shah Alam":                  ("76_EY3M2MQMWE.jpg", 4821),
+    "Dr. Mohammad Shuhrawardy":           ("80_NSUI8KQTPJ.jpg", 4930),
+    "Dr. Ariful Islam":                   ("78_AA9D5H5S1K.jpg", 4931),
+    "S. M. Abu Zahed Chowdhury":          ("79_T258IRIO01.jpg", 5057),
+    "Sabrina Alam":                       (None,                5053),   # no photo on the CU page yet
+    "Saumitra Kumar Kuri":                ("85_MRWILYI8JT.jpg", 5169),
+    "Sabuj Chowdhury":                    ("81_FTUG5UR9ZI.jpg", 5055),
+    "Dr. Mohammad Shah Alamgir":          ("84_9X0IQ8DDA9.jpg", 5167),
+    "Md. Shariful Islam":                 ("983_KSHTAWC7L0.jpg", 5904),
+    "Tauhidul Haque":                     ("982_UDQV2UHWTU.jpg", 5903),
+    "Sadia Sultana":                      ("1082_2SEEMNLJPN.jpg", 6126),
+    "Jewel Dey":                          ("1087_2ACAOSNDPD.jpg", 6128),
+    "Tahasin Ahmed Fahim":                ("1081_5YUJ3687SY.jpg", 6130),
+    "Mohammad Jahed":                     ("1080_NMO72VXTOD.jpg", 6127),
+    "Sangita Rani Basu":                  ("1088_OXE97FEPSH.jpg", 6125),
+    "Md. Ali Munna":                      ("1086_DIQEAZUBGI.jpg", 6124),
+}
+
+
 def listing():
-    return [{"name": n, "designation": d, "email": e, "on_leave": leave, "chairman": n == CHAIRMAN}
-            for n, d, e, leave in FACULTY]
+    out = []
+    for n, d, e, leave in FACULTY:
+        photo, ein = CU_PAGE.get(n, (None, None))
+        out.append({"name": n, "designation": d, "email": e, "on_leave": leave, "chairman": n == CHAIRMAN,
+                    "photo": CU_PHOTO + photo if photo else "",
+                    "profile": CU_PROFILE + str(ein) if ein else ""})
+    return out
 
 
 def by_email(email):

@@ -976,7 +976,8 @@ class Handler(SimpleHTTPRequestHandler):
 
     # Security headers on every answer. What each one does:
     #   Content-Security-Policy: the page may only load scripts, styles, fonts and
-    #     pictures from this site (plus Google Fonts), and can't be put in a frame.
+    #     pictures from this site (plus Google Fonts, and the teachers' photos from
+    #     the university's own site, cu.ac.bd), and can't be put in a frame.
     #   X-Frame-Options: older browsers: no other site may show us inside a frame
     #     (stops "clickjacking", tricking someone into clicking a hidden button).
     #   X-Content-Type-Options: the browser must trust our file types, never guess.
@@ -987,7 +988,7 @@ class Handler(SimpleHTTPRequestHandler):
         "Content-Security-Policy": (
             "default-src 'self'; script-src 'self' 'unsafe-inline'; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-            "font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; "
+            "font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://cu.ac.bd; "
             "connect-src 'self'; object-src 'self' blob:; frame-src 'self' blob:; "
             "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"),
         "X-Frame-Options": "DENY",
