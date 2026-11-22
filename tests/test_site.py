@@ -94,6 +94,7 @@ class TestSite(unittest.TestCase):
                     "MAIL_OUTBOX": cls.outbox,      # emails go to this file, nothing is sent
                     "MAIL_ALLOW_ALL": "1",
                     "PEER_KEY": secrets.token_urlsafe(16),
+                    "AI_FAKE": "1", "AI_DAILY_LIMIT": "5",   # a stand-in assistant, no real AI
                     "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8"})
         if os.environ.get("TEST_DATABASE_URL"):      # an empty Postgres, like Supabase
             env["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
@@ -800,6 +801,43 @@ class TestSite(unittest.TestCase):
         mark_after = next(i["value"] for i in self.ok(f"/api/course?course_id={self.course}", who="student")
                           ["main"]["items"] if i["item_id"] == item_id)
         self.assertEqual(mark_after, mark_before, "the old mark didn't come back after registering again")
+
+    def test_30_study_assistant(self):
+        """Students can ask the assistant (daily limit), others can't, and it is given no marks."""
+        self.assertTrue(self.ok("/api/me", who="student").get("assistant"), "the Ask button wouldn't show")
+        self.assertFalse(self.ok("/api/me", who="teacher").get("assistant"))
+        self.refused("/api/assistant", {"message": "hi"}, who="teacher", status=403, what="a teacher using it")
+        self.refused("/api/assistant", {"message": "hi"}, status=401, what="using it signed out")
+        self.refused("/api/assistant", {"message": "   "}, who="student", status=400, what="an empty question")
+        self.refused("/api/assistant", {"message": "x" * 900}, who="student", status=400, what="a huge question")
+
+        answer = self.ok("/api/assistant", {"message": "When is my next CT?",
+                                            "history": [{"role": "user", "text": "hi"}, {"role": "model", "text": "hello"}]},
+                         who="student")
+        self.assertIn("When is my next CT?", answer["text"])
+        self.assertIn("Semester:", answer["text"], "the assistant wasn't given the student's schedule")
+        for _ in range(answer["left_today"]):
+            self.ok("/api/assistant", {"message": "again"}, who="student")
+        why = self.refused("/api/assistant", {"message": "one more"}, who="student", status=400,
+                           what="going past the daily limit")
+        self.assertIn("today", why["why"])
+
+    def test_31_assistant_is_given_no_private_records(self):
+        """What the AI is sent: schedule and courses only; no marks, GPA, parents or other students."""
+        sys.path.insert(0, ROOT)
+        import assistant
+        view = {"semester": 5, "group": "B", "routine_semester": 5,
+                "semesters": [{"n": 5, "gpa": 3.9, "sheet": [{"code": "EEE 511", "letter": "A+", "gp": 4.0}],
+                               "courses": [{"code": "EEE 511", "title": "Digital Electronics", "lab": "EEE 512",
+                                            "teacher": "A Teacher"}]}],
+                "timetable": [{"day": "Sunday", "start": "09:00", "finish": "09:45", "codes": ["EEE 511"],
+                               "ct": False, "room": "R-214"}],
+                "cts": [{"date": "2999-01-01", "code": "EEE 511", "label": "CT3"}]}
+        text = assistant.about_student("Test Student", view)
+        for expected in ("EEE 511", "R-214", "CT3", "Test", "Semester: 5"):
+            self.assertIn(expected, text)
+        for private in ("3.9", "A+", "4.0", "Student\n", "GPA"):
+            self.assertNotIn(private, text, f"the assistant would be sent {private!r}")
 
     def test_99_server_had_no_crashes(self):
         """The server stayed up the whole time and wrote no Python errors."""

@@ -26,6 +26,7 @@ import mailer
 import notices
 import complaints
 import site_settings
+import assistant
 import dept_fees
 import clock
 import faculty
@@ -70,6 +71,7 @@ def prepare_database():
     dept_fees.init()
     resources.init()
     site_content.init()
+    assistant.init()
     faculty.apply_course_teachers(connect)
     auth.init_auth()
 
@@ -1193,7 +1195,8 @@ class Handler(SimpleHTTPRequestHandler):
         if url.path == "/api/me":
             name = rows("SELECT name FROM students WHERE roll=?", (roll,))
             return self.reply({"ok": True, "role": user["role"], "roll": roll,
-                               "email": user["email"], "name": name[0][0] if name else roll})
+                               "email": user["email"], "name": name[0][0] if name else roll,
+                               "assistant": user["role"] == "student" and assistant.enabled()})
 
         # course resources: anyone in the course, its teachers and the office
         if url.path == "/api/resources":
@@ -1413,6 +1416,19 @@ class Handler(SimpleHTTPRequestHandler):
         if url.path == "/api/signout":
             auth.sign_out(token)
             return self.reply({"ok": True})
+
+        # the student's AI assistant (see assistant.py): students only, their own schedule only
+        if url.path == "/api/assistant":
+            if user["role"] != "student":
+                return self.reply({"ok": False, "why": "The assistant is for students."}, 403)
+            body = json.loads(self.rfile.read(length) or "{}")
+            try:
+                name = rows("SELECT name FROM students WHERE roll=?", (roll,))
+                answer = assistant.reply(roll, name[0][0] if name else "", semester_view(roll),
+                                         body.get("message"), body.get("history"))
+                return self.reply({"ok": True, **answer})
+            except Refused as why:
+                return self.reply({"ok": False, "why": str(why)}, 400)
 
         if url.path == "/api/account/delete":
             if user["role"] != "student":

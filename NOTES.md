@@ -2,6 +2,37 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — Study assistant (AI) on the student page
+
+**What you see:** an **Ask** button at the bottom right of the student page
+(only when the assistant is switched on). It opens a chat: "What's my next
+class test?", "Which room is my Thursday lab?", "Explain Fourier series simply".
+
+**How it works:** the student's message goes to our server
+(`/api/assistant`), which checks it's a signed-in student, adds THAT student's
+own timetable, courses, teachers and upcoming class tests, and sends it to
+Google's Gemini AI. The answer comes back into the chat. The API key stays on
+the server (Render), never in the browser or on GitHub.
+
+**What the AI is given:** first name, semester, lab group, this semester's
+courses and teachers, the weekly routine, upcoming class tests, today's date.
+**Not:** marks, GPA, attendance, parents' names, anyone else's data. (Gemini's
+free tier may use what it's sent to improve Google's products, so nothing more
+personal than a timetable goes there.) It can only talk; it can't change any
+record. The conversation isn't stored anywhere.
+
+**Limits:** 30 questions per student per day (`AI_DAILY_LIMIT`), 800 characters
+per question; the last 8 messages are sent along so it remembers the
+conversation.
+
+**Switching it on (Render → Environment):** `GEMINI_API_KEY` = a key from
+Google AI Studio. Optional: `AI_MODEL` (default `gemini-3.8-flash`).
+
+**Files:** `assistant.py` (new, explained at the top), `server.py`
+(`/api/assistant`, `/api/me` says if it's on), `app.html` (the chat box at the
+bottom of the file). Tests: checks 30 and 31 (a stand-in assistant, `AI_FAKE=1`,
+so no real AI is called).
+
 ## 2026-11-22 — Nightly backups to Google Drive
 
 **What happens:** every night at 3:13 AM (Bangladesh), GitHub makes a full copy

@@ -460,6 +460,7 @@ async function boot(){
     return;
   }
   ROLL = me.roll;
+  if (me.assistant) document.getElementById('askBtn').hidden = false;
   SEM = await api('/api/semester');
   document.getElementById('app').classList.remove('hide');
   document.getElementById('initials').textContent = me.name.split(' ').map(w=>w[0]).slice(0,2).join('');
@@ -1511,6 +1512,80 @@ function who(actor){
   if (actor === 'system') return 'the system';
   if (actor === 'sample-data') return 'sample data (demo)';
   return actor.replace('teacher:','teacher ');
+}
+</script>
+<!-- the study assistant: a chat about your own timetable and courses (assistant.py) -->
+<style>
+#askBtn{position:fixed;right:24px;bottom:24px;z-index:60;border:none;border-radius:30px;padding:13px 20px;
+  background:var(--accent);color:#fff;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+#askBox{position:fixed;right:24px;bottom:80px;z-index:61;width:min(380px,calc(100vw - 32px));height:min(520px,calc(100vh - 120px));
+  background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;
+  box-shadow:0 12px 32px rgba(0,0,0,.18);overflow:hidden}
+#askBox[hidden]{display:none}
+#askBox header{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+#askBox header b{font-size:15px}
+#askBox header small{color:var(--grey);font-size:12px;display:block}
+#askBox header button{margin-left:auto;border:none;background:none;font-size:20px;cursor:pointer;color:var(--grey)}
+#askLog{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5}
+#askLog .me{align-self:flex-end;background:var(--accent-wash);border-radius:14px 14px 4px 14px;padding:9px 12px;max-width:85%;white-space:pre-wrap}
+#askLog .ai{align-self:flex-start;background:#F6F2EE;border-radius:14px 14px 14px 4px;padding:9px 12px;max-width:90%;white-space:pre-wrap}
+#askLog .note{color:var(--grey);font-size:12.5px}
+#askForm{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+#askForm input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit}
+#askForm button{border:none;border-radius:10px;padding:0 16px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+#askForm button:disabled{opacity:.5;cursor:wait}
+</style>
+<button id="askBtn" hidden onclick="toggleAsk()">Ask</button>
+<div id="askBox" hidden role="dialog" aria-label="Study assistant">
+  <header><div><b>Study assistant</b><small>Knows your timetable, courses and class-test dates. Not your marks.</small></div>
+    <button onclick="toggleAsk()" aria-label="Close">×</button></header>
+  <div id="askLog"><div class="ai">Hi! Ask me about your classes, rooms, upcoming class tests, or a topic from your courses.</div></div>
+  <form id="askForm" onsubmit="askSend(event)">
+    <input id="askIn" maxlength="800" placeholder="e.g. What's my next class test?" autocomplete="off">
+    <button id="askGo">Send</button>
+  </form>
+</div>
+<script>
+let ASK_HISTORY = [];                       // this conversation only; nothing is stored
+function toggleAsk(){
+  const box = document.getElementById('askBox');
+  box.hidden = !box.hidden;
+  if (!box.hidden) document.getElementById('askIn').focus();
+}
+function askLine(cls, text){
+  const log = document.getElementById('askLog');
+  const div = document.createElement('div');
+  div.className = cls;
+  div.textContent = text;                   // textContent: shown as plain text, never as page code
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  return div;
+}
+async function askSend(e){
+  e.preventDefault();
+  const input = document.getElementById('askIn'), go = document.getElementById('askGo');
+  const message = input.value.trim();
+  if (!message || go.disabled) return;      // disabled while waiting: pressing twice sends once
+  input.value = '';
+  askLine('me', message);
+  const wait = askLine('note', 'Thinking…');
+  go.disabled = true;
+  try {
+    const res = await api('/api/assistant', {method:'POST', headers:{'Content-Type':'application/json'},
+                                             body: JSON.stringify({message, history: ASK_HISTORY})});
+    wait.remove();
+    if (!res.ok){ askLine('note', res.why); return; }
+    askLine('ai', res.text);
+    ASK_HISTORY.push({role:'user', text: message}, {role:'model', text: res.text});
+    ASK_HISTORY = ASK_HISTORY.slice(-8);
+    if (res.left_today <= 3) askLine('note', `${res.left_today} question${res.left_today === 1 ? '' : 's'} left today.`);
+  } catch (err) {
+    wait.remove();
+    askLine('note', 'Something went wrong. Please try again.');
+  } finally {
+    go.disabled = false;
+    input.focus();
+  }
 }
 </script>
 <script src="loader.js"></script>
