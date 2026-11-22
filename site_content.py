@@ -34,6 +34,11 @@ def init():
     for title, link in SOURCE_LINKS:
         con.execute("UPDATE achievements SET link=? WHERE title=? AND (link IS NULL OR link='')",
                     (link, title))
+    # better pictures for the first posts: only where the picture is still empty or the
+    # old poster, so a picture the office chose later always wins
+    for title, old, new_image in SOURCE_IMAGES:
+        con.execute("UPDATE achievements SET image=? WHERE title=? AND "
+                    "(image IS NULL OR image='' OR image=?)", (new_image, title, old))
     con.commit()
     # news added from here, once: never again if the office has removed it
     # (its "achievement_add" stays on the chain, so it is not put back)
@@ -54,6 +59,12 @@ def init():
     db.forget_tables()
 
 
+SOURCE_IMAGES = [
+    ("Symposium: Winter Symposium on Silicon Photonics and Nanofabrication", "",
+     "photos/winter-symposium-2026.jpg"),
+    ("Champions of VLSIthon 3.0", "photos/vlsithon3.png", "photos/vlsithon3-winners.jpg"),
+]
+
 SEED_POSTS = [
     ("Symposium: Winter Symposium on Silicon Photonics and Nanofabrication",
      "Organised by the Optica Student Chapter, University of Chittagong · 11 November 2026, "
@@ -63,7 +74,7 @@ SEED_POSTS = [
      "tutorials on Ansys Lumerical INTERCONNECT, GPU-accelerated FDTD and Tidy3D · speakers "
      "included Sumit Majumder, Ariful Islam and Mohammad Shuhrawardy",
      2026,
-     "https://www.facebook.com/ictcu/posts/1554550206708224/", ""),
+     "https://www.facebook.com/ictcu/posts/1554550206708224/", "photos/winter-symposium-2026.jpg"),
     ("Award: Best Stall in the IT category, CUCSU National Research Festival 2026",
      "Students of the Department of EEE won the Best Stall award in the IT category "
      "at the CUCSU National Research Festival 2026",
