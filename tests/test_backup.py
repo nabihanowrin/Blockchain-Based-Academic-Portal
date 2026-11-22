@@ -64,7 +64,15 @@ class TestBackup(unittest.TestCase):
             subprocess.run(["psql", admin, "-c", "CREATE DATABASE eee_restore_check"], check=True, capture_output=True)
             restored = subprocess.run(["pg_restore", "--no-owner", "--dbname", fresh, uploaded],
                                       capture_output=True, text=True)
-            self.assertEqual(restored.returncode, 0, restored.stderr[-1500:])
+            # Newer PostgreSQL tools add settings an older database doesn't know
+            # (e.g. transaction_timeout, from version 17). Those lines are skipped
+            # and everything else is restored; any other error is a real failure.
+            harmless = ("transaction_timeout", "errors ignored on restore")
+            real = [line for line in restored.stderr.splitlines()
+                    if ("error" in line.lower() or "warning" in line.lower())
+                    and not any(h in line for h in harmless)
+                    and not line.strip().startswith(("Command was:", "LINE"))]
+            self.assertFalse(real, "restoring the copy failed:\n" + "\n".join(real[-10:]))
             check = subprocess.run([sys.executable, "-c", "from ledger import verify_chain; print(verify_chain()[0])"],
                                    cwd=ROOT, env={**os.environ, "DATABASE_URL": fresh}, capture_output=True, text=True)
             self.assertEqual(check.stdout.strip(), "True", "the restored copy's chain isn't valid: " + check.stderr[-800:])

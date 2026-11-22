@@ -19,6 +19,8 @@ drive.file means this job can only see and touch files it created itself.
 
 To put a backup back (on a computer with PostgreSQL's tools):
   pg_restore --clean --if-exists --no-owner --dbname "<database address>" <file>.dump
+If it complains about "transaction_timeout", ignore that one line: newer tools
+add that setting and an older database skips it. Then run the chain check.
 """
 
 import datetime as dt

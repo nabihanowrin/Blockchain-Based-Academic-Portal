@@ -24,7 +24,9 @@ Until they are set, the job does nothing and says so.
 file from the Drive, then
 `pg_restore --clean --if-exists --no-owner --dbname "<database address>" <file>.dump`.
 Tested: a copy put back into an empty database had the same 96 blocks and a
-valid chain.
+valid chain. If pg_restore complains about `transaction_timeout`, ignore it:
+newer tools add that setting and an older database skips it; the rest is
+restored. Afterwards, open the site and run the chain check.
 
 **Test:** `tests/test_backup.py` runs the job against a stand-in for Google
 Drive and checks the copy restores with a valid chain (in the Postgres job on
