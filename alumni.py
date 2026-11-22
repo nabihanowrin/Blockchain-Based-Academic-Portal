@@ -38,7 +38,8 @@ SEED = [
      "story": "Her research is on semiconductor devices and 3-D MMIC technology: GaAs, microwave and "
               "mm-wave frequencies, HEMT and pHEMT devices, and transmission lines in MMICs. She received "
               "the ICT Fellowship from the ICT Division of the Government of Bangladesh for her Master's "
-              "thesis, and the UGC Merit Scholarship for her undergraduate results."},
+              "thesis, and the UGC Merit Scholarship for her undergraduate results.",
+     "link": "https://bd.linkedin.com/in/jannatul-naima"},
     {"name": "Dr. Hafizul Islam Chowdhury",
      "headline": "Assistant Professor, Electrical and Computer Engineering, UNC Charlotte",
      "batch": "B.Sc. 2017 and M.Sc. 2019 in EEE, University of Chittagong", "field": "academia",
@@ -75,6 +76,25 @@ def _seed():
     for s in todo:
         add("seed", s["name"], s["headline"], s["batch"], s["story"], "2026-11-22", s.get("link", ""),
             field=s.get("field", ""))
+    _fill_seed_links()
+
+
+def _fill_seed_links():
+    # a seed story already on the site that has no link yet gets the one now in SEED, once
+    con = connect()
+    done = []
+    for s in SEED:
+        if not s.get("link"):
+            continue
+        row = con.execute("SELECT id, link FROM alumni_stories WHERE name=? AND added_by='seed'",
+                          (s["name"],)).fetchone()
+        if row and not row[1]:
+            con.execute("UPDATE alumni_stories SET link=? WHERE id=?", (s["link"], row[0]))
+            done.append((row[0], s["name"], s["link"]))
+    con.commit()
+    con.close()
+    for sid, name, link in done:
+        add_entry("alumni_link", {"id": sid, "name": name, "link": link}, "seed")
 
 
 def listing():

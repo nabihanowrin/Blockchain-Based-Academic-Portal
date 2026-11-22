@@ -472,16 +472,19 @@ body{animation:pageIn .5s ease backwards}
 </style>
 <style>
 /* alumni: one section per field */
+.alrow{padding:14px 0;border-bottom:1px solid #E3E6E9}
+.alrow h3{font-family:var(--os);font-weight:700;font-size:19px;line-height:1.3;color:#1C1A19}
+.alrow h3 a{color:var(--accent);text-decoration:none}
+.alrow h3 a:hover{text-decoration:underline;text-underline-offset:4px}
+.alrow p{font-family:var(--os);font-size:15px;line-height:1.5;color:#4a4442;margin-top:4px}
 .alum-list{display:block!important}
 .algroup{margin-top:40px}
 .alg-h{font-family:var(--os);font-weight:700;font-size:24px;color:#1C1A19;display:flex;align-items:center;gap:10px;
   padding-bottom:12px;border-bottom:2px solid var(--accent)}
 .alg-h span{font-size:13px;font-weight:700;color:#fff;background:var(--accent);border-radius:999px;padding:2px 10px}
-.alg-cards{margin-top:22px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
+.alg-cards{margin-top:6px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px}
 .al-topics .pill small{font-size:12px;opacity:.7;margin-left:2px}
-@media (max-width:1100px){.alg-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:800px){.alg-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:520px){.alg-cards{grid-template-columns:1fr}}
+@media (max-width:700px){.alg-cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1052,24 +1055,16 @@ function drawAlumni(list){
   const day = t => { const d = new Date(t + 'T00:00:00'); if (isNaN(d)) return esc(t);
     const n = d.getDate(), s = (n % 10 === 1 && n !== 11) ? 'st' : (n % 10 === 2 && n !== 12) ? 'nd' : (n % 10 === 3 && n !== 13) ? 'rd' : 'th';
     return `${n}${s} ${d.toLocaleString('en-GB', {month: 'short'})} ${d.getFullYear()}`; };
-  const person = `<svg class="none" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.2" r="4.2"/><path d="M3.6 21.5c.6-4.6 4.1-7.4 8.4-7.4s7.8 2.8 8.4 7.4z"/></svg>`;
-  const card = (a, label) => {
-    const page = `alumni.html?id=${encodeURIComponent(a.id)}`;
-    return `<article class="alcard">
-      <a class="apic" href="${page}" tabindex="-1" aria-hidden="true">${a.image ? `<img src="${esc(a.image)}" alt="" loading="lazy">` : person}</a>
-      <div class="abody">
-        <p class="adate">${day(a.date)}</p>
-        <h3><a href="${page}">${esc(a.name)}</a></h3>
-        <p class="ahead">${esc(a.headline)}</p>
-        <div class="atags"><span>${esc(label)}</span><span>alumni</span></div>
-      </div>
+  // just the name (to their profile, when we have the link) and what they do now
+  const card = a => `<article class="alrow">
+      <h3>${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.name)}</a>` : esc(a.name)}</h3>
+      <p>${esc(a.headline)}</p>
     </article>`;
-  };
   const shown = groups.filter(g => !AL_TOPIC || AL_TOPIC === '*' || g.key === AL_TOPIC);
   document.getElementById('alumList').innerHTML = shown.map(g => `
     <div class="algroup">
       <h3 class="alg-h">${esc(g.label)} <span>${g.people.length}</span></h3>
-      <div class="alg-cards">${g.people.map(a => card(a, g.label)).join('')}</div>
+      <div class="alg-cards">${g.people.map(card).join('')}</div>
     </div>`).join('');
   document.getElementById('moreAlumni').hidden = true;
 }
