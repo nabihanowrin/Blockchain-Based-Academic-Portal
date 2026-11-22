@@ -146,7 +146,7 @@ async function api(path, opts = {}){
   if (r.status === 401){ toLanding(); throw new Error('signed out'); }
   return r.json();
 }
-function toLanding(){ localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); location.href = 'landing.html#enter'; }
+function toLanding(){ localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); if (window.eeeGo) eeeGo('landing.html#enter'); else location.href = 'landing.html#enter'; }
 async function signOut(){ try { await api('/api/signout', {method:'POST'}); } catch (e) {} toLanding(); }
 const view = html => { document.getElementById('view').innerHTML = html; window.scrollTo(0,0); };
 /* makes text safe to put inside the page: < > & and both quote marks can't start code */
@@ -334,5 +334,6 @@ async function save(){
 
 boot();
 </script>
+<script src="loader.js"></script>
 </body>
 </html>

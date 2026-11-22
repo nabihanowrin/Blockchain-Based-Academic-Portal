@@ -680,6 +680,24 @@ class TestSite(unittest.TestCase):
         self.refused("/api/password/finish", {"email": STUDENT_EMAIL, "code": code, "password": new_password},
                      status=400, what="using the same reset code twice")
 
+    def test_26_loading_screen_on_every_page(self):
+        """Every page loads the shared loading screen, and sign-out and new tabs play it."""
+        status, js = self.call("/loader.js")
+        self.assertEqual(status, 200, "loader.js can't be downloaded, so no page can show the loading screen")
+        self.assertIn("eeeLoader", js)
+        for page in ("landing.html", "app.html", "teacher.html", "office.html", "exam.html"):
+            with open(os.path.join(ROOT, page), encoding="utf-8") as f:
+                html = f.read()
+            self.assertIn('<script src="loader.js"></script>', html, f"{page} doesn't load the loading screen")
+            if page != "landing.html":
+                self.assertIn("eeeGo('landing.html#enter')", html, f"signing out of {page} skips the loading screen")
+        with open(os.path.join(ROOT, "landing.html"), encoding="utf-8") as f:
+            self.assertIn("'#intro'", f.read(), "an account opened in a new tab won't play the loading screen")
+        node = shutil.which("node")
+        if node:
+            done = subprocess.run([node, "--check", os.path.join(ROOT, "loader.js")], capture_output=True, text=True)
+            self.assertEqual(done.returncode, 0, f"loader.js has a JavaScript error:\n{done.stderr[-1500:]}")
+
     def test_99_server_had_no_crashes(self):
         """The server stayed up the whole time and wrote no Python errors."""
         self.assertIsNone(self.server.poll(), "the server stopped during the tests")

@@ -440,7 +440,8 @@ async function api(path, opts = {}){
 
 function toLanding(){
   localStorage.removeItem(KEY); sessionStorage.removeItem(KEY);
-  location.href = 'landing.html#enter';
+  if (window.eeeGo) eeeGo('landing.html#enter');     // the loading screen, then the homepage
+  else location.href = 'landing.html#enter';
 }
 
 async function signOut(){
@@ -1385,5 +1386,6 @@ function who(actor){
   return actor.replace('teacher:','teacher ');
 }
 </script>
+<script src="loader.js"></script>
 </body>
 </html>

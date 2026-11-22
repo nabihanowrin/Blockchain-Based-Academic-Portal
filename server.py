@@ -887,7 +887,8 @@ class Handler(SimpleHTTPRequestHandler):
     # The ONLY files a browser may download. Everything else in the folder
     # (code, databases, notes, tests, scripts) is never served to anyone.
     PAGES = {"/landing.html", "/app.html", "/teacher.html", "/office.html", "/exam.html",
-             "/google6089bfc9267fdecb.html"}                 # Google Search Console's check
+             "/google6089bfc9267fdecb.html",                 # Google Search Console's check
+             "/loader.js"}                                   # the loading screen, used by every page
     PHOTO_TYPES = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg")
 
     # Security headers on every answer. What each one does:

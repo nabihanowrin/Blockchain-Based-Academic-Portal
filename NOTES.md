@@ -2,6 +2,36 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-22 — The loading screen plays on every move between the homepage and an account
+
+**What you see:** Nabiha's logo loading screen now plays:
+- after signing in, on the homepage, before the account page opens (as before);
+- when the account is opened **in a new tab** (no "Remember me"): it plays in
+  the new tab first, then fades into the account page;
+- when **signing out** of any account page: it plays first, then the homepage
+  opens.
+
+**Why it was missing:** the loading screen only existed inside `landing.html`.
+Sign-ins without "Remember me" open the account in a new tab, and that page had
+no loading screen; signing out also went straight to the homepage.
+
+**What changed:**
+- `loader.js` (new): the loading screen moved out of `landing.html` unchanged
+  (same look, same animation), so every page can load it with
+  `<script src="loader.js"></script>`. It also gives `eeeGo(url)`: play the
+  screen, then go to url. One line was added: it stops the previous animation
+  loop before playing again, because a page can now play it twice (arriving in
+  a new tab, then signing out).
+- `landing.html`: loads `loader.js`; "Open in a new tab" adds `#intro` to the
+  address so the new tab plays it.
+- `app.html`, `teacher.html`, `office.html`, `exam.html`: load `loader.js`;
+  signing out uses `eeeGo('landing.html#enter')`.
+- `server.py`: `/loader.js` added to the files a browser may download.
+- `tests/test_site.py`: check 26.
+
+**Not covered:** the browser's own Back button. A page can't play anything
+before the browser leaves it that way.
+
 ## 2026-11-22 — Security round 1
 
 **1. Codes are never shown on screen.** Registration, staff sign-up, password

@@ -190,7 +190,8 @@ async function api(path, opts = {}){
 }
 function toLanding(){
   localStorage.removeItem(KEY); sessionStorage.removeItem(KEY);
-  location.href = 'landing.html#enter';
+  if (window.eeeGo) eeeGo('landing.html#enter');     // the loading screen, then the homepage
+  else location.href = 'landing.html#enter';
 }
 async function signOut(){ try { await api('/api/signout', {method:'POST'}); } catch (e) {} toLanding(); }
 
@@ -841,5 +842,6 @@ function alertBox(id, text){
   if (m){ m.className = 'okmsg bad'; m.textContent = text; }
 }
 </script>
+<script src="loader.js"></script>
 </body>
 </html>
