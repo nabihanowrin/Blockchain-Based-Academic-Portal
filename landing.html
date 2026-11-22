@@ -564,6 +564,23 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
   .nitem.rise,.ctitle.rise{transform:none}
 }
 </style>
+<style>
+/* the dark strip of the hero: a short "About this website" with a link down to the full section */
+.h-dark{color:#fff;padding:56px 30px 56px var(--gut);display:flex;flex-direction:column;justify-content:center}
+.h-dark .d-k{font-family:var(--os);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A9AF}
+.h-dark h2{font-family:"Oswald",var(--os);font-weight:600;font-size:clamp(24px,2.2vw,34px);line-height:1.08;text-transform:uppercase}
+.h-dark .bar{display:block;width:72px;height:10px;background:var(--accent-light);margin:18px 0}
+.h-dark .d-t{font-family:var(--os);font-size:15px;line-height:1.65;color:#E6E6E6}
+.d-btn{align-self:flex-start;margin-top:24px;background:#fff;color:var(--accent);border:2px solid #998542;padding:11px 18px;font-family:var(--os);font-weight:800;font-size:14px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none}
+.d-btn::after{content:"\00a0\00a0»"}
+.d-btn:hover{background:var(--soft)}
+.h-dark > *{animation:heroUp .9s cubic-bezier(.16,.84,.34,1) .6s both}
+@media (prefers-reduced-motion:reduce){.h-dark > *{animation:none}}
+@media (min-width:901px) and (max-width:1100px){.hero3{grid-template-columns:27% minmax(0,1fr) minmax(0,1.2fr)}}
+@media (max-width:900px){
+  .hero3 .h-dark{display:flex;order:3;padding:36px var(--gut)}
+}
+</style>
 </head>
 <body>
 
@@ -596,7 +613,12 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
 
 <!-- ================= HERO ================= -->
 <header class="hero3" id="top">
-  <div class="h-dark" aria-hidden="true"></div>
+  <div class="h-dark">
+    <h2>About this website</h2>
+    <i class="bar" aria-hidden="true"></i>
+    <p class="d-t">One place for the department's academic records: results, attendance, class tests, and every change to a mark, kept safe.</p>
+    <a class="d-btn" href="#what">Learn more</a>
+  </div>
   <div class="h-panel">
     <p class="h-k">University of Chittagong · Faculty of Engineering</p>
     <h1>Electrical and Electronic Engineering</h1>
