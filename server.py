@@ -975,7 +975,8 @@ class Handler(SimpleHTTPRequestHandler):
     PAGES = {"/landing.html", "/app.html", "/teacher.html", "/office.html", "/exam.html",
              "/alumni.html",                                 # one alumni story, opened from the homepage
              "/google6089bfc9267fdecb.html",                 # Google Search Console's check
-             "/loader.js"}                                   # the loading screen, used by every page
+             "/loader.js",                                   # the loading screen, used by every page
+             "/theme.css"}                                   # the shared look of the four panels
     PHOTO_TYPES = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg")
 
     # Security headers on every answer. What each one does:

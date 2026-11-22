@@ -1,0 +1,213 @@
+/* =====================================================================
+   theme.css — one look for the student, teacher, office and examiner pages,
+   taken from the landing page (landing.html, final version of 22 Nov 2026).
+
+   Every panel page links this file LAST in its <head>, so these rules win
+   over the older styles inside each page. To change a colour or font for
+   all four panels, change it here once.
+
+   Colours (Najah's choice, 23 Nov): the deep maroon and soft gold of her
+   reference, plus the landing page's charcoal:
+     maroon   #501315
+     charcoal #302B31   (landing page hero and footer)
+     gold     #D6B06A
+     cream    #F6F2EE   page        white #fff   cards
+   Variety comes from using those three solid colours for different things
+   (maroon, charcoal, gold), never from extra colours or gradients.
+   Light rose #F3E7E7 and sand #F8F0E0 appear only inside the small labels.
+   Cards have no coloured edges and profile pictures have no rings.
+   Font: Arial, like the landing page. Corners: 4–6px.
+   ===================================================================== */
+
+:root{
+  --accent:#501315; --accent-dark:#3B0D0F; --accent-light:#7A2A2D;
+  --accent-wash:#F3E7E7; --accent-line:#DDBDBE;
+  --charcoal:#302B31; --gold:#D6B06A; --gold-deep:#B98F45; --gold-wash:#F8F0E0; --gold-text:#6B4E1C;
+  --stone:#EFE6DF;
+  --side:#501315; --side-text:#F1E4E4;
+  --cream:#F6F2EE; --card:#fff; --ink:#1C1A19; --text:#1C1A19; --grey:#6E6764; --line:#E4DCD6; --soft:#EFE9E4;
+  --butter:#F8F0E0; --mist:#F3E7E7; --clay:#EFE6DF; --sage:#F6F2EE;
+  --sans:Arial,Helvetica,sans-serif; --serif:Arial,Helvetica,sans-serif; --mono:Arial,Helvetica,sans-serif;
+  --r:6px;
+
+  --shadow:0 1px 2px rgba(48,43,49,.06),0 8px 24px rgba(48,43,49,.07);
+}
+
+html,body{background:var(--cream)}
+body{font-family:var(--sans);color:var(--ink)}
+
+/* ---------- corners ---------- */
+*,*::before,*::after{border-radius:0 !important}
+.box,.class,.profile,.sems .sem,.semcard,.pcard,.addform,.review,.obj,.change,.catm,.chip,.empty,.notice,.gp,.gpa,
+.hello,.tile,.samplenote,.btn,.mini,.side .out,.menubtn,input,select,textarea,.date,.sheet{border-radius:var(--r) !important}
+.me .dot,.me .dot img,.profile .big,.photo,.photo img,.ev::before,.cal .d .ctdot,.cal-head button,
+.semcard .ink,[style*="border-radius:50%"]{border-radius:50% !important}
+
+/* ---------- titles ---------- */
+h1.page,.main > h1,#view > h1{font-family:var(--sans);font-weight:700;color:var(--accent);letter-spacing:-.01em}
+.profile h2{font-family:var(--sans);font-weight:700}
+h2.sect,.sect{font-family:var(--sans);font-weight:700;color:var(--charcoal);font-size:26px;position:relative;padding-bottom:10px}
+h2.sect::after,.sect::after{content:"";position:absolute;left:0;bottom:0;width:44px;height:3px;background:var(--gold)}
+.lede{color:var(--grey)}
+
+/* ---------- sidebar: maroon that deepens downwards, gold section labels ---------- */
+.side{background:var(--accent);color:var(--side-text)}
+.me{border-bottom:1px solid rgba(255,255,255,.18)}
+.me .dot{background:#fff;color:var(--accent);font-weight:700;box-shadow:none;border:0}
+.me .nm{color:#fff}
+.me .role,.me .sem,.me .sub{color:#EBD3D8}
+.nav .group,.cap{color:var(--gold);font-weight:700}
+.nav button{color:var(--side-text)}
+.nav button:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nav button.on{background:var(--cream);color:var(--accent);font-weight:700;box-shadow:inset 4px 0 0 var(--gold)}
+.nav button.on::before,.nav button.on::after{display:none !important}
+.side .out{border:1px solid rgba(255,255,255,.6);color:#fff;font-weight:700}
+.side .out:hover{background:var(--gold);border-color:var(--gold);color:#1D181C}
+.menubtn{border-color:rgba(255,255,255,.6) !important}
+.side.open .nav{border-top-color:rgba(255,255,255,.2) !important}
+
+/* ---------- cards: white, soft shadow, no lift ---------- */
+.box,.class,.profile,.sems .sem,.semcard,.pcard,.addform,.review,.empty,.obj,.change,.catm,.chip,.gp,.gpa{
+  background:var(--card);border-color:var(--line);box-shadow:var(--shadow)}
+.class:hover,.sems .sem:not(.later):hover{transform:none;border-color:var(--accent)}
+.class .code{color:var(--accent);font-weight:700;letter-spacing:.03em}
+.profile .big{background:var(--accent-wash);color:var(--accent);font-weight:700;box-shadow:none;border:0}
+
+/* ---------- buttons ---------- */
+.btn{border:1px solid var(--accent);background:#fff;color:var(--accent);font-weight:700}
+.btn:hover{background:var(--accent-wash)}
+.btn.solid,.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.solid:hover,.btn.primary:hover{background:var(--accent-dark)}
+.mini{background:#fff;border-color:var(--line)}
+.mini.save{background:var(--accent);border-color:var(--accent);color:#fff}
+.link{color:var(--accent)}
+
+/* ---------- inputs and tabs ---------- */
+input,select,textarea{border-color:var(--line)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.tabs button.on{color:var(--accent);font-weight:700;border-bottom-color:var(--accent)}
+
+/* ---------- tables: cream header row, rose on hover ---------- */
+table thead th{background:var(--cream)}
+table tbody tr:hover td{background:#FBF6F6}
+
+/* =====================================================================
+   The small labels. One shape for all: small, uppercase, a coloured dot
+   in front of the ones that tell you a state.
+     approved / counted / paid ......... maroon on rose
+     estimate / waiting / changed ...... gold on sand
+     needs attention ................... maroon gradient, white text
+     removed / turned down / not paid .. charcoal, white text
+     theory / 53 students / dropped .... grey on cream
+     current semester .................. gold, dark text
+   ===================================================================== */
+.pill,.tag,.badge,.paid,.unpaid,.sent,.flagged,.rtype,.lockrow .pdf{
+  display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:10.5px;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;line-height:1.3;padding:4px 9px;margin-top:0;
+  border:1px solid var(--line);border-radius:4px !important;background:var(--cream);color:#5A5350;
+  white-space:nowrap;vertical-align:middle}
+.pill.ok,.pill.new,.paid,.sent{color:var(--accent);border-color:var(--accent-line);background:var(--accent-wash)}
+.pill.ct,.pill.wait,.pill.chg{color:var(--gold-text);border-color:#E3CB9C;background:var(--gold-wash)}
+.pill.acc,.badge{color:#fff;border-color:var(--accent);background:var(--accent)}
+.pill.no,.unpaid,.flagged,.rtype{color:#fff;border-color:var(--charcoal);background:var(--charcoal)}
+.pill.dim,.tag,.tag.past,.lockrow .pdf,.lockrow .pdf.sug,.lockrow .pdf.image{color:#5A5350;border-color:var(--line);background:var(--cream)}
+.tag.now{color:#1D181C;border-color:var(--gold-deep);background:var(--gold)}
+/* the state dot */
+.pill.ok::before,.pill.new::before,.pill.ct::before,.pill.wait::before,.pill.chg::before,
+.pill.no::before,.pill.acc::before,.paid::before,.unpaid::before,.sent::before,.flagged::before{
+  content:"";width:6px;height:6px;flex:none;background:currentColor;border-radius:50% !important}
+.pill.ct::before,.pill.wait::before,.pill.chg::before{background:var(--gold-deep)}
+.pill.no::before,.unpaid::before,.flagged::before{background:var(--gold)}
+
+/* ---------- notices ---------- */
+.notice,.samplenote{border:1px solid #E3CB9C;background:var(--gold-wash);color:#4A3608}
+
+/* =====================================================================
+   STUDENT — solid colours: maroon, charcoal and gold each have their own job
+   ===================================================================== */
+/* "Welcome back": the page title, bold */
+.panel-student .hello h1.page{font-weight:800}
+
+/* home cards: plain white */
+.panel-student .photo{box-shadow:none;border:0}
+.panel-student .gpa{background:#fff}
+.panel-student .gpa .big{font-family:var(--sans);font-weight:700;color:var(--accent)}
+.panel-student .gbar{fill:var(--accent)}
+.panel-student .gbar.now{fill:none;stroke:var(--gold-deep)}
+.panel-student .gline{stroke:var(--charcoal);stroke-width:2}
+.panel-student .gdot{fill:var(--gold);stroke:var(--charcoal);stroke-width:1.5}
+.panel-student .progress .pname b{color:var(--accent)}
+.panel-student .progress .pbar{background:var(--soft);height:10px;border-radius:5px !important}
+.panel-student .progress .pbar i{background:var(--accent);border-radius:5px !important}
+.panel-student .progress .prow:hover{background:#FBF6F6}
+
+/* your semesters: finished ones take turns in solid maroon and charcoal,
+   the current one is gold, the ones not started are plain */
+.panel-student .semcard{box-shadow:var(--shadow);border:0}
+.panel-student .semcard:nth-child(odd){background:var(--accent) !important}
+.panel-student .semcard:nth-child(even){background:var(--charcoal) !important}
+.panel-student .semcard .n,.panel-student .semcard .g{color:#fff}
+.panel-student .semcard .s{color:rgba(255,255,255,.75)}
+.panel-student .semcard .n{font-family:var(--sans);font-weight:700}
+.panel-student .semcard.now{background:var(--gold) !important}
+.panel-student .semcard.now .n,.panel-student .semcard.now .g,.panel-student .semcard.now .s{color:#1D181C}
+.panel-student .semcard.now .badge{background:#1D181C;border-color:#1D181C;color:var(--gold)}
+.panel-student .semcard.later{background:#fff !important;border:1px dashed var(--line);box-shadow:none}
+.panel-student .semcard.later .n{color:#B5ACA7}
+.panel-student .semcard.later .s,.panel-student .semcard.later .g{color:var(--grey)}
+.panel-student .semcard .ink{background:rgba(255,255,255,.12)}
+.panel-student .semcard:not(.later):hover > *:not(.ink){color:inherit}
+
+/* a course page: the three numbers in three solid colours */
+.panel-student .gp .num{font-family:var(--sans);font-weight:700}
+.panel-student .chip{box-shadow:var(--shadow);border:0}
+.panel-student .chip .v{font-weight:700}
+.panel-student .chip.main{background:var(--accent);color:#fff}
+.panel-student .chip:nth-child(2){background:var(--charcoal);color:#fff}
+.panel-student .chip:nth-child(3){background:var(--gold);color:#1D181C}
+.panel-student .chip.main .k,.panel-student .chip.main .n,.panel-student .chip.main .v small,
+.panel-student .chip:nth-child(2) .k,.panel-student .chip:nth-child(2) .n,.panel-student .chip:nth-child(2) .v small{color:rgba(255,255,255,.78)}
+.panel-student .chip:nth-child(3) .k,.panel-student .chip:nth-child(3) .n,.panel-student .chip:nth-child(3) .v small{color:#4A3608}
+
+/* =====================================================================
+   TEACHER
+   ===================================================================== */
+.panel-teacher .profile{background:var(--charcoal);border-color:var(--charcoal);color:#fff;box-shadow:0 12px 30px rgba(48,43,49,.18)}
+.panel-teacher .profile h2,.panel-teacher .profile .big{color:#fff}
+.panel-teacher .profile div{color:#D9D3D6}
+.panel-teacher .profile .big{background:var(--accent)}
+
+/* =====================================================================
+   OFFICE: the three "Right now" numbers in maroon, charcoal and gold
+   ===================================================================== */
+.panel-office .tile{background:#fff;border-color:var(--line);box-shadow:var(--shadow)}
+.panel-office .tile .v{font-weight:700;color:var(--accent)}
+.panel-office .tiles:not(:has(.pick)) .tile{border:0}
+.panel-office .tiles:not(:has(.pick)) .tile:nth-child(1){background:var(--accent)}
+.panel-office .tiles:not(:has(.pick)) .tile:nth-child(2){background:var(--charcoal)}
+.panel-office .tiles:not(:has(.pick)) .tile:nth-child(3){background:var(--gold)}
+.panel-office .tiles:not(:has(.pick)) .tile:nth-child(-n+2) .k{color:rgba(255,255,255,.78)}
+.panel-office .tiles:not(:has(.pick)) .tile:nth-child(-n+2) .v{color:#fff}
+.panel-office .tiles:not(:has(.pick)) .tile:nth-child(3) .k{color:#4A3608}
+.panel-office .tiles:not(:has(.pick)) .tile:nth-child(3) .v{color:#1D181C}
+.panel-office .tile.pick:hover{border-color:var(--accent)}
+
+/* =====================================================================
+   EXAMINER: white cards; the current one solid maroon
+   ===================================================================== */
+.sems .sem{background:#fff !important;box-shadow:var(--shadow)}
+.sems .sem .n{font-family:var(--sans);font-weight:700;color:var(--accent)}
+.sems .sem:has(.tag.now){background:var(--accent) !important;border-color:var(--accent);box-shadow:var(--shadow)}
+.sems .sem:has(.tag.now) .n,.sems .sem:has(.tag.now) *{color:#fff}
+.sems .sem:has(.tag.now) .tag.now{color:#1D181C}
+.sems .sem.later{background:var(--cream) !important;border-style:dashed;box-shadow:none;opacity:.8}
+.sems .sem.later .n{color:#B5ACA7}
+
+/* ---------- phones ---------- */
+@media (max-width:820px){
+  .nav button.on{box-shadow:inset 0 -3px 0 var(--gold)}
+  .nav .group{flex-basis:100%;padding-top:12px}
+  .main{padding:22px 14px 60px}
+  h1.page,.main > h1{font-size:28px}
+  .panel-student .hello h1.page{font-size:26px}
+}

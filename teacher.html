@@ -7,9 +7,9 @@
 <title>My classes — EEE Records</title>
 <style>
 :root{
-  --side:#1E2A32; --side-text:#AEBBC4; --cream:#F6F2EE; --card:#FFFFFF;
+  --side:#501315; --side-text:#F3E4E6; --cream:#F6F2EE; --card:#FFFFFF;
   --ink:#1C1A19; --grey:#6E6764; --line:#E4DCD6;
-  --accent:#7E2233; --accent-wash:#F4E8EA;
+  --accent:#501315; --accent-wash:#F3E7E7;
   --ok:#3F6A52; --ok-wash:#E3EFE7; --bad:#A4343F; --bad-wash:#F8E3E5;
   --edit:#B07A12; --edit-wash:#F8EEDA;
   --butter:#F2EBC6; --mist:#D3E4E8; --clay:#E7DFDB; --sage:#DCE6D8;
@@ -27,11 +27,11 @@ button,input,select,textarea{font-family:inherit}
 /* ---------------- shell, same as the student page ---------------- */
 .shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}
 .side{background:var(--side);color:var(--side-text);padding:18px 0 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-.me{padding:0 24px 16px;border-bottom:1px solid #2E3C46;margin-bottom:0}
+.me{padding:0 24px 16px;border-bottom:1px solid #93404F;margin-bottom:0}
 .me .dot{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:600;font-size:14px}
 .me .nm{color:#fff;font-weight:600;font-size:14.5px;margin-top:9px}
 .me .sub{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;margin-top:3px;overflow-wrap:anywhere}
-.me .role{font-size:12.5px;margin-top:7px;color:#D6C8A8}
+.me .role{font-size:12.5px;margin-top:7px;color:#EBD3D8}
 
 .nav{display:flex;flex-direction:column;gap:2px;padding:22px 0 22px 16px;min-height:0;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none}
 .nav::-webkit-scrollbar{width:0;height:0;display:none}
@@ -43,8 +43,8 @@ button,input,select,textarea{font-family:inherit}
 .nav button.on::before{top:-22px;border-bottom-right-radius:22px;box-shadow:8px 8px 0 8px var(--cream)}
 .nav button.on::after{bottom:-22px;border-top-right-radius:22px;box-shadow:8px -8px 0 8px var(--cream)}
 .nav .code{font-size:13.5px;padding-top:6px;padding-bottom:6px}
-.nav .group{font-size:11px;letter-spacing:.1em;color:#6F8290;padding:10px 18px 3px}
-.side .out{margin:auto 24px 0;background:none;border:1px solid #3A4A55;color:var(--side-text);border-radius:30px;padding:9px;font-size:13px;cursor:pointer}
+.nav .group{font-size:11px;letter-spacing:.1em;color:#D6B06A;padding:10px 18px 3px}
+.side .out{margin:auto 24px 0;background:none;border:1px solid #A9606C;color:var(--side-text);border-radius:30px;padding:9px;font-size:13px;cursor:pointer}
 
 .main{padding:34px 40px 70px;max-width:1240px;width:100%}
 h1.page{font-family:var(--serif);font-weight:600;font-size:36px;font-weight:400;line-height:1.1}
@@ -201,8 +201,9 @@ body{animation:pageIn .5s ease backwards}
 @keyframes pageIn{from{opacity:0}}
 @media (prefers-reduced-motion:reduce){body{animation:none}}
 </style>
+<link rel="stylesheet" href="theme.css"><!-- the shared look, from the landing page; keep it last in <head> -->
 </head>
-<body>
+<body class="panel-teacher">
 
 <div class="shell hide" id="app">
   <aside class="side">

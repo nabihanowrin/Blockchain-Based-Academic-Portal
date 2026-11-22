@@ -7,15 +7,15 @@
 <title>EEE Records — University of Chittagong</title>
 <style>
 :root{
-  --side:#1E2A32;           /* sidebar */
-  --side-text:#AEBBC4;
+  --side:#501315;           /* sidebar */
+  --side-text:#F3E4E6;
   --cream:#F6F2EE;          /* page */
   --card:#FFFFFF;
   --ink:#1C1A19;
   --grey:#6E6764;
   --line:#E4DCD6;
-  --accent:#7E2233;         /* the one accent */
-  --accent-wash:#F4E8EA;
+  --accent:#501315;         /* the one accent */
+  --accent-wash:#F3E7E7;
   --present:#3F6A52;
   --present-wash:#E3EFE7;
   --absent:#A4343F;
@@ -53,11 +53,11 @@ button{font-family:inherit}
 /* ---------------- shell ---------------- */
 .shell{display:grid;grid-template-columns:clamp(230px,17vw,290px) minmax(0,1fr);min-height:100vh}
 .side{background:var(--side);color:var(--side-text);padding:18px 0 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-.me{padding:0 24px 16px;border-bottom:1px solid #2E3C46;margin-bottom:0}
+.me{padding:0 24px 16px;border-bottom:1px solid #93404F;margin-bottom:0}
 .me .dot{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:600;font-size:14px}
 .me .nm{color:#fff;font-weight:600;font-size:14.5px;margin-top:9px}
 .me .sub{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;margin-top:3px}
-.me .sem{font-size:12.5px;margin-top:7px;color:#D6C8A8}
+.me .sem{font-size:12.5px;margin-top:7px;color:#EBD3D8}
 
 /* ---- the curved active tab ---- */
 .nav{display:flex;flex-direction:column;gap:2px;padding:22px 0 22px 16px;min-height:0;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none}
@@ -96,7 +96,7 @@ button{font-family:inherit}
 
 .result{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-top:14px;padding:14px 18px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px}
 .result span{color:var(--grey)}
-.result .grade{font-family:var(--serif);font-weight:600;font-size:26px;color:var(--accent,#7E2233);font-weight:400}
+.result .grade{font-family:var(--serif);font-weight:600;font-size:26px;color:var(--accent,#501315);font-weight:400}
 .lockrows{margin-top:14px;display:flex;flex-direction:column;gap:10px}
 .lockrow{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .lockrow div{flex:1;min-width:0}
@@ -107,14 +107,14 @@ button{font-family:inherit}
 .shelfhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .shelfhead h2{margin:0}
 .shelfhead .btn{margin-left:auto}
-.lockrow .pdf.sug{background:#EAF0F3;color:#3D5566}
+.lockrow .pdf.sug{background:#FFFFFF;color:#6E6764}
 .upload{margin-top:14px;padding:16px 18px;border:1px dashed var(--line);border-radius:14px;background:var(--cream)}
 .upload select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14.5px;background:#fff;min-width:260px;max-width:100%}
 .upload input[type=file]{font:inherit;font-size:14px}
 @media (max-width:640px){.lockrow{flex-wrap:wrap}.lockrow div{flex-basis:calc(100% - 60px)}}
 .locker .msg{margin-left:12px;font-size:13px;color:#A4343F}
-.nav .group{font-size:11px;letter-spacing:.1em;color:#6F8290;padding:10px 18px 3px}
-.side .out{margin:auto 24px 0;background:none;border:1px solid #3A4A55;color:var(--side-text);border-radius:30px;padding:9px;font-size:13px;cursor:pointer}
+.nav .group{font-size:11px;letter-spacing:.1em;color:#D6B06A;padding:10px 18px 3px}
+.side .out{margin:auto 24px 0;background:none;border:1px solid #A9606C;color:var(--side-text);border-radius:30px;padding:9px;font-size:13px;cursor:pointer}
 
 .shell > .main{padding:34px clamp(24px,3vw,56px) 70px;width:100%}
 h1.page{font-family:var(--serif);font-weight:600;font-size:36px;font-weight:400;line-height:1.1}
@@ -211,7 +211,7 @@ tr:last-child td{border-bottom:none}
 .book{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .book .cover{aspect-ratio:3/4;background:var(--side);color:#fff;padding:16px;display:flex;flex-direction:column;justify-content:flex-end}
 .book .cover b{font-family:var(--serif);font-weight:600;font-size:20px;font-weight:400;line-height:1.15}
-.book .cover span{font-size:11.5px;color:#AEBBC4;margin-top:8px}
+.book .cover span{font-size:11.5px;color:#F3E4E6;margin-top:8px}
 .book .info{padding:12px 14px;font-size:12.5px;color:var(--grey)}
 .paper{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
 .paper .yr{font-family:var(--serif);font-weight:600;font-size:28px}
@@ -306,7 +306,7 @@ tr:last-child td{border-bottom:none}
 .semcard .s{font-size:12.5px;color:var(--grey)}
 .semcard .g{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:15px}
 .semcard .badge{align-self:flex-start;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.7);color:var(--ink)}
-.semcard:not(.later):hover .s{color:#C9D3DA}
+.semcard:not(.later):hover .s{color:#F3E4E6}
 
 /* drifting project columns from the landing page */
 .projects{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:14px;align-items:start}
@@ -352,7 +352,7 @@ tr:last-child td{border-bottom:none}
 .lockadd{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .linkbox{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .linkbox input{flex:1;min-width:200px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px;background:#fff}
-.lockrow .pdf.image{background:#E6EEF6;color:#2E5A86}
+.lockrow .pdf.image{background:#FFFFFF;color:#6E6764}
 .lockrow .pdf.link{background:#EAF3EC;color:#3F6A52}
 .sheetbox .tablewrap{overflow-x:auto;margin-top:12px}
 .gsheet{width:100%;border-collapse:collapse;min-width:560px}
@@ -374,9 +374,9 @@ tr:last-child td{border-bottom:none}
   .me .sub{margin-top:1px;font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .me .sem{display:none}
   .menubtn{display:inline-flex;align-items:center;gap:8px;grid-column:3;grid-row:1/3;min-height:44px;padding:0 16px;
-           border:1px solid #3A4A55;border-radius:22px;background:none;color:#fff;font:inherit;font-size:14px;cursor:pointer}
+           border:1px solid #A9606C;border-radius:22px;background:none;color:#fff;font:inherit;font-size:14px;cursor:pointer}
   .nav,.side .out{display:none}
-  .side.open .nav{display:flex;max-height:70vh;padding:12px 12px 8px;margin-top:10px;border-top:1px solid #2E3C46}
+  .side.open .nav{display:flex;max-height:70vh;padding:12px 12px 8px;margin-top:10px;border-top:1px solid #93404F}
   .side.open .out{display:block;margin:6px 16px 4px}
   .nav button{border-radius:12px;min-height:44px;font-size:15px}
   .nav .sub{font-size:14.5px}
@@ -392,8 +392,9 @@ body{animation:pageIn .5s ease backwards}
 @keyframes pageIn{from{opacity:0}}
 @media (prefers-reduced-motion:reduce){body{animation:none}}
 </style>
+<link rel="stylesheet" href="theme.css"><!-- the shared look, from the landing page; keep it last in <head> -->
 </head>
-<body>
+<body class="panel-student">
 
 <!-- ================= APP ================= -->
 <div class="shell hide" id="app">
@@ -1393,7 +1394,7 @@ function semCard(s){
               : s.state === 'past' ? 'finished' : 'not started';
   const badge = s.state === 'now' ? '<span class="badge">current</span>' : '<span></span>';
   const click = `onclick="showSem(${s.n},'courses')"`;
-  return `<button class="semcard ${s.state === 'later' ? 'later' : ''}" ${click}>
+  return `<button class="semcard ${s.state === 'later' ? 'later' : ''} ${s.state === 'now' ? 'now' : ''}" ${click}>
       <div class="ink"></div>
       ${badge}
       <div><div class="n">${ordinal(s.n)}</div><div class="s">Semester</div></div>
