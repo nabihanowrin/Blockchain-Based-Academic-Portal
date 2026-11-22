@@ -1,0 +1,32 @@
+DEMO LOGINS FOR THE WEBSITE
+===========================
+Source of truth: auth.py in the repo (TEST_STAFF, staff_register_start/finish).
+Repo: https://github.com/nabihanowrin/Blockchain-Based-Academic-Portal
+
+STAFF (sign in with these Gmail addresses)
+------------------------------------------
+Teacher   teacher.demo.eee@gmail.com
+Office    office.demo.eee@gmail.com
+Examiner  nebanowyn92@gmail.com
+
+How the staff accounts work:
+- These three addresses are listed in TEST_STAFF in auth.py. Only these three
+  non-@cu.ac.bd inboxes may create a staff account, and each gets the role above.
+- There is NO fixed password. The first time, use the staff sign-up: enter the
+  address, enter the code emailed to that inbox, and choose a password.
+  Forgot it? Use the reset flow, which also emails a code.
+- If email sending is off (mailer.py), the code is shown on the page instead
+  (SHOW_CODE in auth.py: 1 = only when email failed, always, 0 = never).
+- Wrong passwords: 5 tries, then locked for 15 minutes. Codes last 10 minutes.
+
+STUDENT
+-------
+Students use <roll number>@std.cu.ac.bd, e.g. 24702045@std.cu.ac.bd.
+Registration is open (OPEN_REGISTRATION = True): sign up with the emailed code.
+seed_sem5.py also seeds demo students with password eee-demo-2026 where it was run.
+
+NOT the website's demo logins
+-----------------------------
+sabrina.demo@cu.ac.bd, office.demo@cu.ac.bd and examiner.demo@cu.ac.bd come from
+seed_staff.py / seed_sem5.py and the older NOTES.md. They exist only in a database
+where those seed scripts were run. Do not treat them as the demo logins.
