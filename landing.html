@@ -591,6 +591,23 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
 .facts .big.pending{color:rgba(255,255,255,.7)}
 .morebtn{box-shadow:inset 0 -3px 0 var(--gold)}
 </style>
+<style>
+/* hero's dark strip: the maroon gradient (light to dark) */
+.h-panel{border-bottom:none}
+.hero3{border-bottom:6px solid var(--accent)}
+.h-dark{background:linear-gradient(160deg,#732f2f 0%,#500000 55%,#3c001c 100%)}
+/* Students and graduation: thin white rules that run end to end above and below the numbers,
+   equal columns, equal space either side of each divider */
+.facts .row{border-top:1px solid rgba(255,255,255,.3);border-bottom:1px solid rgba(255,255,255,.3);gap:0}
+.facts .cell{padding:30px 28px 32px;border-left:1px solid rgba(255,255,255,.3);border-top:none}
+.facts .cell:first-child{border-left:none;padding-left:0}
+.facts .cell:last-child{padding-right:0}
+@media (max-width:900px){
+  .facts .row{grid-template-columns:1fr 1fr;border-bottom:none}
+  .facts .cell{padding:24px 0;border-left:none;border-bottom:1px solid rgba(255,255,255,.3)}
+  .facts .cell:nth-child(even){padding-left:20px;border-left:1px solid rgba(255,255,255,.3)}
+}
+</style>
 </head>
 <body>
 
