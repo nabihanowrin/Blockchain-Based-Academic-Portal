@@ -38,19 +38,19 @@ def init():
     # news added from here, once: never again if the office has removed it
     # (its "achievement_add" stays on the chain, so it is not put back)
     new = []
-    for title, detail, year, link in SEED_POSTS:
+    for title, detail, year, link, image in SEED_POSTS:
         there = con.execute("SELECT 1 FROM achievements WHERE title=?", (title,)).fetchone()
         added_before = con.execute(
             "SELECT 1 FROM blocks WHERE entry_type='achievement_add' AND payload LIKE ?",
             ('%"title":' + json.dumps(title) + '%',)).fetchone()
         if not there and not added_before:
             con.execute("INSERT INTO achievements (title, detail, year, image, added_by, link) "
-                        "VALUES (?, ?, ?, '', 'office:seed', ?)", (title, detail, year, link))
-            new.append((title, year, link))
+                        "VALUES (?, ?, ?, ?, 'office:seed', ?)", (title, detail, year, image, link))
+            new.append((title, year, link, image))
     con.commit()
     con.close()
-    for title, year, link in new:
-        _log("achievement_add", {"title": title, "year": year, "image": "", "link": link}, "seed")
+    for title, year, link, image in new:
+        _log("achievement_add", {"title": title, "year": year, "image": image, "link": link}, "seed")
     db.forget_tables()
 
 
@@ -63,7 +63,11 @@ SEED_POSTS = [
      "tutorials on Ansys Lumerical INTERCONNECT, GPU-accelerated FDTD and Tidy3D · speakers "
      "included Sumit Majumder, Ariful Islam and Mohammad Shuhrawardy",
      2026,
-     "https://www.facebook.com/ictcu/posts/1554550206708224/"),
+     "https://www.facebook.com/ictcu/posts/1554550206708224/", ""),
+    ("Award: Best Stall in the IT category, CUCSU National Research Festival 2026",
+     "Students of the Department of EEE won the Best Stall award in the IT category "
+     "at the CUCSU National Research Festival 2026",
+     2026, "", "photos/cucsu-best-stall-2026.jpg"),
 ]
 
 

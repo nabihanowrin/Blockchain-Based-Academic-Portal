@@ -513,7 +513,8 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
 .newsx{background:#fff;padding:80px 0}
 .nitem.later{display:none}
 .nitem .pic.none{display:grid;place-items:center;background:var(--soft)}
-.nitem .pic.none img{width:auto;height:58%;object-fit:contain;opacity:.85}
+.nitem .pic.none img{width:auto;height:clamp(80px,8vw,124px);object-fit:contain;opacity:.85}
+.nitem h3{color:var(--accent)}
 .more-wrap{text-align:center;margin-top:56px}
 .morebtn{background:var(--accent);color:#fff;border:none;padding:16px 30px;font-family:var(--os);font-weight:800;font-size:17px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
 .morebtn::after{content:"\00a0\00a0»"}
@@ -525,6 +526,22 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
 .drift.dark{background:var(--ink)}
 @media (max-width:1000px){.res-grid,.news-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 36px}}
 @media (max-width:640px){.res-grid,.news-grid{grid-template-columns:1fr;gap:44px}.res-item h3,.nitem h3{margin-top:22px}}
+</style>
+<style>
+.res-grid.two{grid-template-columns:repeat(2,minmax(0,1fr));max-width:1000px;margin-left:auto;margin-right:auto}
+/* the newest post, large, across the top of the news */
+.nitem.lead{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:0;background:var(--accent-dark)}
+.nitem.lead .pic{aspect-ratio:16/10}
+.nitem.lead .ltxt{padding:48px 44px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.nitem.lead .lk{font-family:var(--os);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#E9C9CF;margin:0}
+.nitem.lead h3{margin-top:14px;font-size:clamp(24px,2.4vw,36px);color:#fff}
+.nitem.lead h3 a{color:#fff}
+.nitem.lead p:not(.lk){color:#F3E3E6;-webkit-line-clamp:6}
+@media (max-width:900px){
+  .res-grid.two{grid-template-columns:1fr}
+  .nitem.lead{grid-template-columns:1fr}
+  .nitem.lead .ltxt{padding:28px 24px 32px}
+}
 </style>
 </head>
 <body>
@@ -578,14 +595,14 @@ footer .cols{border-bottom:1px solid var(--ink-2)}
     <h2 class="ctitle">Resources</h2>
     <div class="res-grid">
       <div class="res-item">
-        <div class="pic"><img src="photos/class.jpg" alt="Students working on a project in the department" loading="lazy"></div>
-        <h3><a href="#enter">Student Projects</a></h3>
-        <p>Students add their projects from their own account, with a picture and a short summary.</p>
-      </div>
-      <div class="res-item">
         <div class="pic"><img src="photos/OIP.webp" alt="Students in a lecture at the Department of EEE" loading="lazy"></div>
         <h3><a href="#enter">Find Your Academic Records</a></h3>
         <p>Results, attendance, class tests and CATM, with the full history of every mark.</p>
+      </div>
+      <div class="res-item">
+        <div class="pic"><img src="photos/vlsithon3.png" alt="The VLSIthon 3.0 champions from the department" loading="lazy"></div>
+        <h3><a href="#news">Achievements</a></h3>
+        <p>Awards, competitions, seminars and alumni news from the department.</p>
       </div>
       <div class="res-item">
         <div class="pic"><img src="photos/hq720.jpg" alt="A seminar at the Department of EEE" loading="lazy"></div>
@@ -1017,9 +1034,10 @@ function drawSlides(list){
     const head = a.link
       ? `<h3><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(title)}</a></h3>`
       : `<h3>${esc(title)}</h3>`;
-    return `<article class="nitem${i > 2 ? ' later' : ''}">${pic}${head}<p>${esc(a.detail)}</p></article>`;
+    if (i === 0) return `<article class="nitem lead">${pic}<div class="ltxt"><p class="lk">Latest news · ${esc(a.year)}</p>${head}<p>${esc(a.detail)}</p></div></article>`;
+    return `<article class="nitem${i > 3 ? ' later' : ''}">${pic}${head}<p>${esc(a.detail)}</p></article>`;
   }).join('');
-  document.getElementById('moreNews').hidden = list.length <= 3;
+  document.getElementById('moreNews').hidden = list.length <= 4;
 }
 
 function showAllNews(){
