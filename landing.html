@@ -822,8 +822,9 @@ body{animation:pageIn .5s ease backwards}
   url("photos/alumni-graduates.jpg") right 35% / cover no-repeat, var(--ink)}
 .al-band h2{color:#fff}
 .al-art{color:#E9DCDF;opacity:.9}
-.al-band-in{justify-content:flex-start;gap:clamp(18px,2.4vw,44px);min-height:clamp(260px,30vw,520px)}
-.al-art{order:-1;width:clamp(110px,11vw,200px)}
+/* "Alumni" with the cap drawing under it, larger */
+.al-band-in{flex-direction:column;align-items:flex-start;justify-content:center;gap:clamp(10px,1.2vw,22px);min-height:clamp(300px,32vw,560px)}
+.al-art{order:0;width:clamp(200px,22vw,400px)}
 @media (max-width:800px){
   .al-band{background:linear-gradient(180deg,var(--ink) 0%,var(--ink) 34%,rgba(48,43,49,.4) 66%,rgba(48,43,49,.2) 100%),
     url("photos/alumni-graduates.jpg") center bottom / cover no-repeat, var(--ink)}
