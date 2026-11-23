@@ -755,6 +755,18 @@ body{animation:pageIn .5s ease backwards}
 .rtxt h3{font-size:clamp(19px,1.75vw,32px)}
 .rtxt ul{font-size:clamp(14px,1.2vw,21px);margin-top:clamp(8px,.7vw,14px)}
 .rtxt li{margin-bottom:clamp(4px,.4vw,8px)}
+/* wide screens: the text keeps up to 36% of the width, the card takes about 45% of the
+   section (never a fixed size) and turns landscape, photo left and text right, so it grows
+   in both directions with the screen and stays a rectangle (4 wide : 3 tall) */
+@media (min-width:901px){
+  .offer-in{grid-template-columns:minmax(0,min(480px,36vw)) minmax(0,1fr);column-gap:var(--gut)}
+  .ostack{margin-right:calc(-1 * var(--gut))}   /* the card centres in the whole white part */
+  .rstack{width:min(100%, 45vw);aspect-ratio:4/3}
+  .rcard{display:grid;grid-template-columns:46% 1fr}
+  .rpic{height:100%}
+  .rtxt{display:flex;flex-direction:column;justify-content:center;padding:clamp(18px,2vw,40px)}
+  .rtxt h3{font-size:clamp(20px,1.9vw,34px)}
+  .rtxt ul{font-size:clamp(14px,1.15vw,20px)}}
 @media (max-width:900px){
   .rstack{width:min(88vw, 460px);aspect-ratio:4/5.8}
   .rpic{height:40%}
