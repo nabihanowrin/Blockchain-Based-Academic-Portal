@@ -2,6 +2,22 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 — Groq fixed (it was blocked by name), Groq goes first, 4 models
+
+What you saw: the first question was answered, the second wasn't. The log showed
+Gemini "high demand" (503) on both Gemini models and Groq "HTTP 403: error code: 1010".
+Why: 1010 is Cloudflare (Groq's front door) refusing requests that introduce
+themselves as "Python-urllib", Python's default name. Our server never said who
+it was, so Groq turned us away before even reading the key.
+What changed (`assistant.py`):
+- Every request now sends `User-Agent: EEE-Records/1.0 (+https://eeerecords.onrender.com)`.
+- Groq is tried FIRST (it is fast, and Gemini has been overloaded). New setting
+  `AI_ORDER` ("groq,gemini" default, or "gemini,groq").
+- Groq has a second model too (`GROQ_BACKUP_MODEL`, default `openai/gpt-oss-20b`).
+  Chain now: Groq 120b → Groq 20b → Gemini main (again if busy) → Gemini Flash-Lite.
+- Tests: the fake AI refuses Python's default name, so this can't come back
+  unnoticed; new checks for Groq's second model and the Groq-first order.
+
 ## 2026-11-23 — The assistant has backups: Gemini → Gemini Flash-Lite → Groq
 
 What you saw: "The assistant couldn't be reached just now (TimeoutError)". The

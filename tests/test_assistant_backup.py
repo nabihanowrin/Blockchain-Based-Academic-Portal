@@ -14,7 +14,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-BEHAVE = {}          # "gemini-main" / "gemini-lite" / "groq"  ->  "ok" | "busy" | "slow" | "empty"
+BEHAVE = {}          # "gemini-main" / "gemini-lite" / "groq" / "groq-small"  ->  "ok" | "busy" | "slow" | "empty"
 CALLS = []           # which fake was asked, in order
 
 
@@ -24,8 +24,12 @@ class FakeAI(BaseHTTPRequestHandler):
 
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
-        who = "groq" if self.path.startswith("/groq") else \
-              "gemini-lite" if "lite" in self.path else "gemini-main"
+        assert "urllib" not in self.headers.get("User-Agent", "urllib"), \
+            "Python's default User-Agent: Groq's Cloudflare blocks it (error 1010)"
+        if self.path.startswith("/groq"):
+            who = "groq-small" if body["model"] == "groq-small" else "groq"
+        else:
+            who = "gemini-lite" if "lite" in self.path else "gemini-main"
         CALLS.append(who)
         how = BEHAVE.get(who, "ok")
         if how == "slow":
@@ -33,7 +37,7 @@ class FakeAI(BaseHTTPRequestHandler):
         if how == "busy":
             return self.send(503, {"error": {"code": 503, "message": "high demand"}})
         text = "" if how == "empty" else f"answer from {who}"
-        if who == "groq":
+        if who.startswith("groq"):
             assert body["messages"][0]["role"] == "system", "Groq wasn't given the rules"
             assert body["reasoning_format"] == "hidden", "Groq's thinking would show"
             self.send(200, {"choices": [{"message": {"content": text}}]})
@@ -65,6 +69,8 @@ class TestBackupChain(unittest.TestCase):
             "AI_MODEL": "gemini-main", "AI_BACKUP_MODEL": "gemini-lite",
             "AI_GEMINI_URL": f"http://127.0.0.1:{port}/gemini/{{model}}",
             "AI_GROQ_URL": f"http://127.0.0.1:{port}/groq",
+            "GROQ_MODEL": "groq-big", "GROQ_BACKUP_MODEL": "groq-small",
+            "AI_ORDER": "gemini,groq",                   # most tests: Gemini first
             "AI_WAIT_SECONDS": "0.5",
         })
         os.environ.pop("AI_FAKE", None)
@@ -100,12 +106,27 @@ class TestBackupChain(unittest.TestCase):
         self.assertEqual(self.ask(**{"gemini-main": "busy", "gemini-lite": "busy"}), "answer from groq")
         self.assertEqual(CALLS[-1], "groq")
 
+    def test_groq_second_model(self):
+        self.assertEqual(self.ask(**{"gemini-main": "busy", "gemini-lite": "slow", "groq": "busy"}),
+                         "answer from groq-small")
+
+    def test_groq_first_by_default(self):
+        """The live default: Groq first, Gemini only if both Groq models fail."""
+        os.environ.pop("AI_ORDER")
+        try:
+            self.assertEqual(self.ask(), "answer from groq")
+            self.assertEqual(CALLS, ["groq"])
+            self.assertEqual(self.ask(groq="busy", **{"groq-small": "busy"}), "answer from gemini-main")
+            self.assertEqual(CALLS, ["groq", "groq-small", "gemini-main"])
+        finally:
+            os.environ["AI_ORDER"] = "gemini,groq"
+
     def test_empty_answer_moves_on(self):
         self.assertEqual(self.ask(**{"gemini-main": "empty"}), "answer from gemini-lite")
 
     def test_all_down_says_busy(self):
         with self.assertRaises(self.ai.Refused) as caught:
-            self.ask(**{"gemini-main": "busy", "gemini-lite": "slow", "groq": "busy"})
+            self.ask(**{"gemini-main": "busy", "gemini-lite": "slow", "groq": "busy", "groq-small": "empty"})
         self.assertIn("busy", str(caught.exception))
 
     def test_only_groq_key(self):

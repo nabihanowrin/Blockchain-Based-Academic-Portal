@@ -7,10 +7,12 @@ How one message travels:
   student's own timetable, courses and class-test dates  ->  the AI  ->  answer
   ->  back to the chat box.
 
-The backup chain (free AIs are sometimes busy, so we never rely on just one):
-  1. Gemini, the main model (AI_MODEL). If Google says "busy", ask it once more.
-  2. Gemini's lighter model (AI_BACKUP_MODEL), same key.
-  3. Groq, a different company (GROQ_API_KEY, GROQ_MODEL).
+The backup chain (free AIs are sometimes busy, so we never rely on just one).
+Two companies, two models each, tried in the order AI_ORDER (default groq first,
+because it is fast and its free plan says it doesn't train on what we send):
+  Groq:   GROQ_MODEL, then GROQ_BACKUP_MODEL          (key: GROQ_API_KEY)
+  Gemini: AI_MODEL (asked once more if Google says "busy"), then AI_BACKUP_MODEL
+                                                      (key: GEMINI_API_KEY)
 Each one gets a short wait (AI_WAIT_SECONDS). The first real answer wins. Only if
 all of them fail does the student see "busy, try again in a minute".
 
@@ -33,6 +35,8 @@ Settings (Render -> Environment):
   AI_MODEL           the main Gemini model (default below)
   AI_BACKUP_MODEL    Gemini's lighter backup model (default below)
   GROQ_MODEL         which Groq model (default below)
+  GROQ_BACKUP_MODEL  Groq's second model (default below)
+  AI_ORDER           which company first: "groq,gemini" (default) or "gemini,groq"
   AI_WAIT_SECONDS    how long to wait for each AI before trying the next (default 15)
   AI_DAILY_LIMIT     messages per student per day (default 30), so the free quota lasts
 """
@@ -51,6 +55,10 @@ from ledger import connect
 MODEL = os.environ.get("AI_MODEL", "gemini-3.8-flash").strip()
 BACKUP_MODEL = os.environ.get("AI_BACKUP_MODEL", "gemini-3.1-flash-lite").strip()
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b").strip()
+GROQ_BACKUP_MODEL = os.environ.get("GROQ_BACKUP_MODEL", "openai/gpt-oss-20b").strip()
+# Groq sits behind Cloudflare, which blocks Python's default "Python-urllib" name
+# (error 1010). So every request says who it is from.
+USER_AGENT = "EEE-Records/1.0 (+https://eeerecords.onrender.com)"
 WAIT = float(os.environ.get("AI_WAIT_SECONDS") or 15)
 DAILY_LIMIT = int(os.environ.get("AI_DAILY_LIMIT") or 30)
 MAX_MESSAGE = 800          # characters in one question
@@ -247,7 +255,7 @@ class Busy(Exception):
 def _post(url, body, headers):
     """Sends one request and returns the JSON answer. Any failure becomes Busy, with a log line."""
     req = urllib.request.Request(url, data=json.dumps(body).encode(),
-                                 headers={"Content-Type": "application/json", **headers})
+                                 headers={"Content-Type": "application/json", "User-Agent": USER_AGENT, **headers})
     try:
         with urllib.request.urlopen(req, timeout=WAIT) as r:
             return json.load(r)
@@ -268,7 +276,7 @@ def _gemini(model, system, history, message):
     return "".join(p.get("text", "") for p in parts).strip()
 
 
-def _groq(system, history, message):
+def _groq(model, system, history, message):
     # Groq speaks the "chat completions" format: a list of {role, content}.
     # Gemini calls the AI's turns "model"; here they are "assistant".
     messages = [{"role": "system", "content": system}]
@@ -277,7 +285,7 @@ def _groq(system, history, message):
                          "content": turn["parts"][0]["text"]})
     messages.append({"role": "user", "content": message})
     answer = _post(os.environ.get("AI_GROQ_URL", GROQ_URL), {
-        "model": GROQ_MODEL, "messages": messages, "temperature": 0.4,
+        "model": model, "messages": messages, "temperature": 0.4,
         "max_completion_tokens": 1500,          # room for its thinking AND the answer
         "reasoning_effort": "low", "reasoning_format": "hidden",   # don't show its thinking
     }, {"Authorization": "Bearer " + _key("GROQ_API_KEY")})
@@ -286,15 +294,17 @@ def _groq(system, history, message):
 
 def _chain():
     """The AIs to try, in order, as (name, function). Only the ones with a key."""
-    tries = []
+    gemini, groq = [], []
     if _key("GEMINI_API_KEY"):
         main = lambda s, h, m: _gemini(MODEL, s, h, m)
-        tries += [(f"Gemini {MODEL}", main), (f"Gemini {MODEL} (again)", main)]
+        gemini += [(f"Gemini {MODEL}", main), (f"Gemini {MODEL} (again)", main)]
         if BACKUP_MODEL and BACKUP_MODEL != MODEL:
-            tries.append((f"Gemini {BACKUP_MODEL}", lambda s, h, m: _gemini(BACKUP_MODEL, s, h, m)))
+            gemini.append((f"Gemini {BACKUP_MODEL}", lambda s, h, m: _gemini(BACKUP_MODEL, s, h, m)))
     if _key("GROQ_API_KEY"):
-        tries.append((f"Groq {GROQ_MODEL}", _groq))
-    return tries
+        for model in dict.fromkeys(m for m in (GROQ_MODEL, GROQ_BACKUP_MODEL) if m):
+            groq.append((f"Groq {model}", lambda s, h, m, model=model: _groq(model, s, h, m)))
+    order = os.environ.get("AI_ORDER", "groq,gemini").replace(" ", "").lower()
+    return gemini + groq if order.startswith("gemini") else groq + gemini
 
 
 def ask_ai(system, history, message):
