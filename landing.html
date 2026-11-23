@@ -709,9 +709,18 @@ body{animation:pageIn .5s ease backwards}
   .fw-in{grid-template-columns:1fr;gap:40px}
   .fw-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 20px}
   .fw-links a{font-size:17px}}
-/* faculty: the same space under the photos as above the heading */
-.faculty{padding-bottom:79px}
-@media (max-width:900px){.faculty{padding-bottom:47px}}
+/* one gap everywhere: 88px on a laptop, 56px on a phone, the same above a section's
+   content as below it (faculty's slider adds 10px under the photos, hence 78/46) */
+.newsx{padding-bottom:0}
+.faculty{padding-top:88px;padding-bottom:78px}
+.alum{padding-bottom:88px}
+.drift{padding:88px 0}
+.findway{padding:88px 0}
+.more-wrap:has(> [hidden]){display:none}
+@media (max-width:900px){
+  .faculty{padding-top:56px;padding-bottom:46px}
+  .alum{padding-bottom:56px}
+  .drift,.findway{padding:56px 0}}
 </style>
 </head>
 <body>
@@ -774,50 +783,6 @@ body{animation:pageIn .5s ease backwards}
   </div>
 </section>
 
-
-<!-- ================= FIND YOUR WAY ================= -->
-<section class="findway" id="find">
-  <div class="wrap fw-in">
-    <div class="fw-copy rise">
-      <h2>Find your way</h2>
-      <p>Your records, the department's people and its news, all on this website.</p>
-      <div class="fw-btns">
-        <a class="fw-btn" href="signin.html">Sign in</a>
-        <a class="fw-btn" href="signin.html#register">Register</a>
-      </div>
-    </div>
-    <nav class="fw-links rise d1" aria-label="On this website">
-      <a href="#gallery">Around the department</a>
-      <a href="#faculty">Faculty members</a>
-      <a href="#alumni">Alumni</a>
-      <a href="#what">What this website gives you</a>
-      <a href="#news">News</a>
-      <a href="#faq">Questions</a>
-    </nav>
-  </div>
-</section>
-
-<!-- ================= GALLERY ================= -->
-<section class="drift dark" id="gallery">
-  <div class="wrap grid">
-    <div class="intro rise">
-      <h2>Around the department</h2>
-      <p>Labs, classrooms and the people in them. Hover to stop the movement.</p>
-      <h3 class="labs-h">Labs and facilities</h3>
-      <ul class="labs">
-        <li><b>Electronics Lab</b><span>Building and testing circuits with diodes, transistors and op-amps.</span></li>
-        <li><b>Machines Lab</b><span>Hands-on work with transformers, motors and generators.</span></li>
-        <li><b>Signals and Circuits Lab</b><span>Measuring how circuits and signals behave, from basic networks to filters.</span></li>
-        <li><b>Computer Lab</b><span>Programming, simulation and design software for coursework and projects.</span></li>
-        <li><b>Physics Lab</b><span>The first-year experiments that the engineering courses build on.</span></li>
-        <li><b>Fab Lab</b><span>A workspace for turning designs into working prototypes.</span></li>
-      </ul>
-    </div>
-    <div class="col rise d1"><div class="strip down" id="galA"></div></div>
-    <div class="col rise d2"><div class="strip up" id="galB"></div></div>
-  </div>
-</section>
-
 <!-- ================= FACULTY ================= -->
 <section class="wrap faculty" id="faculty">
   <h2 class="rise">Faculty members</h2>
@@ -857,6 +822,27 @@ body{animation:pageIn .5s ease backwards}
   </div>
 </section>
 
+<!-- ================= GALLERY ================= -->
+<section class="drift dark" id="gallery">
+  <div class="wrap grid">
+    <div class="intro rise">
+      <h2>Around the department</h2>
+      <p>Labs, classrooms and the people in them. Hover to stop the movement.</p>
+      <h3 class="labs-h">Labs and facilities</h3>
+      <ul class="labs">
+        <li><b>Electronics Lab</b><span>Building and testing circuits with diodes, transistors and op-amps.</span></li>
+        <li><b>Machines Lab</b><span>Hands-on work with transformers, motors and generators.</span></li>
+        <li><b>Signals and Circuits Lab</b><span>Measuring how circuits and signals behave, from basic networks to filters.</span></li>
+        <li><b>Computer Lab</b><span>Programming, simulation and design software for coursework and projects.</span></li>
+        <li><b>Physics Lab</b><span>The first-year experiments that the engineering courses build on.</span></li>
+        <li><b>Fab Lab</b><span>A workspace for turning designs into working prototypes.</span></li>
+      </ul>
+    </div>
+    <div class="col rise d1"><div class="strip down" id="galA"></div></div>
+    <div class="col rise d2"><div class="strip up" id="galB"></div></div>
+  </div>
+</section>
+
 <section class="offer" id="what">
   <div class="wrap offer-in">
     <div class="opanel rise">
@@ -891,6 +877,34 @@ body{animation:pageIn .5s ease backwards}
     </div>
   </div>
 </section>
+
+<!-- ================= FIND YOUR WAY ================= -->
+<section class="findway" id="find">
+  <div class="wrap fw-in">
+    <div class="fw-copy rise">
+      <h2>Find your way</h2>
+      <p>Your records, the department's people and its news, all on this website.</p>
+      <div class="fw-btns">
+        <a class="fw-btn" href="signin.html">Sign in</a>
+        <a class="fw-btn" href="signin.html#register">Register</a>
+      </div>
+    </div>
+    <nav class="fw-links rise d1" aria-label="On this website">
+      <a href="#gallery">Around the department</a>
+      <a href="#faculty">Faculty members</a>
+      <a href="#alumni">Alumni</a>
+      <a href="#what">What this website gives you</a>
+      <a href="#news">News</a>
+      <a href="#faq">Questions</a>
+    </nav>
+  </div>
+</section>
+
+
+
+
+
+
 
 
 
