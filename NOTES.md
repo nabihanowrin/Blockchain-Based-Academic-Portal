@@ -2,6 +2,12 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 09:55 — Even spacing on the four panels
+
+From Sabrin's colour chat. Gaps were all different (14–80px; the profile and CGPA cards were 20px apart).
+Now (`theme.css`, SPACING block): 28px between any two cards, side by side or stacked, and from the
+page title to the first card; 56px above each section heading. Phones: 20px / 40px.
+
 ## 2026-11-23 09:45 — Sign in buttons yellow; panels flipped to white page, beige cards
 
 From Sabrin's colour chat.
