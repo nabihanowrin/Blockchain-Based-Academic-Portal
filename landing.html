@@ -785,6 +785,46 @@ body{animation:pageIn .5s ease backwards}
   .alum{padding-bottom:56px}
   .drift,.findway{padding:56px 0}}
 </style>
+<style>
+/* ===== bigger, roomier homepage: every size follows the screen, nothing fixed =====
+   --sec: the space above and below a section's content, and between coloured blocks
+   (about 8% of the screen width: 115px on a 1440px laptop, 64px on a phone) */
+:root{--sec:clamp(64px,8vw,150px);--h2:clamp(36px,4.4vw,76px)}
+.newsx{margin-top:calc(var(--sec) - 44px)}
+#what,#find,footer{margin-top:var(--sec)}
+.faculty{padding-top:var(--sec);padding-bottom:calc(var(--sec) - 10px)}
+.alum{padding-bottom:var(--sec)}
+.drift{padding:var(--sec) 0}
+.findway{padding:var(--sec) 0}
+.offer{padding:var(--sec) 0}
+@media (min-width:901px){.drift .col{margin:calc(-1 * var(--sec)) 0}}
+@media (max-width:900px){.drift .col:last-child,.drift .col{margin-bottom:calc(-1 * var(--sec))}}
+/* section titles: big; descriptions stay small next to them */
+.faculty h2,.drift .intro h2,.opanel h2,.fw-copy h2,.al-band h2{font-size:var(--h2);line-height:1.05;letter-spacing:-.03em}
+.faculty .lede,.drift .intro p{font-size:clamp(15px,1.15vw,19px);margin-top:14px}
+.alg-h{font-size:clamp(22px,2vw,34px)}
+.alrow h3{font-size:clamp(18px,1.4vw,24px)}
+.alrow p{font-size:clamp(14px,1.05vw,17px)}
+/* news: a big title per post, a short small description, 5 seconds a post */
+.nband{padding:calc(var(--sec) * .55) 0}
+.ntitle{font-size:clamp(26px,2.6vw,44px);line-height:1.1;margin-bottom:clamp(18px,2vw,34px)}
+.ntx .lk{font-size:clamp(11px,.85vw,14px)}
+.ntx h3{font-size:clamp(22px,2.2vw,38px);line-height:1.12;letter-spacing:-.02em;margin-top:clamp(8px,.8vw,14px)}
+.ntx .nd-p{font-size:clamp(13.5px,.98vw,16px);line-height:1.6;-webkit-line-clamp:3;margin-top:clamp(10px,1vw,18px)}
+.npics .pic{transition:opacity .7s ease}
+.ntx{transition:opacity .7s ease,visibility 0s linear .7s}
+.ntx.on{transition:opacity .7s ease}
+/* alumni: "Alumni" and the cap on white, the dark graduation photo on the right */
+.al-band{background:linear-gradient(90deg,#fff 0%,#fff 34%,rgba(255,255,255,.85) 42%,rgba(255,255,255,0) 58%),
+  linear-gradient(0deg,rgba(28,26,25,.45),rgba(28,26,25,.45)),
+  url("photos/alumni-graduates.jpg") right 35% / cover no-repeat, #fff}
+.al-band-in{justify-content:flex-start;gap:clamp(18px,2.4vw,44px);min-height:clamp(260px,30vw,520px)}
+.al-art{order:-1;width:clamp(110px,11vw,200px)}
+@media (max-width:800px){
+  .al-band{background:linear-gradient(180deg,#fff 0%,#fff 38%,rgba(255,255,255,0) 70%),
+    url("photos/alumni-graduates.jpg") center bottom / cover no-repeat, #fff}
+  .al-band-in{flex-direction:column;align-items:flex-start;justify-content:flex-start;padding-top:40px;min-height:340px;gap:10px}}
+</style>
 </head>
 <body>
 
@@ -1309,12 +1349,15 @@ function newsGo(k, byHand){
 }
 function newsTick(){
   clearInterval(newsTimer);
-  if (newsCount > 1 && newsSeen && !newsHold) newsTimer = setInterval(() => newsGo(newsCur + 1), 1000);
+  if (newsCount > 1 && newsSeen && !newsHold) newsTimer = setInterval(() => newsGo(newsCur + 1), 5000);
 }
 function newsStart(n){
   newsCount = n; newsCur = 0;
   const box = document.getElementById('nshow');
   new IntersectionObserver(es => { newsSeen = es[0].isIntersecting; newsTick(); }, {threshold: .2}).observe(box);
+  // the post holds still while the mouse is on it, so it can be read
+  box.addEventListener('mouseenter', () => { newsHold = true; newsTick(); });
+  box.addEventListener('mouseleave', () => { newsHold = false; newsTick(); });
 }
 
 function showAllNews(){
