@@ -171,7 +171,19 @@ class TestSite(unittest.TestCase):
         return codes[0]
 
     def call(self, path, body=None, who=None):
+        # creating an account needs the "not a robot" sum: answer a fresh one, like a person would
+        if path in ("/api/register/start", "/api/register/staff-start") and isinstance(body, dict) \
+                and "captcha" not in body:
+            body = {**body, **self.robot_answer()}
         return self.site.call(path, body, self.tokens.get(who) if who else None)
+
+    def robot_answer(self):
+        """Asks for a "not a robot" question and works out the answer."""
+        status, q = self.site.call("/api/captcha")
+        self.assertEqual(status, 200, f"/api/captcha: got {status} {q}")
+        a, op, b = re.search(r"(\d+) (\S) (\d+)", q["question"]).groups()
+        answer = int(a) + int(b) if op == "+" else int(a) - int(b)
+        return {"captcha": answer, "captcha_ticket": q["ticket"]}
 
     def ok(self, path, body=None, who=None, what=""):
         """Call, and fail the test (with the site's own words) unless it worked."""
@@ -195,7 +207,7 @@ class TestSite(unittest.TestCase):
     # ------------------------------------------------------------------
     def test_01_public_pages_open(self):
         """The landing page and every role's page open."""
-        for page in ("/landing.html", "/app.html", "/teacher.html", "/office.html", "/exam.html"):
+        for page in ("/landing.html", "/signin.html", "/app.html", "/teacher.html", "/office.html", "/exam.html"):
             status, _ = self.call(page)
             self.assertEqual(status, 200, f"{page} did not open")
         landing = self.ok("/api/landing")
@@ -713,18 +725,32 @@ class TestSite(unittest.TestCase):
         status, js = self.call("/loader.js")
         self.assertEqual(status, 200, "loader.js can't be downloaded, so no page can show the loading screen")
         self.assertIn("eeeLoader", js)
-        for page in ("landing.html", "app.html", "teacher.html", "office.html", "exam.html"):
+        for page in ("landing.html", "signin.html", "app.html", "teacher.html", "office.html", "exam.html"):
             with open(os.path.join(ROOT, page), encoding="utf-8") as f:
                 html = f.read()
             self.assertIn('<script src="loader.js"></script>', html, f"{page} doesn't load the loading screen")
-            if page != "landing.html":
+            if page not in ("landing.html", "signin.html"):
                 self.assertIn("eeeGo('landing.html#enter')", html, f"signing out of {page} skips the loading screen")
-        with open(os.path.join(ROOT, "landing.html"), encoding="utf-8") as f:
+        with open(os.path.join(ROOT, "signin.html"), encoding="utf-8") as f:
             self.assertIn("'#intro'", f.read(), "an account opened in a new tab won't play the loading screen")
         node = shutil.which("node")
         if node:
             done = subprocess.run([node, "--check", os.path.join(ROOT, "loader.js")], capture_output=True, text=True)
             self.assertEqual(done.returncode, 0, f"loader.js has a JavaScript error:\n{done.stderr[-1500:]}")
+
+    def test_26b_not_a_robot_check(self):
+        """Creating an account needs the right answer to a fresh "not a robot" question; each works once."""
+        form = {"email": "99999078@std.cu.ac.bd", "name": "Robot Test", "father": "F", "mother": "M",
+                "batch": self.batch}
+        self.refused("/api/register/start", {**form, "captcha": ""}, status=400, what="no answer")
+        robot = self.robot_answer()
+        self.refused("/api/register/start", {**form, **robot, "captcha": robot["captcha"] + 1},
+                     status=400, what="wrong answer")
+        self.refused("/api/register/start", {**form, **robot}, status=400,
+                     what="the same question answered twice (every try uses it up)")
+        self.refused("/api/register/staff-start", {"email": "someone@cu.ac.bd", "captcha": ""},
+                     status=400, what="staff account with no answer")
+        self.ok("/api/register/start", form, what="a right answer to a fresh question")
 
     def test_27_codes_cant_flood_an_inbox(self):
         """Asking for codes again and again stops after a few, so nobody's inbox can be flooded."""
