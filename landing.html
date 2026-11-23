@@ -690,8 +690,8 @@ body{animation:pageIn .5s ease backwards}
 /* find your way: charcoal on the left fading into the graduation photo */
 .findway{color:#fff;padding:96px 0;
   background:
-    linear-gradient(90deg, var(--ink) 0%, var(--ink) 30%, rgba(48,43,49,.86) 46%, rgba(48,43,49,.62) 66%, rgba(48,43,49,.55) 100%),
-    url("photos/graduation-caps.jpg") right center / cover no-repeat, var(--ink)}
+    linear-gradient(90deg, var(--ink) 0%, var(--ink) 26%, rgba(48,43,49,.7) 38%, rgba(48,43,49,.25) 52%, rgba(48,43,49,.12) 100%),
+    url("photos/graduation-caps.jpg") right 60% / cover no-repeat, var(--ink)}
 .fw-in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:center}
 .fw-copy h2{font-family:var(--os);font-weight:800;font-size:clamp(32px,4vw,48px);letter-spacing:-.02em}
 .fw-copy p{margin-top:16px;font-size:16.5px;line-height:1.6;color:rgba(255,255,255,.85);max-width:40ch}
@@ -701,11 +701,11 @@ body{animation:pageIn .5s ease backwards}
 .fw-btn:hover{background:#fff;color:var(--ink)}
 .fw-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 32px}
 .fw-links a{color:#fff;text-decoration:none;font-family:var(--os);font-weight:600;font-size:19px;line-height:1.35;
-  text-shadow:0 1px 8px rgba(0,0,0,.45)}
+  text-shadow:0 1px 3px rgba(0,0,0,.85),0 2px 14px rgba(0,0,0,.7)}
 .fw-links a:hover{text-decoration:underline;text-underline-offset:5px}
 @media (max-width:900px){
-  .findway{padding:64px 0;background:linear-gradient(180deg, var(--ink) 0%, rgba(48,43,49,.82) 45%, rgba(48,43,49,.66) 100%),
-    url("photos/graduation-caps.jpg") center / cover no-repeat, var(--ink)}
+  .findway{padding:64px 0;background:linear-gradient(180deg, var(--ink) 0%, var(--ink) 30%, rgba(48,43,49,.55) 55%, rgba(48,43,49,.3) 100%),
+    url("photos/graduation-caps.jpg") center bottom / cover no-repeat, var(--ink)}
   .fw-in{grid-template-columns:1fr;gap:40px}
   .fw-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 20px}
   .fw-links a{font-size:17px}}
@@ -747,6 +747,10 @@ body{animation:pageIn .5s ease backwards}
 /* a white gap of the same size between every two coloured blocks */
 .newsx{margin-top:44px}                 /* 44px of the numbers strip + 44px = 88px */
 #what,#find,footer{margin-top:88px}
+/* news: each post stays one second, with a short change between */
+.npics .pic{transition:opacity .25s ease}
+.ntx{transition:opacity .25s ease,visibility 0s linear .25s}
+.ntx.on{transition:opacity .25s ease}
 @media (max-width:900px){.newsx{margin-top:12px}#what,#find,footer{margin-top:56px}}
 @media (max-width:900px){
   .faculty{padding-top:56px;padding-bottom:46px}
@@ -1277,7 +1281,7 @@ function newsGo(k, byHand){
 }
 function newsTick(){
   clearInterval(newsTimer);
-  if (newsCount > 1 && newsSeen && !newsHold) newsTimer = setInterval(() => newsGo(newsCur + 1), 3000);
+  if (newsCount > 1 && newsSeen && !newsHold) newsTimer = setInterval(() => newsGo(newsCur + 1), 1000);
 }
 function newsStart(n){
   newsCount = n; newsCur = 0;
