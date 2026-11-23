@@ -11,7 +11,7 @@
      maroon   #602933   (whole site, homepage too; hover #4A2028; was #7E2233)
      charcoal #302B31   (sidebar, dark text; same as the homepage hero and footer)
      yellow   #F1C45D   (the homepage yellow, now on the panels too; hover #E5B444)
-     cream    #F6F2EE   page        white #fff   cards
+     page     #FFFFFF   white        cards #FAF6F1 (lightest beige; flipped 23 Nov, was cream page / white cards)
    (Before 23 Nov 09:10 the panels used Najah's deeper maroon #501315 and
    near-black #1C1A19 text.)
    Variety comes from using those three solid colours for different things
@@ -30,7 +30,7 @@
   --charcoal:#302B31; --gold:#F1C45D; --gold-deep:#E5B444; --gold-wash:#F8F0E0; --gold-text:#6B4E1C;
   --stone:#EFE6DF;
   --side:#302B31; --side-text:#F6E3E7;
-  --cream:#F6F2EE; --card:#fff; --ink:#302B31; --text:#302B31; --grey:#6E6764; --line:#E4DCD6; --soft:#EFE9E4;
+  --cream:#FFFFFF; --card:#FAF6F1; --ink:#302B31; --text:#302B31; --grey:#6E6764; --line:#E4DCD6; --soft:#EFE9E4;
   --butter:#F8F0E0; --mist:#F4E8EA; --clay:#EFE6DF; --sage:#F6F2EE;
   --sans:"Plus Jakarta Sans",Arial,Helvetica,sans-serif; --serif:"Plus Jakarta Sans",Arial,Helvetica,sans-serif; --mono:"Plus Jakarta Sans",Arial,Helvetica,sans-serif;
   --r:6px;
@@ -135,7 +135,7 @@ table tbody tr:hover td{background:#FBF6F6}
 
 /* home cards: plain white */
 .panel-student .photo{box-shadow:none;border:0}
-.panel-student .gpa{background:#fff}
+.panel-student .gpa{background:var(--card)}
 .panel-student .gpa .big{font-family:var(--sans);font-weight:700;color:var(--accent)}
 .panel-student .gbar{fill:var(--accent)}
 .panel-student .gbar.now{fill:none;stroke:var(--gold-deep)}
@@ -157,7 +157,7 @@ table tbody tr:hover td{background:#FBF6F6}
 .panel-student .semcard.now{background:var(--gold) !important}
 .panel-student .semcard.now .n,.panel-student .semcard.now .g,.panel-student .semcard.now .s{color:#302B31}
 .panel-student .semcard.now .badge{background:#302B31;border-color:#302B31;color:var(--gold)}
-.panel-student .semcard.later{background:#fff !important;border:1px dashed var(--line);box-shadow:none}
+.panel-student .semcard.later{background:var(--card) !important;border:1px dashed var(--line);box-shadow:none}
 .panel-student .semcard.later .n{color:#B5ACA7}
 .panel-student .semcard.later .s,.panel-student .semcard.later .g{color:var(--grey)}
 .panel-student .semcard .ink{background:rgba(255,255,255,.12)}
@@ -185,7 +185,7 @@ table tbody tr:hover td{background:#FBF6F6}
 /* =====================================================================
    OFFICE: the three "Right now" numbers in maroon, charcoal and gold
    ===================================================================== */
-.panel-office .tile{background:#fff;border-color:var(--line);box-shadow:var(--shadow)}
+.panel-office .tile{background:var(--card);border-color:var(--line);box-shadow:var(--shadow)}
 .panel-office .tile .v{font-weight:700;color:var(--accent)}
 .panel-office .tiles:not(:has(.pick)) .tile{border:0}
 .panel-office .tiles:not(:has(.pick)) .tile:nth-child(1){background:var(--accent)}
@@ -200,7 +200,7 @@ table tbody tr:hover td{background:#FBF6F6}
 /* =====================================================================
    EXAMINER: white cards; the current one solid maroon
    ===================================================================== */
-.sems .sem{background:#fff !important;box-shadow:var(--shadow)}
+.sems .sem{background:var(--card) !important;box-shadow:var(--shadow)}
 .sems .sem .n{font-family:var(--sans);font-weight:700;color:var(--accent)}
 .sems .sem:has(.tag.now){background:var(--accent) !important;border-color:var(--accent);box-shadow:var(--shadow)}
 .sems .sem:has(.tag.now) .n,.sems .sem:has(.tag.now) *{color:#fff}
