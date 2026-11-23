@@ -1091,8 +1091,14 @@ class Handler(SimpleHTTPRequestHandler):
                 return
         try:
             answer()
-        except (BrokenPipeError, ConnectionResetError):
-            pass                                  # the visitor closed the page; nothing to say
+        except (BrokenPipeError, ConnectionResetError) as e:
+            # usually the visitor closed the page, but it can also be a connection WE
+            # made (e.g. to Google) that dropped: log it and still try to answer.
+            print(f"  [server] connection dropped while answering {path}: {type(e).__name__}", flush=True)
+            try:
+                self.reply({"ok": False, "why": "A connection dropped while answering. Please try again."}, 502)
+            except Exception:
+                pass
         except Exception as e:
             traceback.print_exc()
             lost_db = type(e).__name__ in ("OperationalError", "InterfaceError", "PoolTimeout")

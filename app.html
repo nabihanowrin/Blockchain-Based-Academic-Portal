@@ -1622,8 +1622,13 @@ async function askSend(e){
   const wait = askLine('note', 'Thinking…');
   go.disabled = true;
   try {
-    const res = await api('/api/assistant', {method:'POST', headers:{'Content-Type':'application/json'},
-                                             body: JSON.stringify({message, history: ASK_HISTORY})});
+    const r = await fetch('/api/assistant', {method:'POST',
+      headers:{'Content-Type':'application/json', Authorization: 'Bearer ' + token()},
+      body: JSON.stringify({message, history: ASK_HISTORY})});
+    if (r.status === 401) return toLanding();
+    let res;
+    try { res = await r.json(); }
+    catch (e) { res = {ok: false, why: `The server sent back an error page (${r.status}). Please try again in a minute.`}; }
     wait.remove();
     if (!res.ok){ askLine('note', res.why); return; }
     askLine('ai', res.text);
@@ -1632,7 +1637,7 @@ async function askSend(e){
     if (res.left_today <= 3) askLine('note', `${res.left_today} question${res.left_today === 1 ? '' : 's'} left today.`);
   } catch (err) {
     wait.remove();
-    askLine('note', 'Something went wrong. Please try again.');
+    askLine('note', "Couldn't reach the website (" + (err.message || 'no connection') + '). Check your internet and try again.');
   } finally {
     go.disabled = false;
     input.focus();

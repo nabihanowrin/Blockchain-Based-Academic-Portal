@@ -2,6 +2,22 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 — The assistant says WHY it failed instead of "Something went wrong"
+
+What you saw: every question got "Something went wrong. Please try again."
+Why: that message only appeared when the page got back something that was not
+our JSON answer (for example Render's own error page, or a dropped connection),
+so it hid the real reason.
+What changed:
+- `app.html`: the chat now reads the server's status. If the answer isn't JSON
+  it says "The server sent back an error page (502)…" with the number; if the
+  internet is down it says that.
+- `assistant.py`: any failure talking to Google (not only "can't connect") is
+  caught, written to the Render log as `[assistant] could not get an answer from
+  Gemini: ...`, and shown to the student as a plain sentence.
+- `server.py`: if a connection drops while answering, it is logged and the page
+  still gets a JSON answer.
+
 ## 2026-11-23 — The assistant knows the department, not just the routine
 
 Besides the student's own routine and class tests, the assistant is now given

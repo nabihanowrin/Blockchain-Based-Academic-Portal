@@ -227,9 +227,11 @@ def reply(roll, name, view, message, history=None):
             raise Refused("The assistant is busy right now (the free limit for this minute or day is used up). "
                           "Please try again a little later.")
         raise Refused("The assistant couldn't answer just now. Please try again later.")
-    except (urllib.error.URLError, TimeoutError) as e:
-        print(f"  [assistant] could not reach Gemini: {e}", flush=True)
-        raise Refused("The assistant couldn't be reached just now. Please try again later.")
+    except Exception as e:
+        # anything else on the way to Google and back: the connection dropped, timed
+        # out, or the answer wasn't readable. Log it for us; tell the student plainly.
+        print(f"  [assistant] could not get an answer from Gemini: {type(e).__name__}: {e}", flush=True)
+        raise Refused(f"The assistant couldn't be reached just now ({type(e).__name__}). Please try again later.")
 
     parts = (((answer.get("candidates") or [{}])[0].get("content") or {}).get("parts") or [])
     text = "".join(p.get("text", "") for p in parts).strip()
