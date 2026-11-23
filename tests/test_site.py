@@ -793,6 +793,85 @@ class TestSite(unittest.TestCase):
         pay = self.ok("/api/payments", who="student")
         self.assertEqual(pay["dept"]["amounts"], {"development": 700, "somitee": 500})
 
+    def send_file(self, path, name, data, who):
+        """Uploads raw bytes the way the page does: the file name goes in a header."""
+        req = urllib.request.Request(self.site.base + path, data=data, headers={
+            "Authorization": "Bearer " + self.tokens[who], "X-Filename": name,
+            "Content-Type": "application/octet-stream"})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                return resp.status, json.loads(resp.read())
+        except urllib.error.HTTPError as e:
+            return e.code, json.loads(e.read())
+
+    def test_28c_student_edits_a_project(self):
+        """A student edits their project, adds pictures and PDFs, picks the cover, removes files, deletes it."""
+        pid = self.ok("/api/project", {"title": "Line follower", "summary": "First try", "year": 2026},
+                      who="student")["id"]
+        mine = lambda: next(p for p in self.ok("/api/home", who="student")["projects"] if p["id"] == pid)
+
+        # the words
+        self.ok("/api/project/edit", {"id": pid, "title": "Line follower robot",
+                                      "summary": "With obstacle sensing", "year": 2026}, who="student")
+        self.assertEqual((mine()["title"], mine()["summary"]), ("Line follower robot", "With obstacle sensing"))
+        self.refused("/api/project/edit", {"id": pid, "title": "", "summary": "", "year": 2026},
+                     who="student", status=400, what="a project with no title")
+        self.refused("/api/project/edit", {"id": pid, "title": "x", "summary": "", "year": 2026},
+                     who="teacher", status=403, what="a teacher editing a student's project")
+
+        # pictures and PDFs: the first picture becomes the cover
+        png = b"\x89PNG\r\n\x1a\n" + secrets.token_bytes(64)
+        status, a = self.send_file(f"/api/project/file?project_id={pid}", "robot.png", png, "student")
+        self.assertEqual(status, 200, a)
+        status, b = self.send_file(f"/api/project/file?project_id={pid}", "track.jpg",
+                                   b"\xff\xd8\xff" + secrets.token_bytes(64), "student")
+        self.assertEqual(status, 200, b)
+        status, c = self.send_file(f"/api/project/file?project_id={pid}", "report.pdf",
+                                   b"%PDF-1.4 " + secrets.token_bytes(64), "student")
+        self.assertEqual(status, 200, c)
+        status, _ = self.send_file(f"/api/project/file?project_id={pid}", "virus.exe", b"MZ", "student")
+        self.assertEqual(status, 400, "a .exe should be refused")
+        status, _ = self.send_file(f"/api/project/file?project_id=999999", "x.png", png, "student")
+        self.assertEqual(status, 400, "adding to a project that isn't yours should be refused")
+
+        files = mine()["files"]
+        self.assertEqual([f["kind"] for f in files], ["image", "image", "pdf"])
+        self.assertEqual(mine()["image"], files[0]["url"], "the first picture should be the cover")
+        status, _ = self.site.call(files[2]["url"], token=self.tokens["student"])
+        self.assertEqual(status, 200, "the student should be able to open their PDF")
+
+        # pick another cover, then remove it: the cover moves back to the picture left
+        self.ok("/api/project/cover", {"id": b["id"]}, who="student")
+        self.assertEqual(mine()["image"], files[1]["url"])
+        self.refused("/api/project/cover", {"id": c["id"]}, who="student", status=400, what="a PDF as cover")
+        self.ok("/api/project/file/remove", {"id": b["id"]}, who="student")
+        self.assertEqual(mine()["image"], files[0]["url"])
+        self.assertEqual(len(mine()["files"]), 2)
+
+        # no more than 8 files on one project
+        for i in range(6):
+            status, _ = self.send_file(f"/api/project/file?project_id={pid}", f"p{i}.png",
+                                       png + bytes([i]), "student")
+            self.assertEqual(status, 200)
+        status, _ = self.send_file(f"/api/project/file?project_id={pid}", "ninth.png", png, "student")
+        self.assertEqual(status, 400, "a ninth file should be refused")
+
+        # delete the project
+        self.ok("/api/project/delete", {"id": pid}, who="student")
+        self.assertFalse([p for p in self.ok("/api/home", who="student")["projects"] if p["id"] == pid])
+        self.refused("/api/project/delete", {"id": pid}, who="student", status=400, what="deleting it twice")
+
+    def test_28d_panels_share_one_theme(self):
+        """The four panels load theme.css, so they keep one look."""
+        status, css = self.call("/theme.css")
+        self.assertEqual(status, 200, "theme.css can't be downloaded, so the panels lose their look")
+        for page in ("app.html", "teacher.html", "office.html", "exam.html"):
+            with open(os.path.join(ROOT, page), encoding="utf-8") as f:
+                head = f.read().split("</head>", 1)[0]
+            self.assertIn('href="theme.css"', head, f"{page} doesn't load theme.css")
+            self.assertGreater(head.rfind("theme.css"), head.rfind("</style>"),
+                               f"{page} loads theme.css before its own styles, so the old look wins")
+
     def test_29_delete_account_keeps_the_marks(self):
         """A student deletes their login; the marks stay; registering again brings everything back."""
         item_id = self.item["item_id"]

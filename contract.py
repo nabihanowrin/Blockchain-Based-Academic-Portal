@@ -1015,6 +1015,20 @@ def best_n(fractions, n):
 def add_project(roll, title, summary, year):
     """A student adds their own project. It is not a verified record,
     so it lives in an ordinary table, not on the chain."""
+    title, summary, year = check_project(title, summary, year)
+
+    con = connect()
+    cur = con.cursor()
+    cur.execute("INSERT INTO projects (roll, title, summary, year) VALUES (?,?,?,?)",
+                (roll, title, summary, year))
+    new_id = cur.lastrowid
+    con.commit()
+    con.close()
+    return new_id
+
+
+def check_project(title, summary, year):
+    """The same rules for a new project and for an edited one."""
     title = (title or "").strip()
     summary = (summary or "").strip()
     if not title:
@@ -1029,15 +1043,7 @@ def add_project(roll, title, summary, year):
         raise Refused("The year must be a number, like 2026.")
     if not 2000 <= year <= 2100:
         raise Refused("That year doesn't look right.")
-
-    con = connect()
-    cur = con.cursor()
-    cur.execute("INSERT INTO projects (roll, title, summary, year) VALUES (?,?,?,?)",
-                (roll, title, summary, year))
-    new_id = cur.lastrowid
-    con.commit()
-    con.close()
-    return new_id
+    return title, summary, year
 
 
 def verify_project(teacher_id, project_id):

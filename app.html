@@ -324,11 +324,55 @@ tr:last-child td{border-bottom:none}
 @media (prefers-reduced-motion:reduce){.pstrip.up,.pstrip.down{animation:none}}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
 .pcard .pic{height:120px;background:var(--mist);display:grid;place-items:center;font-family:var(--serif);font-weight:600;font-size:30px;color:var(--side)}
-.pcard .pic img{width:100%;height:100%;object-fit:cover}
+.pcard .pic{position:relative;overflow:hidden}
+.pcard .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pcard .b{padding:14px 16px}
 .pcard h3{font-size:15px;font-weight:600;line-height:1.3}
 .pcard p{font-size:12.5px;color:var(--grey);margin-top:6px;line-height:1.5}
 .pcard .foot2{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:11.5px;color:var(--grey)}
+
+.pcard .pcount{font-size:11.5px;color:var(--grey);margin-top:8px}
+.pcard .pedit{margin-top:12px;width:100%;padding:8px;border:1px solid var(--accent);background:#fff;color:var(--accent);
+  font-family:var(--sans);font-size:12.5px;font-weight:700;cursor:pointer;border-radius:4px}
+.pcard .pedit:hover{background:var(--accent);color:#fff}
+
+/* the project editor, opened over the page */
+.pmodal{position:fixed;inset:0;z-index:60;background:rgba(28,26,25,.55);display:none;
+  align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+.pmodal.open{display:flex}
+.ppanel{background:#fff;width:100%;max-width:720px;border-radius:8px;padding:26px 28px 22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);display:grid;gap:14px}
+.ppanel .phead{display:flex;justify-content:space-between;align-items:center}
+.ppanel h2{font-size:24px;font-weight:800;color:var(--accent)}
+.ppanel h3{font-size:16px;font-weight:700;margin-top:10px;color:var(--ink)}
+.ppanel h3 small{font-weight:400;color:var(--grey);font-size:13px;margin-left:8px}
+.ppanel .px{border:0;background:none;font-size:28px;line-height:1;cursor:pointer;color:var(--grey);padding:0 4px}
+.ppanel label{display:grid;gap:6px;font-size:13px;font-weight:700;color:var(--ink)}
+.ppanel label.yr input{width:130px}
+.ppanel input,.ppanel textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--sans);font-size:14px;font-weight:400;background:#fff}
+.ppanel textarea{resize:vertical}
+.ppanel .prow2{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ppanel .pmsg{font-size:13px;color:var(--grey)}
+.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.ptile{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff}
+.ptile.cover{border-color:var(--accent)}
+.ptile .face{height:110px;background:var(--cream);position:relative;display:grid;place-items:center}
+.ptile .face img{width:100%;height:100%;object-fit:cover}
+.ptile .face .pill{position:absolute;left:8px;top:8px}
+.ptile .pdfface{display:grid;justify-items:center;gap:4px;padding:8px;text-align:center}
+.ptile .pdfface b{background:var(--charcoal);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px}
+.ptile .pdfface span{font-size:11.5px;color:var(--grey);word-break:break-all;line-height:1.3}
+.ptile .acts{display:flex;gap:6px;padding:8px;flex-wrap:wrap}
+.ptile .acts button{flex:1;padding:6px 4px;font-size:12px;font-weight:700;font-family:var(--sans);cursor:pointer;
+  border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:4px}
+.ptile .acts button:hover{border-color:var(--accent);color:var(--accent)}
+.ptile .acts button.rm:hover{border-color:var(--charcoal);background:var(--charcoal);color:#fff}
+.ppanel .padd{justify-self:start;cursor:pointer;display:inline-flex}
+.ppanel .pdanger{border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+.ppanel .pdanger button{border:0;background:none;color:var(--accent);font-weight:700;font-size:13px;cursor:pointer;
+  text-decoration:underline;font-family:var(--sans);padding:0}
+@media (max-width:600px){ .pmodal{padding:0} .ppanel{border-radius:0;min-height:100%;padding:20px 16px} }
 
 .addform{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;display:grid;gap:10px}
 .addform input,.addform textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:var(--sans);font-size:13.5px;background:var(--cream)}
@@ -1420,10 +1464,16 @@ function projectCard(p){
     ? `<span class="pill ok">verified</span>`
     : `<span class="pill dim">self-reported</span>`;
   const pic = p.image ? `<img data-auth="${p.image}" alt="">` : initials(p.title);
+  const files = p.files || [];
+  const pics = files.filter(f => f.kind === 'image').length, pdfs = files.length - pics;
+  const count = [pics ? `${pics} picture${pics > 1 ? 's' : ''}` : '', pdfs ? `${pdfs} PDF${pdfs > 1 ? 's' : ''}` : '']
+                  .filter(Boolean).join(' · ');
   return `<article class="pcard">
       <div class="pic">${pic}</div>
       <div class="b"><h3>${esc(p.title)}</h3><p>${esc(p.summary || '')}</p>
-        <div class="foot2"><span>${p.year}</span>${tag}</div></div>
+        ${count ? `<div class="pcount">${count}</div>` : ''}
+        <div class="foot2"><span>${p.year}</span>${tag}</div>
+        <button class="pedit" onclick="editProject(${p.id})">Edit project</button></div>
     </article>`;
 }
 
@@ -1435,7 +1485,7 @@ function toggleAdd(){
       <textarea id="pSum" placeholder="What did you build or study?" maxlength="400"></textarea>
       <div class="row">
         <input id="pYear" type="number" value="${new Date().getFullYear()}" style="width:110px">
-        <input id="pPic" type="file" accept=".jpg,.jpeg,.png,.webp" style="flex:1">
+        <input id="pPic" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple style="flex:1">
       </div>
       <div class="row"><button class="btn solid" onclick="saveProject()">Save project</button></div>
       <div class="err" id="pErr"></div>
@@ -1453,13 +1503,155 @@ async function saveProject(){
   });
   if (!res.ok){ err.textContent = res.why; return; }
 
-  const file = document.getElementById('pPic').files[0];
-  if (file){
-    const up = await upload('project', file, res.id);
-    if (!up.ok){ err.textContent = 'Project saved, but the picture was refused: ' + up.why; return; }
-  }
+  const refused = await addProjectFiles(res.id, document.getElementById('pPic').files, err);
+  if (refused) return;
   homePage();
 }
+
+/* ---------- editing a project: its words, pictures and PDFs ---------- */
+const PROJECT_MAX_FILES = 8;          // the same limit as projects.py
+
+// uploads the chosen files one by one; returns true if any was refused
+async function addProjectFiles(projectId, fileList, msgEl){
+  const files = Array.from(fileList || []);
+  let refused = false;
+  for (let i = 0; i < files.length; i++){
+    if (msgEl) msgEl.textContent = `Uploading ${i + 1} of ${files.length}…`;
+    const r = await fetch(`/api/project/file?project_id=${projectId}`, {
+      method:'POST',
+      headers:{'Authorization': 'Bearer ' + token(), 'X-Filename': encodeURIComponent(files[i].name),
+               'Content-Type': files[i].type || 'application/octet-stream'},
+      body: files[i]
+    });
+    const res = await r.json();
+    if (!res.ok){ refused = true; if (msgEl) msgEl.textContent = `${files[i].name}: ${res.why}`; break; }
+  }
+  if (!refused && msgEl) msgEl.textContent = '';
+  return refused;
+}
+
+function projectById(id){ return (HOME.projects || []).find(p => p.id === id); }
+
+function editProject(id){
+  const p = projectById(id);
+  if (!p) return;
+  let box = document.getElementById('projEdit');
+  if (!box){
+    box = document.createElement('div');
+    box.id = 'projEdit';
+    box.className = 'pmodal';
+    box.addEventListener('click', e => { if (e.target === box) closeProjectEditor(); });
+    document.body.appendChild(box);
+  }
+  const files = p.files || [];
+  const tiles = files.map(f => {
+    const cover = f.kind === 'image' && p.image === f.url;
+    const face = f.kind === 'image'
+      ? `<img data-auth="${f.url}" alt="${esc(f.name)}">`
+      : `<div class="pdfface"><b>PDF</b><span>${esc(f.name)}</span></div>`;
+    return `<div class="ptile ${cover ? 'cover' : ''}">
+        <div class="face">${face}${cover ? '<span class="pill acc">cover</span>' : ''}</div>
+        <div class="acts">
+          ${f.kind === 'image' && !cover ? `<button onclick="projectCover(${f.id}, ${p.id})">Make cover</button>` : ''}
+          ${f.kind === 'pdf' ? `<button onclick="openProjectFile('${f.url}')">Open</button>` : ''}
+          <button class="rm" onclick="removeProjectFile(${f.id}, ${p.id})">Remove</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  box.innerHTML = `<div class="ppanel" role="dialog" aria-modal="true" aria-labelledby="peTitle">
+      <div class="phead"><h2 id="peTitle">Edit project</h2>
+        <button class="px" onclick="closeProjectEditor()" aria-label="Close">×</button></div>
+      ${p.verified_by ? `<p class="notice">This project is <b>verified</b>. Changing its title, summary or year removes the
+        verified tag, because the teacher confirmed the old wording. Adding or removing pictures keeps it.</p>` : ''}
+      <label>Title<input id="peT" maxlength="120" value="${esc(p.title)}"></label>
+      <label>What did you build or study?<textarea id="peS" maxlength="400" rows="4">${esc(p.summary || '')}</textarea></label>
+      <label class="yr">Year<input id="peY" type="number" value="${p.year}"></label>
+      <div class="prow2"><button class="btn solid" onclick="saveProjectEdit(${p.id})">Save changes</button>
+        <span class="pmsg" id="peMsg"></span></div>
+
+      <h3>Pictures and PDFs <small>${files.length} of ${PROJECT_MAX_FILES}</small></h3>
+      <p class="lede">The first picture is the cover on your project card. Pictures: JPG, PNG or WEBP. Up to 5 MB each.</p>
+      <div class="ptiles">${tiles || '<p class="lede">Nothing added yet.</p>'}</div>
+      ${files.length < PROJECT_MAX_FILES ? `<label class="btn padd">Add pictures or PDFs
+        <input type="file" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple onchange="addFilesToProject(${p.id}, this)" hidden></label>` : ''}
+      <span class="pmsg" id="peFileMsg"></span>
+
+      <div class="pdanger"><button onclick="deleteProject(${p.id})">Delete this project</button></div>
+    </div>`;
+  box.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  hydrate(box);
+}
+
+function closeProjectEditor(){
+  const box = document.getElementById('projEdit');
+  if (box) box.classList.remove('open');
+  document.body.style.overflow = '';
+  homePage();                                  // show the changes on the cards
+}
+
+async function refreshProject(id){
+  HOME = await api('/api/home');
+  if (projectById(id)) editProject(id); else closeProjectEditor();
+}
+
+async function saveProjectEdit(id){
+  const msg = document.getElementById('peMsg');
+  msg.textContent = 'Saving…';
+  const res = await api('/api/project/edit', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({id, title: document.getElementById('peT').value,
+      summary: document.getElementById('peS').value, year: document.getElementById('peY').value})
+  });
+  if (!res.ok){ msg.textContent = res.why; return; }
+  await refreshProject(id);
+  document.getElementById('peMsg').textContent = res.unverified ? 'Saved. The verified tag was removed.' : 'Saved.';
+}
+
+async function addFilesToProject(id, input){
+  const msg = document.getElementById('peFileMsg');
+  const files = Array.from(input.files);
+  const room = PROJECT_MAX_FILES - (projectById(id).files || []).length;
+  if (files.length > room){ msg.textContent = `You can add ${room} more file${room === 1 ? '' : 's'} to this project.`; return; }
+  const refused = await addProjectFiles(id, files, msg);
+  const note = msg.textContent;
+  await refreshProject(id);
+  if (refused) document.getElementById('peFileMsg').textContent = note;
+}
+
+async function removeProjectFile(fileId, id){
+  if (!confirm('Remove this file from the project?')) return;
+  const res = await api('/api/project/file/remove', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id: fileId})});
+  if (!res.ok){ document.getElementById('peFileMsg').textContent = res.why; return; }
+  await refreshProject(id);
+}
+
+async function projectCover(fileId, id){
+  const res = await api('/api/project/cover', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id: fileId})});
+  if (!res.ok){ document.getElementById('peFileMsg').textContent = res.why; return; }
+  await refreshProject(id);
+}
+
+async function openProjectFile(url){
+  const tab = window.open('', '_blank');
+  try { tab.location = await fileURL(url); } catch (e) { tab.close(); }
+}
+
+async function deleteProject(id){
+  if (!confirm('Delete this project and all its pictures and PDFs? This cannot be undone.')) return;
+  const res = await api('/api/project/delete', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id})});
+  if (!res.ok){ alert(res.why); return; }
+  closeProjectEditor();
+}
+
+document.addEventListener('keydown', e => {
+  const box = document.getElementById('projEdit');
+  if (e.key === 'Escape' && box && box.classList.contains('open')) closeProjectEditor();
+});
 
 /* ---------- uploads: raw bytes, file name in a header ---------- */
 async function upload(kind, file, projectId){

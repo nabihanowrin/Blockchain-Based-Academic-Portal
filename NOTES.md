@@ -2,6 +2,37 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 — Students can edit their projects and add pictures and PDFs
+
+**What you see:** every project card on the student's home page has an
+"Edit project" button. It opens an editor where the student can:
+- change the title, the summary and the year;
+- add pictures (JPG, PNG, WEBP) and PDFs, several at once, up to 8 per
+  project, 5 MB each;
+- choose which picture is the cover on the card ("Make cover"), open a PDF,
+  or remove a file;
+- delete the whole project.
+The card now says how many pictures and PDFs it has. "Add a project" also
+takes several pictures or PDFs at once.
+
+If a teacher had verified a project and the student changes its title,
+summary or year, the "verified" tag comes off (the teacher confirmed the old
+wording). Adding or removing pictures keeps it.
+
+Also fixed: a photo on a project card spilled down over the title.
+
+**How:** `projects.py` (new) holds the rules and a new table
+`project_files`. Only the student who owns a project can change it; every
+action checks the roll. Each file's fingerprint goes on the chain, like every
+other upload. A picture that was added before this change is copied into the
+new table at start-up, so it shows in the editor too. New endpoints:
+`/api/project/edit`, `/api/project/file`, `/api/project/file/remove`,
+`/api/project/cover`, `/api/project/delete`.
+
+**Changed files:** `projects.py` (new), `server.py`, `contract.py` (the
+title/summary/year rules shared by "add" and "edit"), `app.html`, `theme.css`,
+`tests/test_site.py` (test_28c checks editing, files, cover, the 8-file limit
+and deleting; test_28d checks the panels load `theme.css`).
 ## 2026-11-23 11:50 — Faculty cards back to the smaller size
 
 From Sabrin's colour chat: the 2½-across cards looked too big. Back to the 10:20 size: phone 1 card

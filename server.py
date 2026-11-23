@@ -35,6 +35,7 @@ import captcha
 import faculty
 import resources
 import site_content
+import projects
 from contract import Refused
 
 # a cloud host tells us which port to use; on a laptop it is 8080
@@ -75,6 +76,7 @@ def prepare_database():
     alumni.init()
     resources.init()
     site_content.init()
+    projects.init()
     assistant.init()
     faculty.apply_course_teachers(connect)
     auth.init_auth()
@@ -549,11 +551,12 @@ def home_view(roll):
         else:
             semesters.append({"n": n, "state": "later", "gpa": None})
 
-    projects = [{"id": i, "title": t, "summary": s, "year": y, "image": img,
-                 "verified_by": vb, "verified_at": va}
-                for i, t, s, y, img, vb, va in rows(
-                    "SELECT id, title, summary, year, image, verified_by, verified_at "
-                    "FROM projects WHERE roll=? ORDER BY year DESC, id DESC", (roll,))]
+    files = projects.files_of(roll)            # pictures and PDFs on each project
+    mine = [{"id": i, "title": t, "summary": s, "year": y, "image": img,
+             "verified_by": vb, "verified_at": va, "files": files.get(i, [])}
+            for i, t, s, y, img, vb, va in rows(
+                "SELECT id, title, summary, year, image, verified_by, verified_at "
+                "FROM projects WHERE roll=? ORDER BY year DESC, id DESC", (roll,))]
 
     import demo_results
     return {"profile": profile, "semesters": semesters, "standing": st,
@@ -561,7 +564,7 @@ def home_view(roll):
             "progress": course_progress(roll, st["current"]),
             "warnings": complaints.warnings(roll),
             "cgpa": round(pts / creds, 2) if creds else None,
-            "credits_done": creds, "projects": projects}
+            "credits_done": creds, "projects": mine}
 
 
 def save_upload(roll, kind, filename, data, project_id=None):
@@ -1787,6 +1790,18 @@ class Handler(SimpleHTTPRequestHandler):
             except Refused as why:
                 return self.reply({"ok": False, "why": str(why)}, 400)
 
+        # a picture or PDF added to one of the student's own projects
+        if url.path == "/api/project/file":
+            try:
+                if length > contract.MAX_UPLOAD:
+                    raise Refused("That file is over 5 MB.")
+                data = self.rfile.read(length)
+                fid = projects.add_file(roll, one("project_id"),
+                                        unquote(self.headers.get("X-Filename", "")), data)
+                return self.reply({"ok": True, "id": fid})
+            except Refused as why:
+                return self.reply({"ok": False, "why": str(why)}, 400)
+
         if url.path == "/api/upload":
             try:
                 if length > contract.MAX_UPLOAD:
@@ -1834,6 +1849,21 @@ class Handler(SimpleHTTPRequestHandler):
                 new_id = contract.add_project(roll, body.get("title"),
                                               body.get("summary"), body.get("year"))
                 return self.reply({"ok": True, "id": new_id})
+
+            # editing the student's own projects (see projects.py)
+            if url.path == "/api/project/edit":
+                unverified = projects.edit(roll, body.get("id"), body.get("title"),
+                                           body.get("summary"), body.get("year"))
+                return self.reply({"ok": True, "unverified": unverified})
+            if url.path == "/api/project/delete":
+                projects.delete(roll, body.get("id"))
+                return self.reply({"ok": True})
+            if url.path == "/api/project/file/remove":
+                projects.remove_file(roll, body.get("id"))
+                return self.reply({"ok": True})
+            if url.path == "/api/project/cover":
+                projects.set_cover(roll, body.get("id"))
+                return self.reply({"ok": True})
 
             if url.path == "/api/object":
                 oid = contract.raise_objection(roll, body["course_id"],
