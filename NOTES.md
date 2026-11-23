@@ -2,6 +2,32 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 — The assistant knows the department, not just the routine
+
+Besides the student's own routine and class tests, the assistant is now given
+the department's PUBLIC information (`assistant.about_department()`): the
+address, phone, website, the chairman and his email, the academic office's email
+(from the Email settings page), every teacher with designation, email, study
+leave and official CU profile link, how each fee is paid (exam fee online via
+Sonali Bank; Development and Somitee funds at the office with the receipt
+form), the complaint box, how to object to a mark, password reset and account
+deletion, and the alumni stories (name, role, field, batch, link).
+
+New rules for it: help with the day and week, procedures (who to contact, where
+to go, how to pay) and research contacts (teachers for a thesis, alumni in a
+field). Never invent an email, phone number, research interest or alumni
+contact; if research interests aren't listed (they aren't yet), give the
+teachers' official profile links instead of guessing. It's not a tutor: course
+content gets a line or two and a pointer to the teacher or Resources.
+
+Still no marks, GPA, attendance or parents' names. The panel's guide and example
+questions changed to match. Check 32.
+
+**To check:** Dr. Mohammad Arif Iftakher Mahmood's email in `faculty.py`
+(arif.iftakher@gmail.com) was a guess; the assistant now gives it out.
+**Later:** when Sabrin's teacher profiles have research interests, add them to
+`about_department()` so the assistant can match teachers to thesis topics.
+
 ## 2026-11-23 — The AI panel shows what it can and can't do
 
 Under the welcome message the panel lists what the assistant can help with

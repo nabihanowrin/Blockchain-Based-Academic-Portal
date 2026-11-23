@@ -7,8 +7,12 @@ How one message travels:
   student's own timetable, courses and class-test dates  ->  Gemini  ->  answer
   ->  back to the chat box.
 
-What the AI is given: the student's first name, semester, lab group, this
-semester's courses and teachers, the weekly routine and upcoming class tests.
+What the AI is given:
+  - about the student: first name, semester, lab group, this semester's courses
+    and teachers, the weekly routine and upcoming class tests;
+  - about the department (public information, the same for everyone): who to
+    contact for what, the faculty with emails and official profile links, how
+    fees are paid, the complaint box, how the website works, alumni stories.
 What it is NOT given: marks, GPA, attendance, parents' names, anyone else's data.
 (Gemini's free tier may use what it is sent to improve Google's products, so
 nothing more personal than a timetable goes there.)
@@ -37,19 +41,33 @@ MAX_MESSAGE = 800          # characters in one question
 MAX_TURNS = 8              # earlier messages sent along, so it remembers the conversation
 API = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
-RULES = """You are the study assistant inside EEE Records, the academic records website of the
+RULES = """You are the assistant inside EEE Records, the academic records website of the
 Department of Electrical and Electronic Engineering, University of Chittagong.
-You are talking to one student. Below is THEIR information: their courses, weekly
-routine and upcoming class tests (CTs). Today's date is given too.
+You are talking to one student. Below is THEIR schedule (courses, weekly routine,
+upcoming class tests) and the DEPARTMENT's public information. Today's date is given.
 
-- Help with their schedule: what's on today or tomorrow, when the next CT is, which
-  room, how to plan their week. Use only the information below for facts about
-  their classes; if something isn't there, say you don't have it.
-- You can also explain study topics from their courses in simple words.
-- You can't see marks, GPA or attendance; for those, point them to the course page.
-- You can't change anything on the website.
-- Keep answers short and plain. Use the student's language (English or Bangla).
-- Never make up dates, rooms or teachers."""
+What you help with:
+- Their day and week: what's on today or tomorrow, rooms, labs, the next class
+  test, planning study time around classes.
+- Procedures: how to pay a fee, where to go, who to contact or email about a
+  problem, how to use this website.
+- Research and contacts: which teachers to approach for a thesis or project, and
+  which alumni work in a field the student is interested in.
+
+Rules:
+- Use ONLY the information below for facts: names, emails, rooms, dates, fees,
+  links. If something isn't there, say you don't have it and say where they could
+  find out (e.g. the teacher's official profile link, the department office).
+  Never invent an email, a phone number, a research interest or an alumni contact.
+- Teachers' research interests are not in your information unless listed. If asked
+  which teacher fits a topic, say that, and give the teachers' official profile
+  links so the student can check their research, rather than guessing.
+- For alumni, share only what is listed (name, role, field, batch, link).
+- You are not a tutor. If asked to teach course content, answer in one or two
+  lines at most and suggest the course teacher or the course's Resources tab.
+- You can't see marks, GPA or attendance (point them to the course page) and you
+  can't change anything on the website.
+- Keep answers short and plain. Use the student's language (English or Bangla)."""
 
 
 def enabled():
@@ -115,6 +133,56 @@ def about_student(name, view):
     return "\n".join(lines)
 
 
+def about_department():
+    """The department's public information, the same for every student."""
+    import faculty
+    lines = ["DEPARTMENT (public information):",
+             f"Department: {faculty.CONTACT['address']}.",
+             f"Department phone: {faculty.CONTACT['phone']}. Department website: {faculty.CONTACT['website']}.",
+             f"Chairman: {faculty.CHAIRMAN}, email {faculty.CONTACT['email']}."]
+    try:
+        import site_settings
+        office = site_settings.address("office")
+        if office:
+            lines.append(f"Academic office email (for records, accounts, tamper alerts): {office}.")
+    except Exception:
+        pass
+
+    lines.append("Faculty (name, designation, email, official profile with their research):")
+    for t in faculty.listing():
+        leave = " (on study leave)" if t["on_leave"] else ""
+        profile = f", profile {t['profile']}" if t["profile"] else ""
+        lines.append(f"- {t['name']}, {t['designation']}{leave}, {t['email']}{profile}")
+
+    lines += [
+        "Paying fees:",
+        "- Semester final exam fee: paid online through Sonali Bank, link "
+        "https://billpay.sonalibank.com.bd/cufee . The amount for each semester is on the student's Payment page.",
+        "- Department fees (Development Fund, EEE Somitee Fund): paid at the department office, not the bank. "
+        "The amounts are on the Payment page, which also prints the money receipt form to take to the office.",
+        "Problems with department facilities (rooms, fans, lights, toilets, labs): use the Complaint box in the "
+        "sidebar. It goes to the chairman and the office without the student's name. It is not for complaints "
+        "about teachers.",
+        "A mark looks wrong: open the course, open the mark's history, and choose 'No, I want to raise this'. "
+        "The teacher answers there.",
+        "Account: forgot password -> 'Forgot password' on the sign-in page (a code is emailed). "
+        "Delete account -> bottom of the Home page; marks stay with the department.",
+    ]
+    try:
+        import alumni
+        people = alumni.listing()
+    except Exception:
+        people = []
+    if people:
+        lines.append("Alumni (former students; share only what is listed):")
+        for a in people[:40]:
+            bits = [a["name"], a["headline"], a["batch"]]
+            field = f" [field: {a['field']}]" if a["field"] else ""
+            link = f", link {a['link']}" if a["link"] else ""
+            lines.append("- " + ", ".join(b for b in bits if b) + field + link)
+    return "\n".join(lines)
+
+
 def _clean_history(history):
     out = []
     for turn in (history or [])[-MAX_TURNS:]:
@@ -135,7 +203,7 @@ def reply(roll, name, view, message, history=None):
     if not enabled():
         raise Refused("The assistant isn't switched on yet.")
     left = _count_today(roll)
-    context = about_student(name, view)
+    context = about_student(name, view) + "\n\n" + about_department()
 
     if os.environ.get("AI_FAKE") == "1":           # the automatic tests: no real AI is called
         return {"text": f"(test assistant) You asked: {message}\n\nWhat I was told:\n{context}",

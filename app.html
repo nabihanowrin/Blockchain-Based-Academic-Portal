@@ -1550,27 +1550,27 @@ function who(actor){
 </style>
 <button id="askBtn" onclick="toggleAsk()"><span class="spark">✦</span> Ask our AI?</button>
 <div id="askBox" role="dialog" aria-label="Study assistant" aria-hidden="true">
-  <header><div><b>Study assistant</b><small>Knows your timetable, courses and class-test dates. Not your marks.</small></div>
+  <header><div><b>Study assistant</b><small>Knows your routine and the department's contacts. Not your marks.</small></div>
     <button onclick="toggleAsk()" aria-label="Close">×</button></header>
   <div id="askLog"><div class="ai">Hi! What can I help you with?</div>
     <div class="guide">
       <b>I can help with</b>
-      <ul><li>your routine: today, tomorrow, rooms, labs</li>
-          <li>your upcoming class tests</li>
-          <li>who teaches your courses</li>
-          <li>planning your week</li>
-          <li>explaining a topic from your courses simply</li></ul>
+      <ul><li>your day and week: classes, rooms, labs, upcoming class tests</li>
+          <li>procedures: paying fees, where to go, who to contact or email</li>
+          <li>finding teachers for a thesis or project, with their profiles</li>
+          <li>alumni working in a field you're interested in</li></ul>
       <b>I can't</b>
       <ul><li>see your marks, GPA or attendance (open the course page for those)</li>
           <li>change anything on the website</li>
           <li>see anyone else's information</li>
+          <li>teach your courses (ask your teacher, or the course's Resources)</li>
           <li>remember this chat after you close the page</li></ul>
       English or Bangla both work. Try:
       <div class="tries">
         <button type="button" onclick="askTry(this)">What do I have tomorrow?</button>
-        <button type="button" onclick="askTry(this)">When is my next class test?</button>
-        <button type="button" onclick="askTry(this)">Who teaches my courses?</button>
-        <button type="button" onclick="askTry(this)">Explain Fourier series simply</button>
+        <button type="button" onclick="askTry(this)">How do I pay my exam fee?</button>
+        <button type="button" onclick="askTry(this)">Who do I email about a problem with my account?</button>
+        <button type="button" onclick="askTry(this)">Which alumni work in research?</button>
       </div>
     </div></div>
   <form id="askForm" onsubmit="askSend(event)">

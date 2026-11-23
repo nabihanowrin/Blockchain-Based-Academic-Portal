@@ -839,6 +839,20 @@ class TestSite(unittest.TestCase):
         for private in ("3.9", "A+", "4.0", "Student\n", "GPA"):
             self.assertNotIn(private, text, f"the assistant would be sent {private!r}")
 
+    def test_32_assistant_knows_the_department(self):
+        """The assistant is given the department's public contacts, faculty, fees and alumni; nothing private."""
+        done = subprocess.run([sys.executable, "-c", "import assistant; print(assistant.about_department())"],
+                              cwd=self.folder, env=self.env, capture_output=True, text=True)
+        self.assertEqual(done.returncode, 0, done.stderr[-1500:])
+        text = done.stdout
+        sys.path.insert(0, ROOT)
+        import faculty
+        for expected in (faculty.CHAIRMAN, faculty.CONTACT["email"], faculty.FACULTY[1][2],
+                         "billpay.sonalibank.com.bd", "Complaint box", "Alumni"):
+            self.assertIn(expected, text)
+        for private in (STUDENT_ROLL, "Test Father", "Test Mother", "GPA"):
+            self.assertNotIn(private, text, f"the department information includes {private!r}")
+
     def test_99_server_had_no_crashes(self):
         """The server stayed up the whole time and wrote no Python errors."""
         self.assertIsNone(self.server.poll(), "the server stopped during the tests")
