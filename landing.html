@@ -884,6 +884,26 @@ body{animation:pageIn .5s ease backwards}
 .pcard .on span{font-size:clamp(15px,1.15vw,18px);color:var(--grey)}
 .pcard .below{padding:12px 24px 24px;font-size:clamp(14px,1.05vw,17px)}
 </style>
+<style>
+/* =====================================================================
+   NEWS (23 Nov, Sabrin): the photo is exactly as tall as the charcoal
+   panel; its top and bottom edges line up with the charcoal's, not with
+   the writing inside it. Side-by-side layout only (wider than 900px); on
+   phones the photo stays on top and the writing on charcoal below.
+     - the band has no top/bottom padding, so the charcoal is the height
+       of the row; the white space above the section is a margin instead
+     - the photo fills its column and the full row height (never shorter
+       than 24% of the screen width), cropped to fit
+     - the writing keeps its own padding inside the charcoal, centred
+   ===================================================================== */
+@media (min-width:901px){
+  .nband{padding-top:0 !important;padding-bottom:0 !important;margin-top:88px}
+  .nshow{align-items:stretch !important}
+  .npics{align-self:stretch;height:100%;min-height:24vw}
+  .npics .pic{aspect-ratio:auto;width:100%;height:100%}
+  .nside{align-self:center;padding:56px 0}
+}
+</style>
 </head>
 <body>
 

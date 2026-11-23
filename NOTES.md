@@ -2,6 +2,21 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 10:35 — News: the photo is as tall as the charcoal panel
+
+From Sabrin's colour chat. `landing.html` only (new NEWS block at the end of the <head> styles).
+
+- What was wrong: the charcoal panel ran the full height of the section (including its top and
+  bottom padding), but the photo only matched the writing inside it, so it looked half the height.
+- Now, on screens wider than 900px: the band has no top/bottom padding (the white space above is a
+  margin), so the charcoal is exactly the height of the row; the photo fills its column and the full
+  row height (cropped to fit, never shorter than 24% of the screen width). Photo top = charcoal top,
+  photo bottom = charcoal bottom (checked at 1366px and 1920px). The writing keeps 56px of padding
+  inside the charcoal and stays centred.
+- Phones (900px and narrower) are unchanged: photo on white on top, writing on charcoal below.
+- **Rule for later changes:** keep the news photo's top and bottom edges on the charcoal panel's
+  edges; don't size the photo to the text.
+
 ## 2026-11-23 10:20 — Faculty: bigger cards that follow the screen, names under the photo
 
 From Sabrin's colour chat. `landing.html` only.
