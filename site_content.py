@@ -86,6 +86,7 @@ SOURCE_IMAGES = [
     ("Symposium: Winter Symposium on Silicon Photonics and Nanofabrication", "",
      "photos/winter-symposium-2026.jpg"),
     ("Champions of VLSIthon 3.0", "photos/vlsithon3.png", "photos/vlsithon3-winners.jpg"),   # the photo on the stage
+    ("Champions of VLSIthon 3.0", "photos/vlsithon3-winners.jpg", "photos/vlsithon3-stage.jpg"),  # everyone on the stage
 ]
 
 SEED_POSTS = [
