@@ -789,7 +789,7 @@ body{animation:pageIn .5s ease backwards}
 /* ===== bigger, roomier homepage: every size follows the screen, nothing fixed =====
    --sec: the space above and below a section's content, and between coloured blocks
    (about 8% of the screen width: 115px on a 1440px laptop, 64px on a phone) */
-:root{--sec:clamp(64px,8vw,150px);--h2:clamp(36px,4.4vw,76px)}
+:root{--sec:clamp(80px,10.5vw,190px);--h2:clamp(36px,4.4vw,76px)}
 .newsx{margin-top:calc(var(--sec) - 44px)}
 #what,#find,footer{margin-top:var(--sec)}
 .faculty{padding-top:var(--sec);padding-bottom:calc(var(--sec) - 10px)}
@@ -807,22 +807,26 @@ body{animation:pageIn .5s ease backwards}
 .alrow p{font-size:clamp(14px,1.05vw,17px)}
 /* news: a big title per post, a short small description, 5 seconds a post */
 .nband{padding:calc(var(--sec) * .55) 0}
-.ntitle{font-size:clamp(26px,2.6vw,44px);line-height:1.1;margin-bottom:clamp(18px,2vw,34px)}
-.ntx .lk{font-size:clamp(11px,.85vw,14px)}
-.ntx h3{font-size:clamp(22px,2.2vw,38px);line-height:1.12;letter-spacing:-.02em;margin-top:clamp(8px,.8vw,14px)}
-.ntx .nd-p{font-size:clamp(13.5px,.98vw,16px);line-height:1.6;-webkit-line-clamp:3;margin-top:clamp(10px,1vw,18px)}
+/* only the section title is bold; the post title is large but regular weight and a
+   step smaller; the description is small, so the three read apart without bold */
+.ntitle{font-size:clamp(28px,2.9vw,50px);font-weight:800;line-height:1.08;margin-bottom:clamp(20px,2.2vw,38px)}
+.ntx .lk{font-size:clamp(10.5px,.75vw,12.5px);font-weight:600}
+.ntx h3{font-size:clamp(21px,2vw,34px);font-weight:400;line-height:1.2;letter-spacing:-.01em;margin-top:clamp(8px,.8vw,14px)}
+.ntx .nd-p{font-size:clamp(12.5px,.85vw,14px);font-weight:400;line-height:1.6;color:rgba(255,255,255,.75);-webkit-line-clamp:3;margin-top:clamp(12px,1.1vw,20px)}
+.ntx .lmore{font-weight:500}
 .npics .pic{transition:opacity .7s ease}
 .ntx{transition:opacity .7s ease,visibility 0s linear .7s}
 .ntx.on{transition:opacity .7s ease}
 /* alumni: "Alumni" and the cap on white, the dark graduation photo on the right */
-.al-band{background:linear-gradient(90deg,#fff 0%,#fff 34%,rgba(255,255,255,.85) 42%,rgba(255,255,255,0) 58%),
-  linear-gradient(0deg,rgba(28,26,25,.45),rgba(28,26,25,.45)),
-  url("photos/alumni-graduates.jpg") right 35% / cover no-repeat, #fff}
+.al-band{background:linear-gradient(90deg,var(--ink) 0%,var(--ink) 30%,rgba(48,43,49,.85) 40%,rgba(48,43,49,.35) 56%,rgba(48,43,49,.2) 100%),
+  url("photos/alumni-graduates.jpg") right 35% / cover no-repeat, var(--ink)}
+.al-band h2{color:#fff}
+.al-art{color:#E9DCDF;opacity:.9}
 .al-band-in{justify-content:flex-start;gap:clamp(18px,2.4vw,44px);min-height:clamp(260px,30vw,520px)}
 .al-art{order:-1;width:clamp(110px,11vw,200px)}
 @media (max-width:800px){
-  .al-band{background:linear-gradient(180deg,#fff 0%,#fff 38%,rgba(255,255,255,0) 70%),
-    url("photos/alumni-graduates.jpg") center bottom / cover no-repeat, #fff}
+  .al-band{background:linear-gradient(180deg,var(--ink) 0%,var(--ink) 34%,rgba(48,43,49,.4) 66%,rgba(48,43,49,.2) 100%),
+    url("photos/alumni-graduates.jpg") center bottom / cover no-repeat, var(--ink)}
   .al-band-in{flex-direction:column;align-items:flex-start;justify-content:flex-start;padding-top:40px;min-height:340px;gap:10px}}
 </style>
 </head>
