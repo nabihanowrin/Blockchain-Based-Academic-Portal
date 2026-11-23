@@ -461,7 +461,7 @@ async function boot(){
     return;
   }
   ROLL = me.roll;
-  if (me.assistant) document.getElementById('askBtn').hidden = false;
+  ASK_ON = !!me.assistant;            // the button always shows; if the AI isn't switched on, the panel says so
   SEM = await api('/api/semester');
   document.getElementById('app').classList.remove('hide');
   document.getElementById('initials').textContent = me.name.split(' ').map(w=>w[0]).slice(0,2).join('');
@@ -1517,13 +1517,18 @@ function who(actor){
 </script>
 <!-- the study assistant: a chat about your own timetable and courses (assistant.py) -->
 <style>
-#askBtn{position:fixed;right:24px;bottom:24px;z-index:60;border:none;border-radius:30px;padding:13px 20px;
-  background:var(--accent);color:#fff;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.15)}
-#askBox{position:fixed;right:24px;bottom:80px;z-index:61;width:min(380px,calc(100vw - 32px));height:min(520px,calc(100vh - 120px));
-  background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;
-  box-shadow:0 12px 32px rgba(0,0,0,.18);overflow:hidden}
-#askBox[hidden]{display:none}
-#askBox header{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+#askBtn{position:fixed;right:24px;bottom:24px;z-index:60;border:none;border-radius:999px;padding:13px 22px;
+  background:var(--card);color:var(--ink);font-family:inherit;font-weight:600;font-size:14.5px;cursor:pointer;display:flex;align-items:center;gap:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.08);transition:transform .15s ease,box-shadow .15s ease,opacity .2s ease}
+#askBtn{border-radius:999px !important}      /* the one exception to theme.css's square corners: an oval, on purpose */
+#askBtn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.2),0 3px 8px rgba(0,0,0,.1)}
+#askBtn .spark{color:var(--accent);font-size:16px}
+#askBtn.away{opacity:0;pointer-events:none}
+#askBox{position:fixed;top:0;right:0;bottom:0;z-index:61;width:min(400px,100vw);
+  background:var(--card);border-left:1px solid var(--line);display:flex;flex-direction:column;
+  box-shadow:-12px 0 32px rgba(0,0,0,.12);transform:translateX(100%);transition:transform .28s ease,visibility .28s;visibility:hidden}
+#askBox.open{transform:none;visibility:visible}
+#askBox header{display:flex;align-items:center;gap:10px;padding:18px 18px 14px;border-bottom:1px solid var(--line)}
 #askBox header b{font-size:15px}
 #askBox header small{color:var(--grey);font-size:12px;display:block}
 #askBox header button{margin-left:auto;border:none;background:none;font-size:20px;cursor:pointer;color:var(--grey)}
@@ -1536,11 +1541,13 @@ function who(actor){
 #askForm button{border:none;border-radius:10px;padding:0 16px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
 #askForm button:disabled{opacity:.5;cursor:wait}
 </style>
-<button id="askBtn" hidden onclick="toggleAsk()">Ask</button>
-<div id="askBox" hidden role="dialog" aria-label="Study assistant">
+<button id="askBtn" onclick="toggleAsk()"><span class="spark">✦</span> Ask our AI?</button>
+<div id="askBox" role="dialog" aria-label="Study assistant" aria-hidden="true">
   <header><div><b>Study assistant</b><small>Knows your timetable, courses and class-test dates. Not your marks.</small></div>
     <button onclick="toggleAsk()" aria-label="Close">×</button></header>
-  <div id="askLog"><div class="ai">Hi! Ask me about your classes, rooms, upcoming class tests, or a topic from your courses.</div></div>
+  <div id="askLog"><div class="ai">Hi! What can I help you with?
+
+You can ask about your classes, rooms, upcoming class tests, or a topic from your courses.</div></div>
   <form id="askForm" onsubmit="askSend(event)">
     <input id="askIn" maxlength="800" placeholder="e.g. What's my next class test?" autocomplete="off">
     <button id="askGo">Send</button>
@@ -1548,11 +1555,24 @@ function who(actor){
 </div>
 <script>
 let ASK_HISTORY = [];                       // this conversation only; nothing is stored
+let ASK_ON = false;
+let ASK_TOLD = false;
+/* the panel slides in from the right; the pill button steps aside while it's open */
 function toggleAsk(){
   const box = document.getElementById('askBox');
-  box.hidden = !box.hidden;
-  if (!box.hidden) document.getElementById('askIn').focus();
+  const open = !box.classList.contains('open');
+  box.classList.toggle('open', open);
+  box.setAttribute('aria-hidden', String(!open));
+  document.getElementById('askBtn').classList.toggle('away', open);
+  if (open && !ASK_ON && !ASK_TOLD){
+    askLine('note', "The assistant isn't switched on yet: the site's AI key still needs adding.");
+    ASK_TOLD = true;
+  }
+  if (open) setTimeout(() => document.getElementById('askIn').focus(), 280);
 }
+document.addEventListener('keydown', e => {                 // Esc closes it
+  if (e.key === 'Escape' && document.getElementById('askBox').classList.contains('open')) toggleAsk();
+});
 function askLine(cls, text){
   const log = document.getElementById('askLog');
   const div = document.createElement('div');

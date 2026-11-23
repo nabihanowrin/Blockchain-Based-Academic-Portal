@@ -2,6 +2,15 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 — The AI button: an oval "Ask our AI?" and a panel on the right
+
+The button is now an oval with a soft shadow at the bottom right, saying
+"✦ Ask our AI?". It always shows. Clicking it slides a full-height chat panel
+in from the right, starting with "Hi! What can I help you with?"; × or Esc
+closes it. If the AI key isn't in Render yet, the panel says so. The oval is
+the one deliberate exception to theme.css's square corners (`#askBtn` in
+`app.html`).
+
 ## 2026-11-22 — Study assistant (AI) on the student page
 
 **What you see:** an **Ask** button at the bottom right of the student page
