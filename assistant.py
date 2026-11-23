@@ -1,11 +1,18 @@
 """
-The student's assistant: a chat box on the student page, answered by Google's
-Gemini AI through its API.
+The student's assistant: a chat box on the student page, answered by an AI
+through its API: Google's Gemini first, Groq as the backup.
 
 How one message travels:
   student types  ->  our server (/api/assistant): checks who is asking, adds THAT
-  student's own timetable, courses and class-test dates  ->  Gemini  ->  answer
+  student's own timetable, courses and class-test dates  ->  the AI  ->  answer
   ->  back to the chat box.
+
+The backup chain (free AIs are sometimes busy, so we never rely on just one):
+  1. Gemini, the main model (AI_MODEL). If Google says "busy", ask it once more.
+  2. Gemini's lighter model (AI_BACKUP_MODEL), same key.
+  3. Groq, a different company (GROQ_API_KEY, GROQ_MODEL).
+Each one gets a short wait (AI_WAIT_SECONDS). The first real answer wins. Only if
+all of them fail does the student see "busy, try again in a minute".
 
 What the AI is given:
   - about the student: first name, semester, lab group, this semester's courses
@@ -14,20 +21,26 @@ What the AI is given:
     contact for what, the faculty with emails and official profile links, how
     fees are paid, the complaint box, how the website works, alumni stories.
 What it is NOT given: marks, GPA, attendance, parents' names, anyone else's data.
-(Gemini's free tier may use what it is sent to improve Google's products, so
-nothing more personal than a timetable goes there.)
+(Free AI tiers may use what they are sent to improve their products, so nothing
+more personal than a timetable goes to them.)
 
 It can only talk. It can't change any record.
 
 Settings (Render -> Environment):
-  GEMINI_API_KEY     from Google AI Studio. Without it the assistant says it is off.
-  AI_MODEL           which Gemini model (default below)
+  GEMINI_API_KEY     from Google AI Studio.
+  GROQ_API_KEY       from console.groq.com (the backup company).
+                     With neither key the assistant says it is off.
+  AI_MODEL           the main Gemini model (default below)
+  AI_BACKUP_MODEL    Gemini's lighter backup model (default below)
+  GROQ_MODEL         which Groq model (default below)
+  AI_WAIT_SECONDS    how long to wait for each AI before trying the next (default 15)
   AI_DAILY_LIMIT     messages per student per day (default 30), so the free quota lasts
 """
 
 import datetime as dt
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 
@@ -36,10 +49,14 @@ from contract import Refused
 from ledger import connect
 
 MODEL = os.environ.get("AI_MODEL", "gemini-3.8-flash").strip()
+BACKUP_MODEL = os.environ.get("AI_BACKUP_MODEL", "gemini-3.1-flash-lite").strip()
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b").strip()
+WAIT = float(os.environ.get("AI_WAIT_SECONDS") or 15)
 DAILY_LIMIT = int(os.environ.get("AI_DAILY_LIMIT") or 30)
 MAX_MESSAGE = 800          # characters in one question
 MAX_TURNS = 8              # earlier messages sent along, so it remembers the conversation
-API = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 RULES = """You are the assistant inside EEE Records, the academic records website of the
 Department of Electrical and Electronic Engineering, University of Chittagong.
@@ -70,8 +87,12 @@ Rules:
 - Keep answers short and plain. Use the student's language (English or Bangla)."""
 
 
+def _key(name):
+    return os.environ.get(name, "").strip()
+
+
 def enabled():
-    return bool(os.environ.get("GEMINI_API_KEY", "").strip()) or os.environ.get("AI_FAKE") == "1"
+    return bool(_key("GEMINI_API_KEY") or _key("GROQ_API_KEY")) or os.environ.get("AI_FAKE") == "1"
 
 
 def init():
@@ -82,16 +103,23 @@ def init():
     con.close()
 
 
-def _count_today(roll):
-    """Adds one to today's count for this student; refuses past the daily limit."""
+def _used_today(roll):
+    """How many questions this student has had answered today; refuses past the daily limit."""
     day = clock.today().isoformat()
     con = connect()
     row = con.execute("SELECT count FROM assistant_usage WHERE roll=? AND day=?", (roll, day)).fetchone()
+    con.close()
     used = row[0] if row else 0
     if used >= DAILY_LIMIT:
-        con.close()
         raise Refused(f"You've used today's {DAILY_LIMIT} questions. The assistant is back tomorrow.")
-    con.execute("INSERT OR REPLACE INTO assistant_usage VALUES (?,?,?)", (roll, day, used + 1))
+    return used
+
+
+def _count_one(roll, used):
+    """Adds one to today's count. Called only AFTER an answer, so a failed try costs nothing."""
+    con = connect()
+    con.execute("INSERT OR REPLACE INTO assistant_usage VALUES (?,?,?)",
+                (roll, clock.today().isoformat(), used + 1))
     con.commit()
     con.close()
     return DAILY_LIMIT - used - 1
@@ -202,39 +230,92 @@ def reply(roll, name, view, message, history=None):
         raise Refused(f"Please keep a question under {MAX_MESSAGE} characters.")
     if not enabled():
         raise Refused("The assistant isn't switched on yet.")
-    left = _count_today(roll)
+    used = _used_today(roll)
     context = about_student(name, view) + "\n\n" + about_department()
 
     if os.environ.get("AI_FAKE") == "1":           # the automatic tests: no real AI is called
-        return {"text": f"(test assistant) You asked: {message}\n\nWhat I was told:\n{context}",
-                "left_today": left}
+        text = f"(test assistant) You asked: {message}\n\nWhat I was told:\n{context}"
+    else:
+        text = ask_ai(RULES + "\n\n" + context, _clean_history(history), message)
+    return {"text": text, "left_today": _count_one(roll, used)}
 
-    body = {
-        "system_instruction": {"parts": [{"text": RULES + "\n\n" + context}]},
-        "contents": _clean_history(history) + [{"role": "user", "parts": [{"text": message}]}],
-        "generationConfig": {"maxOutputTokens": 700, "temperature": 0.4},
-    }
-    req = urllib.request.Request(API.format(model=MODEL), data=json.dumps(body).encode(),
-                                 headers={"Content-Type": "application/json",
-                                          "x-goog-api-key": os.environ["GEMINI_API_KEY"].strip()})
+
+class Busy(Exception):
+    """One AI couldn't answer (busy, slow, broken). The chain moves on to the next."""
+
+
+def _post(url, body, headers):
+    """Sends one request and returns the JSON answer. Any failure becomes Busy, with a log line."""
+    req = urllib.request.Request(url, data=json.dumps(body).encode(),
+                                 headers={"Content-Type": "application/json", **headers})
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            answer = json.load(r)
+        with urllib.request.urlopen(req, timeout=WAIT) as r:
+            return json.load(r)
     except urllib.error.HTTPError as e:
-        detail = e.read().decode("utf-8", "replace")[:300]
-        print(f"  [assistant] Gemini said HTTP {e.code}: {detail}", flush=True)
-        if e.code == 429:
-            raise Refused("The assistant is busy right now (the free limit for this minute or day is used up). "
-                          "Please try again a little later.")
-        raise Refused("The assistant couldn't answer just now. Please try again later.")
-    except Exception as e:
-        # anything else on the way to Google and back: the connection dropped, timed
-        # out, or the answer wasn't readable. Log it for us; tell the student plainly.
-        print(f"  [assistant] could not get an answer from Gemini: {type(e).__name__}: {e}", flush=True)
-        raise Refused(f"The assistant couldn't be reached just now ({type(e).__name__}). Please try again later.")
+        detail = " ".join(e.read().decode("utf-8", "replace").split())[:200]
+        raise Busy(f"HTTP {e.code}: {detail}", e.code)
+    except Exception as e:                       # timed out, connection dropped, unreadable answer
+        raise Busy(f"{type(e).__name__}: {e}", None)
 
+
+def _gemini(model, system, history, message):
+    answer = _post(os.environ.get("AI_GEMINI_URL", GEMINI_URL).format(model=model), {
+        "system_instruction": {"parts": [{"text": system}]},
+        "contents": history + [{"role": "user", "parts": [{"text": message}]}],
+        "generationConfig": {"maxOutputTokens": 700, "temperature": 0.4},
+    }, {"x-goog-api-key": _key("GEMINI_API_KEY")})
     parts = (((answer.get("candidates") or [{}])[0].get("content") or {}).get("parts") or [])
-    text = "".join(p.get("text", "") for p in parts).strip()
-    if not text:
-        raise Refused("The assistant didn't have an answer for that. Try asking another way.")
-    return {"text": text, "left_today": left}
+    return "".join(p.get("text", "") for p in parts).strip()
+
+
+def _groq(system, history, message):
+    # Groq speaks the "chat completions" format: a list of {role, content}.
+    # Gemini calls the AI's turns "model"; here they are "assistant".
+    messages = [{"role": "system", "content": system}]
+    for turn in history:
+        messages.append({"role": "assistant" if turn["role"] == "model" else "user",
+                         "content": turn["parts"][0]["text"]})
+    messages.append({"role": "user", "content": message})
+    answer = _post(os.environ.get("AI_GROQ_URL", GROQ_URL), {
+        "model": GROQ_MODEL, "messages": messages, "temperature": 0.4,
+        "max_completion_tokens": 1500,          # room for its thinking AND the answer
+        "reasoning_effort": "low", "reasoning_format": "hidden",   # don't show its thinking
+    }, {"Authorization": "Bearer " + _key("GROQ_API_KEY")})
+    return (((answer.get("choices") or [{}])[0].get("message") or {}).get("content") or "").strip()
+
+
+def _chain():
+    """The AIs to try, in order, as (name, function). Only the ones with a key."""
+    tries = []
+    if _key("GEMINI_API_KEY"):
+        main = lambda s, h, m: _gemini(MODEL, s, h, m)
+        tries += [(f"Gemini {MODEL}", main), (f"Gemini {MODEL} (again)", main)]
+        if BACKUP_MODEL and BACKUP_MODEL != MODEL:
+            tries.append((f"Gemini {BACKUP_MODEL}", lambda s, h, m: _gemini(BACKUP_MODEL, s, h, m)))
+    if _key("GROQ_API_KEY"):
+        tries.append((f"Groq {GROQ_MODEL}", _groq))
+    return tries
+
+
+def ask_ai(system, history, message):
+    """Tries each AI in turn; returns the first real answer. Raises Refused if none answer."""
+    try_again = False
+    for name, call in _chain():
+        if name.endswith("(again)"):
+            # ask the main model a second time ONLY if it said "busy" quickly (503/429);
+            # after a timeout, waiting again would only keep the student waiting longer
+            if not try_again:
+                continue
+            time.sleep(1)
+        try:
+            text = call(system, history, message)
+        except Busy as e:
+            detail, code = e.args
+            print(f"  [assistant] {name} failed: {detail}", flush=True)
+            try_again = name == f"Gemini {MODEL}" and code in (429, 500, 503)
+            continue
+        try_again = False
+        if text:
+            return text
+        print(f"  [assistant] {name} gave an empty answer", flush=True)
+    raise Refused("The assistant is busy right now. Please try again in a minute.")

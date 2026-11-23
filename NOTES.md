@@ -2,6 +2,25 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 — The assistant has backups: Gemini → Gemini Flash-Lite → Groq
+
+What you saw: "The assistant couldn't be reached just now (TimeoutError)". The
+Render log showed Google's free Gemini model saying HTTP 503 "high demand", and
+then timing out.
+Why: we depended on ONE free model. When it was busy, the student got nothing.
+What changed (`assistant.py`):
+- The server now tries, in order: the main Gemini model (asked a second time if
+  Google says "busy"), then Gemini's lighter model `gemini-3.1-flash-lite`, then
+  Groq (a different company, free plan). The first real answer goes to the
+  student. Only if all fail do they see "busy, try again in a minute".
+- Each AI gets 15 seconds (`AI_WAIT_SECONDS`), not 60.
+- A question only counts towards the student's 30-a-day limit if it was answered.
+- Every failure is logged as `[assistant] <which AI> failed: ...`.
+- New settings in Render: `GROQ_API_KEY` (needed for the Groq backup),
+  optional `AI_BACKUP_MODEL`, `GROQ_MODEL`, `AI_WAIT_SECONDS`.
+- New tests (`tests/test_assistant_backup.py`) run a fake Gemini and a fake Groq
+  and check each case: busy, too slow, empty answer, all down, Groq key only.
+
 ## 2026-11-23 — The assistant says WHY it failed instead of "Something went wrong"
 
 What you saw: every question got "Something went wrong. Please try again."
