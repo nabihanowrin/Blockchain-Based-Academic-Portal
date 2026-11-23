@@ -7,9 +7,10 @@ Plain-English notes on what changed and why. Newest at the top.
 From Sabrin's colour chat. `landing.html` only.
 
 - **No fixed size any more.** The old rule made five cards across with a 200px minimum, so on a
-  laptop each card was only ~220px wide. Now the number across depends only on the screen width:
-  phone (under 600px) 1 card with a peek of the next; 600–1099px 2; 1100–1699px 3 (laptop: ~377px
-  each); 1700px and wider 4. Gaps are 28px (16px on phones). Text sizes grow with the screen too.
+  laptop each card was only ~220px wide. Now the number across depends only on the screen width,
+  with a half card at the edge to show there are more: phone (under 600px) 1 card (88% wide);
+  600–1099px 1½; 1100–1699px 2½ (laptop: ~450px each); 1700px and wider 3½. Gaps are 28px (16px on
+  phones). Name, title and email text are bigger and grow with the screen too.
 - **Names off the photo.** The name and title (e.g. "Professor") now sit under the photo, above the
   email and "View profile", in dark text. The photo is shown clear: no dark fade, no darkening.
 - The ← → buttons now move one screenful of cards at a time, however many that is.
