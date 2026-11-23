@@ -8,8 +8,8 @@
 
    Colours (23 Nov, Sabrin): the same as the homepage (landing.html), so the
    whole site is one family:
-     maroon   #7E2233   (homepage maroon; darker #651B29 for hover)
-     charcoal #302B31   (homepage hero, news and footer; also all dark text)
+     maroon   #602933   (duller, darker shade of the homepage #7E2233; hover #4A2028)
+     charcoal #302B31   (sidebar, dark text; same as the homepage hero and footer)
      gold     #D6B06A
      cream    #F6F2EE   page        white #fff   cards
    (Before 23 Nov 09:10 the panels used Najah's deeper maroon #501315 and
@@ -25,11 +25,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
 :root{
-  --accent:#7E2233; --accent-dark:#651B29; --accent-light:#7E2233;
+  --accent:#602933; --accent-dark:#4A2028; --accent-light:#602933;
   --accent-wash:#F4E8EA; --accent-line:#EBC8CF;
   --charcoal:#302B31; --gold:#D6B06A; --gold-deep:#B98F45; --gold-wash:#F8F0E0; --gold-text:#6B4E1C;
   --stone:#EFE6DF;
-  --side:#7E2233; --side-text:#F6E3E7;
+  --side:#302B31; --side-text:#F6E3E7;
   --cream:#F6F2EE; --card:#fff; --ink:#302B31; --text:#302B31; --grey:#6E6764; --line:#E4DCD6; --soft:#EFE9E4;
   --butter:#F8F0E0; --mist:#F4E8EA; --clay:#EFE6DF; --sage:#F6F2EE;
   --sans:"Plus Jakarta Sans",Arial,Helvetica,sans-serif; --serif:"Plus Jakarta Sans",Arial,Helvetica,sans-serif; --mono:"Plus Jakarta Sans",Arial,Helvetica,sans-serif;
@@ -56,7 +56,7 @@ h2.sect::after,.sect::after{content:"";position:absolute;left:0;bottom:0;width:4
 .lede{color:var(--grey)}
 
 /* ---------- sidebar: maroon that deepens downwards, gold section labels ---------- */
-.side{background:var(--accent);color:var(--side-text)}
+.side{background:var(--charcoal);color:var(--side-text)}
 .me{border-bottom:1px solid rgba(255,255,255,.18)}
 .me .dot{background:#fff;color:var(--accent);font-weight:700;box-shadow:none;border:0}
 .me .nm{color:#fff}

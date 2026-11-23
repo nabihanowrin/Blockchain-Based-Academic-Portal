@@ -2,6 +2,14 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 09:20 — Panels: charcoal sidebar, duller darker maroon
+
+From Sabrin's colour chat, straight after the entry below.
+
+- **Sidebar** on the student, teacher, office and examiner pages is now charcoal `#302B31`, not maroon.
+- **Maroon** on those pages is now `#602933`: the homepage maroon `#7E2233` made a little duller
+  and darker (hover `#4A2028`). The homepage and sign-in page keep `#7E2233`.
+
 ## 2026-11-23 09:15 — Student, teacher, office and examiner pages use the homepage colours
 
 From Sabrin's colour chat. Only colours changed; layout is the same.
