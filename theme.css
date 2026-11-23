@@ -16,8 +16,11 @@
    (maroon, charcoal, gold), never from extra colours or gradients.
    Light rose #F3E7E7 and sand #F8F0E0 appear only inside the small labels.
    Cards have no coloured edges and profile pictures have no rings.
-   Font: Arial, like the landing page. Corners: 4–6px.
+   Font: Plus Jakarta Sans (Google Fonts), like the homepage sections since 23 Nov;
+   Arial is the fallback. Corners: 4–6px.
    ===================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
 :root{
   --accent:#501315; --accent-dark:#3B0D0F; --accent-light:#7A2A2D;
@@ -27,7 +30,7 @@
   --side:#501315; --side-text:#F1E4E4;
   --cream:#F6F2EE; --card:#fff; --ink:#1C1A19; --text:#1C1A19; --grey:#6E6764; --line:#E4DCD6; --soft:#EFE9E4;
   --butter:#F8F0E0; --mist:#F3E7E7; --clay:#EFE6DF; --sage:#F6F2EE;
-  --sans:Arial,Helvetica,sans-serif; --serif:Arial,Helvetica,sans-serif; --mono:Arial,Helvetica,sans-serif;
+  --sans:"Plus Jakarta Sans",Arial,Helvetica,sans-serif; --serif:"Plus Jakarta Sans",Arial,Helvetica,sans-serif; --mono:"Plus Jakarta Sans",Arial,Helvetica,sans-serif;
   --r:6px;
 
   --shadow:0 1px 2px rgba(48,43,49,.06),0 8px 24px rgba(48,43,49,.07);
@@ -211,3 +214,8 @@ table tbody tr:hover td{background:#FBF6F6}
   h1.page,.main > h1{font-size:28px}
   .panel-student .hello h1.page{font-size:26px}
 }
+
+/* Plus Jakarta Sans (23 Nov, Sabrin, after BRAC University's site): firmer text so the pages feel less flat */
+body{font-weight:500;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.sect,h1.page,.profile h2{font-weight:800;letter-spacing:-.02em}
+b,strong,th{font-weight:700}

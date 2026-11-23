@@ -19,12 +19,12 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@300;400;600;700;800&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;600;700;800&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#302B31; --ink-2:#3D373E; --cream:#FFFFFF; --card:#fff;
   --text:#1C1A19; --grey:#6E6764; --line:#E4DCD6;
-  --accent:#500000; --accent-wash:#F4E8EA;
+  --accent:#7E2233; --accent-wash:#F4E8EA;
   --butter:#F2EBC6; --mist:#D3E4E8; --clay:#FFFFFF; --sage:#DCE6D8;
   --sans:Arial,Helvetica,sans-serif; --serif:Arial,Helvetica,sans-serif; --mono:Arial,Helvetica,sans-serif;
 }
@@ -54,7 +54,7 @@ button,input,select{font-family:inherit}
 .nav .links a{color:#2D2E33;text-decoration:none;font-size:15px;font-weight:500;padding:6px 0;border-bottom:2px solid transparent}
 .nav .links a:hover{border-bottom-color:var(--accent)}
 .nav a.cta{background:var(--accent);color:#fff;text-decoration:none;font-size:15px;font-weight:600;padding:12px 24px;border-radius:4px;flex-shrink:0}
-.nav a.cta:hover{background:#3C001C}
+.nav a.cta:hover{background:#651B29}
 .nav .menu{display:none;margin-left:auto;background:none;border:1px solid var(--line);border-radius:4px;width:42px;height:42px;cursor:pointer}
 .nav .menu span{display:block;width:18px;height:2px;background:var(--text);margin:4px auto}
 
@@ -165,9 +165,9 @@ a.slide:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .faculty h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.02em}
 .fgrid{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .fcard{background:#fff;border:1px solid #E4DCD6;border-radius:12px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:3px;font-size:14px}
-.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#500000;font-size:13px;word-break:break-all;text-decoration:none}
-.fcard.chair{border-color:#500000;box-shadow:0 0 0 1px #500000 inset}
-.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#500000;color:#fff !important;margin-bottom:6px}
+.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#7E2233;font-size:13px;word-break:break-all;text-decoration:none}
+.fcard.chair{border-color:#7E2233;box-shadow:0 0 0 1px #7E2233 inset}
+.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#7E2233;color:#fff !important;margin-bottom:6px}
 .ftag.leave{background:#E7E1DC;color:#5D5450 !important}
 .offer{padding:90px 0;background:var(--accent);color:#fff}
 .offer h2{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.08;letter-spacing:-.02em}
@@ -368,7 +368,7 @@ body{animation:pageIn .5s ease backwards}
 <style>
 /* yellow only on charcoal: buttons on white or off-white go back to maroon */
 .nav a.cta,.morebtn,.enter .btn{background:var(--accent);color:#fff}
-.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#3C001C;color:#fff}
+.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#651B29;color:#fff}
 </style>
 <style>
 /* faculty: photo cards; the photo darkens towards the bottom so the name reads on top of it */
@@ -500,7 +500,7 @@ body{animation:pageIn .5s ease backwards}
 .nitem.lead h3 a:hover{color:#fff}
 .newsx .nitem:not(.lead) p{color:#3e3e3e}
 .newsx .morebtn{background:var(--accent);color:#fff;box-shadow:none}
-.newsx .morebtn:hover{background:#3C001C;color:#fff}
+.newsx .morebtn:hover{background:#651B29;color:#fff}
 @media (max-width:900px){.nitem.lead{grid-template-columns:1fr}.nitem.lead .ltxt{padding:26px 24px 30px}}
 </style>
 <style>
@@ -533,6 +533,158 @@ body{animation:pageIn .5s ease backwards}
 .social a:hover .ic,.social .sharebtn:hover .ic{color:var(--yellow)}
 .sharebtn{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
 .sharebtn span{text-decoration:underline}
+</style>
+<style>
+/* news: picture left; the section title, the post and the bars on the right; sizes kept modest */
+.nband{padding:48px 0 52px}
+.nshow{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:0 48px;margin-top:0;align-items:center}
+.npics{display:grid}
+.npics .pic{grid-area:1/1;aspect-ratio:16/10;overflow:hidden;background:rgba(0,0,0,.15);opacity:0;transition:opacity .8s ease}
+.npics .pic.on{opacity:1}
+.npics .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.npics .pic.none img{object-fit:contain;padding:18%}
+.ntitle{font-size:22px;font-weight:700;color:#fff;line-height:1.25;margin:0 0 22px}
+.ntexts{display:grid}
+.ntx{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .8s ease,visibility 0s linear .8s;color:#fff}
+.ntx.on{opacity:1;visibility:visible;transition:opacity .8s ease}
+.ntx .lk{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin:0}
+.ntx h3{margin-top:10px;font-size:20px;line-height:1.3;color:#fff}
+.ntx h3 a{color:#fff;text-decoration:none}
+.ntx h3 a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.ntx .nd-p{margin-top:10px;font-size:14px;line-height:1.6;color:rgba(255,255,255,.88);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.ntx .lmore{margin-top:16px;font-size:14px}
+.ntx .lmore span{width:32px;height:32px;font-size:15px}
+#ndots{display:flex;gap:10px;margin-top:22px}
+#ndots .nd{width:44px;height:3px;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer}
+#ndots .nd.on{background:#fff}
+@media (max-width:900px){.nshow{grid-template-columns:1fr}.nside{margin-top:20px}}
+
+/* faculty: five cards across on a laptop, photos a little darker */
+.fgrid .pcard{flex:0 0 calc((100% - 80px) / 5);min-width:200px}
+.pcard .ph img{filter:brightness(.82)}
+.pcard .ph::after{background:linear-gradient(0deg,rgba(20,18,18,.95) 0%,rgba(20,18,18,.6) 35%,rgba(20,18,18,.15) 65%,rgba(20,18,18,0) 100%)}
+@media (max-width:560px){.fgrid .pcard{flex-basis:62vw;min-width:0}}
+
+/* "What this website gives you": maroon panel (fading lighter) on the left, a stack of photo cards on white */
+.offer{background:#fff;color:var(--text);padding:80px 0}
+.offer-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}
+.opanel{background:linear-gradient(135deg,var(--accent) 0%,#A64458 100%);color:#fff;padding:52px 44px;border-radius:0 40px 40px 0;min-height:420px;display:flex;flex-direction:column;justify-content:center}
+.opanel h2{font-size:clamp(26px,3vw,38px);font-weight:700;line-height:1.12;color:#fff}
+.opanel .lead{margin-top:14px;color:rgba(255,255,255,.9);font-size:16px;line-height:1.6}
+.opanel .seal{margin-top:22px;color:rgba(255,255,255,.85);font-size:14px;line-height:1.6;max-width:none}
+.ostack{display:flex;flex-direction:column;align-items:center}
+.rstack{position:relative;width:min(400px,100%);height:470px;cursor:grab;user-select:none;touch-action:pan-y}
+.rcard{position:absolute;inset:0;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  box-shadow:0 12px 30px -12px rgba(28,26,25,.28);
+  transform:translate(calc(var(--d) * 14px), calc(var(--d) * -12px)) rotate(calc(var(--d) * 3deg)) scale(calc(1 - var(--d) * .04));
+  transition:transform .38s ease,opacity .38s ease}
+.rcard.away{transform:translateX(-120%) rotate(-12deg);opacity:0}
+.rpic{height:52%;overflow:hidden}
+.rpic img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.rtxt{padding:18px 22px}
+.rtxt h3{font-size:20px;font-weight:700;color:var(--accent)}
+.rtxt ul{margin-top:8px;padding-left:18px;font-size:14px;line-height:1.5;color:#3e3e3e}
+.rtxt li{margin-bottom:4px}
+.rnav{display:flex;align-items:center;gap:16px;margin-top:26px}
+.rnav .arrow{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:17px;cursor:pointer}
+.rnav .arrow:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.rwho{min-width:96px;text-align:center;font-weight:700;color:var(--ink)}
+@media (max-width:900px){
+  .offer-in{grid-template-columns:1fr;gap:36px}
+  .opanel{border-radius:0 28px 28px 0;min-height:0;padding:36px 24px}
+  .rstack{height:440px;width:min(340px,86vw)}
+}
+@media (prefers-reduced-motion:reduce){.rcard{transition:none}.npics .pic,.ntx{transition:none}}
+</style>
+<style>
+/* "What this website gives you": a soft maroon gradient from the left, like the one over the top photo;
+   it fades out a little after the words and the cards sit on white */
+.offer{background:linear-gradient(90deg,#7E2233 0%,#7E2233 34%,rgba(126,34,51,.82) 41%,rgba(126,34,51,.45) 48%,rgba(126,34,51,.14) 55%,#fff 62%)}
+.opanel{background:none;border-radius:0;padding:0;min-height:0;max-width:430px}
+.opanel h2{font-size:clamp(26px,2.8vw,36px)}
+@media (max-width:900px){
+  .offer{background:linear-gradient(180deg,#7E2233 0%,#7E2233 38%,rgba(126,34,51,.35) 52%,#fff 62%)}
+  .opanel{max-width:none;padding:0 4px}
+  .rstack{height:500px}
+  .rpic{height:42%}
+}
+</style>
+<style>
+/* "What this website gives you", final: no solid block. A soft maroon gradient starts at the very
+   left edge (deepest there), gets lighter all the way, and is gone exactly where the word "website"
+   starts; from there it's white. The text is dark so it reads on the whole fade. --fadeEnd is set by script. */
+.offer{--fade:126,34,51;background:linear-gradient(90deg,rgba(var(--fade),.55) 0px,rgba(var(--fade),.40) calc(var(--fadeEnd,520px) * .35),rgba(var(--fade),.20) calc(var(--fadeEnd,520px) * .7),rgba(var(--fade),0) var(--fadeEnd,520px)),#fff}
+.offer.charcoal{--fade:48,43,49}
+.opanel h2{color:var(--ink)}
+.opanel .lead{color:#2E2A2B}
+.opanel .seal{color:#3A3536}
+.opanel .seal b{color:var(--ink)}
+@media (max-width:900px){
+  .offer{background:linear-gradient(180deg,rgba(var(--fade),.50) 0%,rgba(var(--fade),.22) 30%,rgba(var(--fade),0) 46%),#fff}
+}
+</style>
+<style>
+/* Type and spacing after BRAC University's site: Plus Jakarta Sans on the section titles and the main
+   reading parts (not the top bar, hero or footer yet), slightly stronger text, and less empty space */
+:root{--jakarta:"Plus Jakarta Sans",Arial,Helvetica,sans-serif}
+.faculty h2,.drift h2,.alum h2,.opanel h2,.ntitle,
+.ntx,.opanel,.rtxt,.pcard .on,.pcard .below,.newsx .nitem h3,.newsx .nitem p,.facts{font-family:var(--jakarta)}
+.faculty h2,.drift h2,.opanel h2{font-weight:800;letter-spacing:-.025em}
+.ntitle{font-weight:800;letter-spacing:-.015em}
+.ntx h3{font-weight:700}
+.ntx .nd-p,.newsx .nitem p{font-weight:500}
+.opanel .lead{font-size:17px;font-weight:500;color:var(--ink);line-height:1.65}
+.opanel .seal{font-size:15px;font-weight:500;color:#2E2A2B}
+.rtxt h3{font-weight:800}
+.rtxt ul{font-size:14.5px;font-weight:500;color:#2E2A2B}
+.pcard .on b{font-weight:700}
+.facts .big,.facts b{font-family:var(--jakarta)}
+/* less empty space between sections */
+.facts{padding:44px 0}
+.nband{padding:40px 0 44px}
+.newsx{padding-bottom:48px}
+.drift{padding:64px 0}
+.offer{padding:56px 0}
+.faculty{padding:56px var(--gut) 28px}
+.rstack{height:450px}
+
+/* News band is charcoal; Around the department is white; "What this website gives you" is half maroon, half white */
+.nband{background:linear-gradient(90deg,#fff 0,#fff var(--split,60%),var(--ink) var(--split,60%),var(--ink) 100%)}
+@media (max-width:900px){.nband{background:linear-gradient(180deg,#fff 0,#fff var(--splitY,50%),var(--ink) var(--splitY,50%),var(--ink) 100%)}}
+.drift.dark{background:#fff}
+.drift.dark .intro h2{color:var(--ink)}
+.drift.dark .intro p{color:#4A4448}
+.drift.dark .labs-h{color:var(--ink)}
+.drift.dark .labs b{color:var(--accent)}
+.drift.dark .labs span{color:#4A4448}
+.drift.dark .labs,.drift.dark .labs li{border-color:#E4DFE1}
+.drift.dark .labs li{border-left:3px solid var(--accent)}
+.offer,.offer.charcoal{background:linear-gradient(90deg,var(--accent) 0,var(--accent) var(--split,50%),#fff var(--split,50%),#fff 100%)}
+.opanel{max-width:480px}
+.opanel h2,.opanel .seal b{color:#fff}
+.opanel h2{font-size:clamp(30px,3.3vw,44px);line-height:1.12}
+.opanel .lead{color:rgba(255,255,255,.94);font-size:19px;line-height:1.75;margin-top:18px;word-spacing:.05em}
+.opanel .seal{color:rgba(255,255,255,.9);font-size:16.5px;line-height:1.8;margin-top:24px;word-spacing:.05em}
+@media (max-width:900px){
+  .offer,.offer.charcoal{background:linear-gradient(180deg,var(--accent) 0,var(--accent) var(--splitY,50%),#fff var(--splitY,50%),#fff 100%)}
+}
+
+/* Sabrin 23 Nov: headings and short intro lines centred (long text, lists and cards stay left);
+   about 2.5 cm of space on the left, right and above the writing on a laptop */
+:root{--gut:clamp(24px,6.6vw,104px)}
+.nband{padding-top:88px}
+.drift{padding-top:88px}
+.offer{padding-top:88px}
+.faculty{padding-top:88px}
+.ntitle,.drift .intro h2,.drift .intro p,.drift .labs-h,.opanel h2,.opanel .lead,.faculty h2,.faculty .lede{text-align:center}
+.drift .intro p{margin-left:auto;margin-right:auto}
+.faculty .fhead{margin-top:14px;justify-content:center}
+
+/* Same gap on both sides of every coloured block: left edge = right edge */
+.opanel .seal{text-align:justify;hyphens:auto}
+.nshow{column-gap:calc(var(--gut) * 2)}
+@media (max-width:900px){.nshow{column-gap:0}}
+@media (max-width:900px){.nband,.drift,.offer,.faculty{padding-top:56px}}
 </style>
 </head>
 <body>
@@ -579,8 +731,14 @@ body{animation:pageIn .5s ease backwards}
 <section class="newsx" id="news">
   <div class="nband">
     <div class="wrap">
-      <h2 class="ctitle rise">Electrical and Electronic Engineering News</h2>
-      <div class="nshow rise" id="nshow" aria-roledescription="carousel" aria-label="Latest news"></div>
+      <div class="nshow rise" id="nshow" aria-roledescription="carousel" aria-label="Latest news">
+        <div class="npics" id="npics"></div>
+        <div class="nside">
+          <h2 class="ntitle">Electrical and Electronic Engineering News</h2>
+          <div class="ntexts" id="ntexts"></div>
+          <div class="ndots" id="ndots" role="group" aria-label="Choose a post"></div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="wrap">
@@ -612,45 +770,37 @@ body{animation:pageIn .5s ease backwards}
 </section>
 
 <section class="offer" id="what">
-  <div class="wrap">
-    <h2 class="rise">What this website gives you</h2>
-    <p class="lead rise d1">One place for the department's academic records, for every role.</p>
-    <div class="cards rise d2">
-      <div class="card">
-        <h3>Students</h3>
-        <ul>
-          <li>Every course of your semester, with class tests, attendance and CATM worked out for you</li>
-          <li>Your GPA for each semester and your running CGPA</li>
-          <li>The full history of any mark: who entered it, when, and every change with its reason</li>
-          <li>Raise an objection on a mark you think is wrong</li>
-          <li>Your timetable, a private file locker for each course, and your projects</li>
-        </ul>
+  <div class="wrap offer-in">
+    <div class="opanel rise">
+      <h2>What this <span id="wsite">website</span> gives you</h2>
+      <p class="lead">One place for the department's academic records, for every role. Swipe the cards to see what each one gets.</p>
+      <p class="seal"><b>How changes are caught:</b> every entry is saved with a fingerprint linked to the entry before it. If anyone changes a record outside this website, the check shows exactly which record was changed, and copies kept on other computers still hold the original.</p>
+    </div>
+    <div class="ostack rise d1">
+      <div class="rstack" id="rstack" aria-roledescription="carousel" aria-label="What each role gets">
+        <article class="rcard" data-i="0">
+          <div class="rpic"><img src="photos/what-students.jpg" alt="" loading="lazy" draggable="false"></div>
+          <div class="rtxt"><h3>Students</h3><ul><li>Every course of your semester, with class tests, attendance and CATM worked out for you</li><li>Your GPA for each semester and your running CGPA</li><li>The full history of any mark: who entered it, when, and every change with its reason</li><li>Raise an objection on a mark you think is wrong</li></ul></div>
+        </article>
+        <article class="rcard" data-i="1">
+          <div class="rpic"><img src="photos/what-teachers.jpg" alt="" loading="lazy" draggable="false"></div>
+          <div class="rtxt"><h3>Teachers</h3><ul><li>Take attendance for each class in one grid</li><li>Enter class-test marks; see each student's CATM and a class chart</li><li>Correct a mark only with a reason, which the student can read</li></ul></div>
+        </article>
+        <article class="rcard" data-i="2">
+          <div class="rpic"><img src="photos/what-office.jpg" alt="" loading="lazy" draggable="false"></div>
+          <div class="rtxt"><h3>Office</h3><ul><li>Keep the register: batches and the students in them</li><li>Approve which teacher takes which class</li><li>Check the whole record for changes at any time</li></ul></div>
+        </article>
+        <article class="rcard" data-i="3">
+          <div class="rpic"><img src="photos/what-examiners.jpg" alt="" loading="lazy" draggable="false"></div>
+          <div class="rtxt"><h3>Examiners</h3><ul><li>Enter final exam marks</li><li>Publish results; GPA and semester standing follow from them</li></ul></div>
+        </article>
       </div>
-      <div class="card">
-        <h3>Teachers</h3>
-        <ul>
-          <li>Take attendance for each class in one grid</li>
-          <li>Enter class-test marks; see each student's CATM and a class chart</li>
-          <li>Correct a mark only with a reason, which the student can read</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Office</h3>
-        <ul>
-          <li>Keep the register: batches and the students in them</li>
-          <li>Approve which teacher takes which class</li>
-          <li>Check the whole record for changes at any time</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Examiners</h3>
-        <ul>
-          <li>Enter final exam marks</li>
-          <li>Publish results; GPA and semester standing follow from them</li>
-        </ul>
+      <div class="rnav">
+        <button class="arrow" type="button" aria-label="Previous card" onclick="roleTurn(-1)">←</button>
+        <span class="rwho" id="rwho">Students</span>
+        <button class="arrow" type="button" aria-label="Next card" onclick="roleTurn(1)">→</button>
       </div>
     </div>
-    <p class="seal rise d3"><b>How changes are caught:</b> every entry is saved with a fingerprint linked to the entry before it. If anyone changes a record outside this website, the check shows exactly which record was changed, and copies kept on other computers still hold the original.</p>
   </div>
 </section>
 
@@ -897,18 +1047,18 @@ function eventDate(a){
 
 function drawSlides(list){
   const show = list.slice(0, 3), rest = list.slice(3);
-  // the newest three posts take turns in the maroon slideshow
-  const dots = k => `<div class="ndots" role="group" aria-label="Choose a post">${show.map((_, j) =>
-      `<button type="button" class="nd${j === k ? ' on' : ''}" aria-label="Post ${j + 1} of ${show.length}" onclick="newsGo(${j}, true)"></button>`).join('')}</div>`;
-  document.getElementById('nshow').innerHTML = show.map((a, k) => {
+  // the newest three posts take turns in the slideshow (photo on white, words on charcoal): picture left, words right
+  document.getElementById('npics').innerHTML = show.map((a, k) => a.image
+      ? `<div class="pic${k === 0 ? ' on' : ''}"><img src="${esc(a.image)}" alt="" loading="${k ? 'lazy' : 'eager'}"></div>`
+      : `<div class="pic none${k === 0 ? ' on' : ''}"><img src="photos/logo.webp" alt=""></div>`).join('');
+  document.getElementById('ntexts').innerHTML = show.map((a, k) => {
     const {title} = splitTitle(a.title);
-    const pic = a.image ? `<div class="pic"><img src="${esc(a.image)}" alt="" loading="${k ? 'lazy' : 'eager'}"></div>`
-                        : `<div class="pic none"><img src="photos/logo.webp" alt=""></div>`;
     const head = a.link ? `<h3><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(title)}</a></h3>` : `<h3>${esc(title)}</h3>`;
     const more = a.link ? `<a class="lmore" href="${esc(a.link)}" target="_blank" rel="noopener"><span aria-hidden="true">→</span>Read the full post</a>` : '';
-    return `<article class="nsl${k === 0 ? ' on' : ''}" aria-hidden="${k ? 'true' : 'false'}">${pic}
-      <div class="ntxt"><p class="lk">Latest news · ${esc(a.year)}</p>${head}<p class="nd-p">${esc(a.detail)}</p>${more}${show.length > 1 ? dots(k) : ''}</div></article>`;
+    return `<article class="ntx${k === 0 ? ' on' : ''}" aria-hidden="${k ? 'true' : 'false'}"><p class="lk">Latest news · ${esc(a.year)}</p>${head}<p class="nd-p">${esc(a.detail)}</p>${more}</article>`;
   }).join('');
+  document.getElementById('ndots').innerHTML = show.length > 1 ? show.map((_, j) =>
+      `<button type="button" class="nd${j === 0 ? ' on' : ''}" aria-label="Post ${j + 1} of ${show.length}" onclick="newsGo(${j}, true)"></button>`).join('') : '';
   // the older posts sit on the white below
   const grid = document.getElementById('slider');
   grid.innerHTML = rest.map((a, i) => {
@@ -937,28 +1087,105 @@ function sharePage(btn){
     .finally(() => setTimeout(() => { label.textContent = 'Share this page'; }, 2500));
 }
 
+
+/* ---------- "What this website gives you": a stack of cards; the front one swipes to the back ---------- */
+let roleOrder = [0, 1, 2, 3], roleTimer = null, roleSeen = false;
+function roleDraw(){
+  const cards = document.querySelectorAll('#rstack .rcard');
+  roleOrder.forEach((i, depth) => {
+    const c = cards[i];
+    c.style.zIndex = 10 - depth;
+    c.style.setProperty('--d', depth);
+    c.classList.toggle('front', depth === 0);
+    c.setAttribute('aria-hidden', depth ? 'true' : 'false');
+  });
+  document.getElementById('rwho').textContent = cards[roleOrder[0]].querySelector('h3').textContent;
+}
+function roleTurn(dir, byHand = true){
+  const cards = document.querySelectorAll('#rstack .rcard');
+  if (dir > 0){
+    const front = cards[roleOrder[0]];
+    front.classList.add('away');                       // slides off to the left, then goes to the back
+    setTimeout(() => { front.classList.remove('away'); roleOrder.push(roleOrder.shift()); roleDraw(); }, 380);
+  } else { roleOrder.unshift(roleOrder.pop()); roleDraw(); }
+  if (byHand) roleTick();
+}
+function roleTick(){
+  clearInterval(roleTimer);
+  if (roleSeen) roleTimer = setInterval(() => roleTurn(1, false), 3500);
+}
+(() => {
+  const stack = document.getElementById('rstack');
+  if (!stack) return;
+  roleDraw();
+  new IntersectionObserver(es => { roleSeen = es[0].isIntersecting; roleTick(); }, {threshold: .3}).observe(stack);
+  // swipe with a finger, or drag with the mouse
+  let x0 = null;
+  const start = e => { x0 = (e.touches ? e.touches[0] : e).clientX; };
+  const end = e => {
+    if (x0 === null) return;
+    const dx = (e.changedTouches ? e.changedTouches[0] : e).clientX - x0;
+    x0 = null;
+    if (Math.abs(dx) > 40) roleTurn(dx < 0 ? 1 : -1);
+  };
+  stack.addEventListener('touchstart', start, {passive: true});
+  stack.addEventListener('touchend', end);
+  stack.addEventListener('mousedown', start);
+  window.addEventListener('mouseup', end);
+})();
+
+
+/* "What this website gives you": maroon on the text half, white on the card half.
+   The maroon ends as far right of the text as the text starts from the left edge (same gap both sides). */
+function fadeToWebsite(){
+  const sec = document.getElementById('what'), txt = sec && sec.querySelector('.opanel'),
+        cards = sec && sec.querySelector('.rstack');
+  if (!sec || !txt || !cards) return;
+  const s = sec.getBoundingClientRect(), t = txt.getBoundingClientRect(), c = cards.getBoundingClientRect();
+  sec.style.setProperty('--split', Math.round(t.right + (t.left - s.left) - s.left) + 'px');
+  const inner = sec.querySelector('.offer-in').getBoundingClientRect();   // not moved by the .rise fade-in
+  sec.style.setProperty('--splitY', Math.round(inner.top - s.top + txt.offsetHeight + 18) + 'px');
+}
+/* News: white behind the photo, charcoal behind the writing; the edge sits in the gap between them */
+function splitNews(){
+  const band = document.querySelector('.nband'), pics = document.getElementById('npics'),
+        side = document.querySelector('#nshow .nside');
+  if (!band || !pics || !side) return;
+  const b = band.getBoundingClientRect(), p = pics.getBoundingClientRect(), t = side.getBoundingClientRect();
+  band.style.setProperty('--split', Math.round((p.right + t.left) / 2 - b.left) + 'px');
+  // measure inside the slideshow, then add where its (never-moving) wrapper starts,
+  // so the fade-in slide of .rise doesn't throw the edge off
+  const show = document.getElementById('nshow').getBoundingClientRect(),
+        wrap = document.getElementById('nshow').parentElement.getBoundingClientRect();
+  band.style.setProperty('--splitY', Math.round((p.bottom + t.top) / 2 - show.top + wrap.top - b.top) + 'px');
+}
+window.addEventListener('load', splitNews);
+window.addEventListener('resize', splitNews);
+if (document.fonts) document.fonts.ready.then(splitNews);
+if (window.ResizeObserver) new ResizeObserver(splitNews).observe(document.getElementById('nshow'));
+window.addEventListener('load', fadeToWebsite);
+window.addEventListener('resize', fadeToWebsite);
+if (document.fonts) document.fonts.ready.then(fadeToWebsite);
+
 /* ---------- news slideshow: changes by itself while it is on screen ---------- */
 let newsCur = 0, newsCount = 0, newsTimer = null, newsSeen = false, newsHold = false;
 function newsGo(k, byHand){
-  const slides = document.querySelectorAll('#nshow .nsl');
-  if (!slides.length) return;
-  newsCur = (k + slides.length) % slides.length;
-  slides.forEach((s, j) => {
-    s.classList.toggle('on', j === newsCur);
-    s.setAttribute('aria-hidden', j === newsCur ? 'false' : 'true');
-  });
+  const pics = document.querySelectorAll('#npics .pic'), texts = document.querySelectorAll('#ntexts .ntx'),
+        dots = document.querySelectorAll('#ndots .nd');
+  if (!texts.length) return;
+  newsCur = (k + texts.length) % texts.length;
+  [pics, texts, dots].forEach(list => list.forEach((el, j) => el.classList.toggle('on', j === newsCur)));
+  texts.forEach((el, j) => el.setAttribute('aria-hidden', j === newsCur ? 'false' : 'true'));
   if (byHand) newsTick();          // a click restarts the wait before the next post
 }
 function newsTick(){
   clearInterval(newsTimer);
-  if (newsCount > 1 && newsSeen && !newsHold) newsTimer = setInterval(() => newsGo(newsCur + 1), 6000);
+  if (newsCount > 1 && newsSeen && !newsHold) newsTimer = setInterval(() => newsGo(newsCur + 1), 3000);
 }
 function newsStart(n){
   newsCount = n; newsCur = 0;
   const box = document.getElementById('nshow');
-  new IntersectionObserver(es => { newsSeen = es[0].isIntersecting; newsTick(); }, {threshold: .4}).observe(box);
-  box.addEventListener('mouseenter', () => { newsHold = true; newsTick(); });     // pauses while the mouse is on it
-  box.addEventListener('mouseleave', () => { newsHold = false; newsTick(); });
+  new IntersectionObserver(es => { newsSeen = es[0].isIntersecting; newsTick(); }, {threshold: .2}).observe(box);
 }
 
 function showAllNews(){

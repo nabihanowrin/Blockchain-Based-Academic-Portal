@@ -19,12 +19,12 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@300;400;600;700;800&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@300;400;600;700;800&family=Oswald:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#302B31; --ink-2:#3D373E; --cream:#FFFFFF; --card:#fff;
   --text:#1C1A19; --grey:#6E6764; --line:#E4DCD6;
-  --accent:#500000; --accent-wash:#F4E8EA;
+  --accent:#7E2233; --accent-wash:#F4E8EA;
   --butter:#F2EBC6; --mist:#D3E4E8; --clay:#FFFFFF; --sage:#DCE6D8;
   --sans:Arial,Helvetica,sans-serif; --serif:Arial,Helvetica,sans-serif; --mono:Arial,Helvetica,sans-serif;
 }
@@ -54,7 +54,7 @@ button,input,select{font-family:inherit}
 .nav .links a{color:#2D2E33;text-decoration:none;font-size:15px;font-weight:500;padding:6px 0;border-bottom:2px solid transparent}
 .nav .links a:hover{border-bottom-color:var(--accent)}
 .nav a.cta{background:var(--accent);color:#fff;text-decoration:none;font-size:15px;font-weight:600;padding:12px 24px;border-radius:4px;flex-shrink:0}
-.nav a.cta:hover{background:#3C001C}
+.nav a.cta:hover{background:#651B29}
 .nav .menu{display:none;margin-left:auto;background:none;border:1px solid var(--line);border-radius:4px;width:42px;height:42px;cursor:pointer}
 .nav .menu span{display:block;width:18px;height:2px;background:var(--text);margin:4px auto}
 
@@ -165,9 +165,9 @@ a.slide:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .faculty h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.02em}
 .fgrid{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .fcard{background:#fff;border:1px solid #E4DCD6;border-radius:12px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:3px;font-size:14px}
-.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#500000;font-size:13px;word-break:break-all;text-decoration:none}
-.fcard.chair{border-color:#500000;box-shadow:0 0 0 1px #500000 inset}
-.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#500000;color:#fff !important;margin-bottom:6px}
+.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#7E2233;font-size:13px;word-break:break-all;text-decoration:none}
+.fcard.chair{border-color:#7E2233;box-shadow:0 0 0 1px #7E2233 inset}
+.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#7E2233;color:#fff !important;margin-bottom:6px}
 .ftag.leave{background:#E7E1DC;color:#5D5450 !important}
 .offer{padding:90px 0;background:var(--accent);color:#fff}
 .offer h2{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.08;letter-spacing:-.02em}
@@ -381,7 +381,7 @@ body{animation:pageIn .5s ease backwards}
 <style>
 /* yellow only on charcoal: buttons on white or off-white go back to maroon */
 .nav a.cta,.morebtn,.enter .btn{background:var(--accent);color:#fff}
-.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#3C001C;color:#fff}
+.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#651B29;color:#fff}
 </style>
 <style>
 /* faculty: photo cards; the photo darkens towards the bottom so the name reads on top of it */
@@ -466,7 +466,7 @@ body{animation:pageIn .5s ease backwards}
 .nitem.lead h3 a:hover{color:#fff}
 .newsx .nitem:not(.lead) p{color:#3e3e3e}
 .newsx .morebtn{background:var(--accent);color:#fff;box-shadow:none}
-.newsx .morebtn:hover{background:#3C001C;color:#fff}
+.newsx .morebtn:hover{background:#651B29;color:#fff}
 @media (max-width:900px){.nitem.lead{grid-template-columns:1fr}.nitem.lead .ltxt{padding:26px 24px 30px}}
 </style>
 <style>
@@ -511,6 +511,9 @@ html,body{background:#fff}
 .spanel .eee-uni{font-size:clamp(11px,1.15vw,16px)}
 .sback{position:absolute;top:22px;left:24px;z-index:2;font-size:14px;font-weight:600;color:var(--ink);text-decoration:none;background:rgba(255,255,255,.85);padding:8px 14px;border:1px solid var(--line)}
 .sback:hover{color:var(--accent);border-color:var(--accent)}
+.sside,.sside input,.sside select,.sside button{font-family:"Plus Jakarta Sans",Arial,Helvetica,sans-serif}
+.sside{font-weight:500}
+.sside h1,.sside h2{font-weight:800;letter-spacing:-.02em}
 .sside{padding:64px clamp(24px,5vw,88px) 56px;display:flex;justify-content:center}
 .sinner{width:100%;max-width:660px}
 .sinner .enter{padding:0;margin:0}

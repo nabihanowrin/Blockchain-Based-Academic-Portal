@@ -2,6 +2,37 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 07:30 — Homepage: role cards, news beside the photo, maroon back
+
+From Sabrin's homepage chat, on top of b7ec38b.
+
+- **Maroon:** back to `#7E2233` (the colour the site had before `#500000`), homepage and sign-in page.
+- **News:** the section title now sits beside the photo, with the post under it; smaller text.
+  Changes every 3 seconds while it's on screen (no longer pauses under the mouse).
+- **"What this website gives you":** a maroon panel (fading lighter) on the left; on the right
+  a stack of photo cards (Students, Teachers, Office, Examiners) that swipe or drag to the back,
+  with ← → buttons, and move on by themselves every 3.5 s. New photos: `photos/what-*.jpg`.
+- **Faculty:** five cards across on a laptop; photos a little darker.
+- **VLSIthon:** the photo on the stage again (`site_content.py`).
+- **Section colours:** news: white behind the photo, charcoal behind the writing (on phones, photo on white above, writing on charcoal below; yellow label stays, on charcoal); "Around the department"
+  is white (lab names maroon, text dark); "What this website gives you" is maroon on the text half and
+  white on the card half (sharp edge just right of the text; on phones maroon on top, white below), with
+  a bigger heading and bigger, more spaced text. The cards stay white.
+- **Fonts and spacing after BRAC University's site:** Plus Jakarta Sans (Google Fonts) on section
+  titles, news, role cards, faculty cards and the numbers; slightly stronger text; less empty space
+  between sections. Top bar, hero and footer keep their fonts for now.
+- **Centred headings and more room:** section headings and their short intro lines are centred (news
+  title, Around the department, What this website gives you, Faculty); long text, lists and cards stay
+  left. About 2.5 cm of space on the left and right (`--gut`, up to 104px) and above each section
+  (88px) on a laptop; less on phones. Hero, numbers row, Alumni and footer layout unchanged.
+- **Same gap on both sides:** in "What this website gives you" the maroon ends exactly as far to the
+  right of the text as the text starts from the left edge; the paragraph is justified so both edges are
+  straight. In the news, the photo and the writing each have the same gap on their left and right.
+- **Other pages get the same font:** `theme.css` now loads Plus Jakarta Sans and uses it for the
+  student, teacher, office and examiner pages (body text a bit heavier, headings bold); Arial stays as
+  the fallback. `signin.html`'s form side uses it too. (`theme.css` is Najah's area — she has been told
+  in the change log.) `alumni.html` is unchanged.
+
 ## 2026-11-23 — Groq fixed (it was blocked by name), Groq goes first, 4 models
 
 What you saw: the first question was answered, the second wasn't. The log showed
