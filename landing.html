@@ -1464,7 +1464,7 @@ window.addEventListener('resize', fadeToWebsite);
 if (document.fonts) document.fonts.ready.then(fadeToWebsite);
 
 /* ---------- news slideshow: changes by itself while it is on screen ---------- */
-let newsCur = 0, newsCount = 0, newsTimer = null, newsSeen = false, newsHold = false;
+let newsCur = 0, newsCount = 0, newsTimer = null, newsSeen = false;
 function newsGo(k, byHand){
   const pics = document.querySelectorAll('#npics .pic'), texts = document.querySelectorAll('#ntexts .ntx'),
         dots = document.querySelectorAll('#ndots .nd');
@@ -1476,15 +1476,14 @@ function newsGo(k, byHand){
 }
 function newsTick(){
   clearInterval(newsTimer);
-  if (newsCount > 1 && newsSeen && !newsHold) newsTimer = setInterval(() => newsGo(newsCur + 1), 5000);
+  // changes every 2.5 s on its own; hovering never pauses it; clicking a link or dot
+  // just restarts this same wait (see "byHand" above), so it doesn't jump right after you click
+  if (newsCount > 1 && newsSeen) newsTimer = setInterval(() => newsGo(newsCur + 1), 2500);
 }
 function newsStart(n){
   newsCount = n; newsCur = 0;
   const box = document.getElementById('nshow');
   new IntersectionObserver(es => { newsSeen = es[0].isIntersecting; newsTick(); }, {threshold: .2}).observe(box);
-  // the post holds still while the mouse is on it, so it can be read
-  box.addEventListener('mouseenter', () => { newsHold = true; newsTick(); });
-  box.addEventListener('mouseleave', () => { newsHold = false; newsTick(); });
 }
 
 function showAllNews(){
