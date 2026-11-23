@@ -85,7 +85,7 @@ REMOVE_ONCE = [
 SOURCE_IMAGES = [
     ("Symposium: Winter Symposium on Silicon Photonics and Nanofabrication", "",
      "photos/winter-symposium-2026.jpg"),
-    ("Champions of VLSIthon 3.0", "photos/vlsithon3-winners.jpg", "photos/vlsithon3.png"),   # back to the "Congratulations, Team Deviation" picture
+    ("Champions of VLSIthon 3.0", "photos/vlsithon3.png", "photos/vlsithon3-winners.jpg"),   # the photo on the stage
 ]
 
 SEED_POSTS = [
