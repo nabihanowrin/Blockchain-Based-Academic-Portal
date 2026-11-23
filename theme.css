@@ -6,15 +6,17 @@
    over the older styles inside each page. To change a colour or font for
    all four panels, change it here once.
 
-   Colours (Najah's choice, 23 Nov): the deep maroon and soft gold of her
-   reference, plus the landing page's charcoal:
-     maroon   #501315
-     charcoal #302B31   (landing page hero and footer)
+   Colours (23 Nov, Sabrin): the same as the homepage (landing.html), so the
+   whole site is one family:
+     maroon   #7E2233   (homepage maroon; darker #651B29 for hover)
+     charcoal #302B31   (homepage hero, news and footer; also all dark text)
      gold     #D6B06A
      cream    #F6F2EE   page        white #fff   cards
+   (Before 23 Nov 09:10 the panels used Najah's deeper maroon #501315 and
+   near-black #1C1A19 text.)
    Variety comes from using those three solid colours for different things
    (maroon, charcoal, gold), never from extra colours or gradients.
-   Light rose #F3E7E7 and sand #F8F0E0 appear only inside the small labels.
+   Light rose #F4E8EA and sand #F8F0E0 appear only inside the small labels.
    Cards have no coloured edges and profile pictures have no rings.
    Font: Plus Jakarta Sans (Google Fonts), like the homepage sections since 23 Nov;
    Arial is the fallback. Corners: 4–6px.
@@ -23,13 +25,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
 :root{
-  --accent:#501315; --accent-dark:#3B0D0F; --accent-light:#7A2A2D;
-  --accent-wash:#F3E7E7; --accent-line:#DDBDBE;
+  --accent:#7E2233; --accent-dark:#651B29; --accent-light:#7E2233;
+  --accent-wash:#F4E8EA; --accent-line:#EBC8CF;
   --charcoal:#302B31; --gold:#D6B06A; --gold-deep:#B98F45; --gold-wash:#F8F0E0; --gold-text:#6B4E1C;
   --stone:#EFE6DF;
-  --side:#501315; --side-text:#F1E4E4;
-  --cream:#F6F2EE; --card:#fff; --ink:#1C1A19; --text:#1C1A19; --grey:#6E6764; --line:#E4DCD6; --soft:#EFE9E4;
-  --butter:#F8F0E0; --mist:#F3E7E7; --clay:#EFE6DF; --sage:#F6F2EE;
+  --side:#7E2233; --side-text:#F6E3E7;
+  --cream:#F6F2EE; --card:#fff; --ink:#302B31; --text:#302B31; --grey:#6E6764; --line:#E4DCD6; --soft:#EFE9E4;
+  --butter:#F8F0E0; --mist:#F4E8EA; --clay:#EFE6DF; --sage:#F6F2EE;
   --sans:"Plus Jakarta Sans",Arial,Helvetica,sans-serif; --serif:"Plus Jakarta Sans",Arial,Helvetica,sans-serif; --mono:"Plus Jakarta Sans",Arial,Helvetica,sans-serif;
   --r:6px;
 
@@ -58,14 +60,14 @@ h2.sect::after,.sect::after{content:"";position:absolute;left:0;bottom:0;width:4
 .me{border-bottom:1px solid rgba(255,255,255,.18)}
 .me .dot{background:#fff;color:var(--accent);font-weight:700;box-shadow:none;border:0}
 .me .nm{color:#fff}
-.me .role,.me .sem,.me .sub{color:#EBD3D8}
+.me .role,.me .sem,.me .sub{color:#F6E3E7}
 .nav .group,.cap{color:var(--gold);font-weight:700}
 .nav button{color:var(--side-text)}
 .nav button:hover{color:#fff;background:rgba(255,255,255,.08)}
 .nav button.on{background:var(--cream);color:var(--accent);font-weight:700;box-shadow:inset 4px 0 0 var(--gold)}
 .nav button.on::before,.nav button.on::after{display:none !important}
 .side .out{border:1px solid rgba(255,255,255,.6);color:#fff;font-weight:700}
-.side .out:hover{background:var(--gold);border-color:var(--gold);color:#1D181C}
+.side .out:hover{background:var(--gold);border-color:var(--gold);color:#302B31}
 .menubtn{border-color:rgba(255,255,255,.6) !important}
 .side.open .nav{border-top-color:rgba(255,255,255,.2) !important}
 
@@ -114,7 +116,7 @@ table tbody tr:hover td{background:#FBF6F6}
 .pill.acc,.badge{color:#fff;border-color:var(--accent);background:var(--accent)}
 .pill.no,.unpaid,.flagged,.rtype{color:#fff;border-color:var(--charcoal);background:var(--charcoal)}
 .pill.dim,.tag,.tag.past,.lockrow .pdf,.lockrow .pdf.sug,.lockrow .pdf.image{color:#5A5350;border-color:var(--line);background:var(--cream)}
-.tag.now{color:#1D181C;border-color:var(--gold-deep);background:var(--gold)}
+.tag.now{color:#302B31;border-color:var(--gold-deep);background:var(--gold)}
 /* the state dot */
 .pill.ok::before,.pill.new::before,.pill.ct::before,.pill.wait::before,.pill.chg::before,
 .pill.no::before,.pill.acc::before,.paid::before,.unpaid::before,.sent::before,.flagged::before{
@@ -153,8 +155,8 @@ table tbody tr:hover td{background:#FBF6F6}
 .panel-student .semcard .s{color:rgba(255,255,255,.75)}
 .panel-student .semcard .n{font-family:var(--sans);font-weight:700}
 .panel-student .semcard.now{background:var(--gold) !important}
-.panel-student .semcard.now .n,.panel-student .semcard.now .g,.panel-student .semcard.now .s{color:#1D181C}
-.panel-student .semcard.now .badge{background:#1D181C;border-color:#1D181C;color:var(--gold)}
+.panel-student .semcard.now .n,.panel-student .semcard.now .g,.panel-student .semcard.now .s{color:#302B31}
+.panel-student .semcard.now .badge{background:#302B31;border-color:#302B31;color:var(--gold)}
 .panel-student .semcard.later{background:#fff !important;border:1px dashed var(--line);box-shadow:none}
 .panel-student .semcard.later .n{color:#B5ACA7}
 .panel-student .semcard.later .s,.panel-student .semcard.later .g{color:var(--grey)}
@@ -167,7 +169,7 @@ table tbody tr:hover td{background:#FBF6F6}
 .panel-student .chip .v{font-weight:700}
 .panel-student .chip.main{background:var(--accent);color:#fff}
 .panel-student .chip:nth-child(2){background:var(--charcoal);color:#fff}
-.panel-student .chip:nth-child(3){background:var(--gold);color:#1D181C}
+.panel-student .chip:nth-child(3){background:var(--gold);color:#302B31}
 .panel-student .chip.main .k,.panel-student .chip.main .n,.panel-student .chip.main .v small,
 .panel-student .chip:nth-child(2) .k,.panel-student .chip:nth-child(2) .n,.panel-student .chip:nth-child(2) .v small{color:rgba(255,255,255,.78)}
 .panel-student .chip:nth-child(3) .k,.panel-student .chip:nth-child(3) .n,.panel-student .chip:nth-child(3) .v small{color:#4A3608}
@@ -192,7 +194,7 @@ table tbody tr:hover td{background:#FBF6F6}
 .panel-office .tiles:not(:has(.pick)) .tile:nth-child(-n+2) .k{color:rgba(255,255,255,.78)}
 .panel-office .tiles:not(:has(.pick)) .tile:nth-child(-n+2) .v{color:#fff}
 .panel-office .tiles:not(:has(.pick)) .tile:nth-child(3) .k{color:#4A3608}
-.panel-office .tiles:not(:has(.pick)) .tile:nth-child(3) .v{color:#1D181C}
+.panel-office .tiles:not(:has(.pick)) .tile:nth-child(3) .v{color:#302B31}
 .panel-office .tile.pick:hover{border-color:var(--accent)}
 
 /* =====================================================================
@@ -202,7 +204,7 @@ table tbody tr:hover td{background:#FBF6F6}
 .sems .sem .n{font-family:var(--sans);font-weight:700;color:var(--accent)}
 .sems .sem:has(.tag.now){background:var(--accent) !important;border-color:var(--accent);box-shadow:var(--shadow)}
 .sems .sem:has(.tag.now) .n,.sems .sem:has(.tag.now) *{color:#fff}
-.sems .sem:has(.tag.now) .tag.now{color:#1D181C}
+.sems .sem:has(.tag.now) .tag.now{color:#302B31}
 .sems .sem.later{background:var(--cream) !important;border-style:dashed;box-shadow:none;opacity:.8}
 .sems .sem.later .n{color:#B5ACA7}
 
@@ -217,5 +219,5 @@ table tbody tr:hover td{background:#FBF6F6}
 
 /* Plus Jakarta Sans (23 Nov, Sabrin, after BRAC University's site): firmer text so the pages feel less flat */
 body{font-weight:500;-webkit-font-smoothing:antialiased}
-h1,h2,h3,.sect,h1.page,.profile h2{font-weight:800;letter-spacing:-.02em}
+h1,h2,h3,.sect,h1.page,.profile h2{font-weight:800;letter-spacing:-.025em}
 b,strong,th{font-weight:700}

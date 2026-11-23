@@ -2,6 +2,21 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 09:15 — Student, teacher, office and examiner pages use the homepage colours
+
+From Sabrin's colour chat. Only colours changed; layout is the same.
+
+- **Maroon:** every maroon on the four panels (`#501315`, `#7A2A2D`, `#A4343F`, `#8A1E2E`) is now the
+  homepage maroon `#7E2233`; the darker hover shade `#3B0D0F` is now the homepage's `#651B29`.
+- **Light maroon tints:** pale rose backgrounds and lines now use the homepage's (`#F4E8EA`, `#F6E3E7`,
+  `#EBC8CF`). The thin maroon-on-maroon lines in the sidebar are now soft white lines.
+- **Dark / near-black:** all near-black text (`#1C1A19`, `#1D181C`) and black shadows are now the
+  homepage charcoal `#302B31`. The printed fee slip in `app.html` stays black ink on purpose.
+- **Fonts:** already Plus Jakarta Sans through `theme.css`; headings now use the homepage's tighter
+  letter spacing (-0.025em). Gold `#D6B06A` and the cream page background are unchanged.
+- Files: `theme.css` (Najah's area — the header note says what changed), `app.html`, `teacher.html`,
+  `office.html`, `exam.html`.
+
 ## 2026-11-23 07:30 — Homepage: role cards, news beside the photo, maroon back
 
 From Sabrin's homepage chat, on top of b7ec38b.
