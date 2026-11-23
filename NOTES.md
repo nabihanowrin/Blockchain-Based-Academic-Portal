@@ -2,6 +2,12 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 11:50 — Faculty cards back to the smaller size
+
+From Sabrin's colour chat: the 2½-across cards looked too big. Back to the 10:20 size: phone 1 card
+(82% wide), 600–1099px 2, laptop 3 (~377px each), 1700px+ 4; text sizes back too. Names stay under
+the photo; still no fixed pixel size.
+
 ## 2026-11-23 10:50 — Footer: BRAC-style bottom bar with social icons; Privacy Policy page
 
 From Sabrin's colour chat.

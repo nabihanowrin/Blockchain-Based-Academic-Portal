@@ -865,24 +865,24 @@ body{animation:pageIn .5s ease backwards}
    FACULTY (23 Nov, Sabrin): bigger cards that follow the screen, no fixed
    pixel size. How many cards fit across depends only on the screen width
    (a half card at the edge shows there are more to scroll to):
-     phone (under 600px) ....... 1 card (88% wide), with a peek of the next
-     600–1099px ................ 1½ cards
-     1100–1699px (laptop) ...... 2½ cards
-     1700px and wider .......... 3½ cards
+     phone (under 600px) ....... 1 card (82% wide), with a peek of the next
+     600–1099px ................ 2 cards
+     1100–1699px (laptop) ...... 3 cards
+     1700px and wider .......... 4 cards
    The name and title are no longer printed on the photo: they sit under it,
    above the email, and the photo is shown clear (no dark fade).
    ===================================================================== */
 .fgrid{gap:28px}
-.fgrid .pcard{flex:0 0 calc((100% - 2 * 28px) / 2.5);min-width:0;max-width:none}
-@media (max-width:1099px){.fgrid .pcard{flex-basis:calc((100% - 28px) / 1.5)}}
-@media (min-width:1700px){.fgrid .pcard{flex-basis:calc((100% - 3 * 28px) / 3.5)}}
-@media (max-width:599px){.fgrid{gap:16px}.fgrid .pcard{flex-basis:88%}}
+.fgrid .pcard{flex:0 0 calc((100% - 2 * 28px) / 3);min-width:0;max-width:none}
+@media (max-width:1099px){.fgrid .pcard{flex-basis:calc((100% - 28px) / 2)}}
+@media (min-width:1700px){.fgrid .pcard{flex-basis:calc((100% - 3 * 28px) / 4)}}
+@media (max-width:599px){.fgrid{gap:16px}.fgrid .pcard{flex-basis:82%}}
 .pcard .ph img{filter:none}
 .pcard .ph::after{display:none}
-.pcard .on{position:static;padding:22px 24px 0;color:var(--text);display:grid;gap:4px}
-.pcard .on b{font-size:clamp(19px,1.6vw,26px);line-height:1.3;color:var(--text)}
-.pcard .on span{font-size:clamp(15px,1.15vw,18px);color:var(--grey)}
-.pcard .below{padding:12px 24px 24px;font-size:clamp(14px,1.05vw,17px)}
+.pcard .on{position:static;padding:18px 20px 0;color:var(--text);display:grid;gap:4px}
+.pcard .on b{font-size:clamp(17px,1.35vw,21px);line-height:1.3;color:var(--text)}
+.pcard .on span{font-size:clamp(14px,1vw,16px);color:var(--grey)}
+.pcard .below{padding:10px 20px 20px;font-size:clamp(13px,.95vw,15px)}
 </style>
 <style>
 /* =====================================================================
