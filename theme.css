@@ -8,9 +8,9 @@
 
    Colours (23 Nov, Sabrin): the same as the homepage (landing.html), so the
    whole site is one family:
-     maroon   #602933   (duller, darker shade of the homepage #7E2233; hover #4A2028)
+     maroon   #602933   (whole site, homepage too; hover #4A2028; was #7E2233)
      charcoal #302B31   (sidebar, dark text; same as the homepage hero and footer)
-     soft yellow #E5D3A1   (faded light gold, 23 Nov; was #D6B06A; deeper #CDB57E)
+     yellow   #F1C45D   (the homepage yellow, now on the panels too; hover #E5B444)
      cream    #F6F2EE   page        white #fff   cards
    (Before 23 Nov 09:10 the panels used Najah's deeper maroon #501315 and
    near-black #1C1A19 text.)
@@ -27,7 +27,7 @@
 :root{
   --accent:#602933; --accent-dark:#4A2028; --accent-light:#602933;
   --accent-wash:#F4E8EA; --accent-line:#EBC8CF;
-  --charcoal:#302B31; --gold:#E5D3A1; --gold-deep:#CDB57E; --gold-wash:#F8F0E0; --gold-text:#6B4E1C;
+  --charcoal:#302B31; --gold:#F1C45D; --gold-deep:#E5B444; --gold-wash:#F8F0E0; --gold-text:#6B4E1C;
   --stone:#EFE6DF;
   --side:#302B31; --side-text:#F6E3E7;
   --cream:#F6F2EE; --card:#fff; --ink:#302B31; --text:#302B31; --grey:#6E6764; --line:#E4DCD6; --soft:#EFE9E4;

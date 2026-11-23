@@ -2,6 +2,15 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 09:40 — One maroon and one yellow for the whole site
+
+From Sabrin's colour chat (replaces the soft yellow of 09:25).
+
+- **Maroon:** the panels' `#602933` is now used on the homepage, sign-in page and alumni page too
+  (was `#7E2233`; hover `#4A2028`, was `#651B29`; the homepage's maroon fade uses 96,41,51).
+- **Yellow:** the homepage's yellow `#F1C45D` (hover `#E5B444`) is back on the homepage and sign-in
+  page and now also replaces the gold on the student, teacher, office and examiner pages.
+
 ## 2026-11-23 09:25 — Softer yellow everywhere
 
 From Sabrin's colour chat. The yellow is now a soft, faded light gold `#E5D3A1` (hover/deeper

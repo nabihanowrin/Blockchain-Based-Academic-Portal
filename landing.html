@@ -24,7 +24,7 @@
 :root{
   --ink:#302B31; --ink-2:#3D373E; --cream:#FFFFFF; --card:#fff;
   --text:#1C1A19; --grey:#6E6764; --line:#E4DCD6;
-  --accent:#7E2233; --accent-wash:#F4E8EA;
+  --accent:#602933; --accent-wash:#F4E8EA;
   --butter:#F2EBC6; --mist:#D3E4E8; --clay:#FFFFFF; --sage:#DCE6D8;
   --sans:Arial,Helvetica,sans-serif; --serif:Arial,Helvetica,sans-serif; --mono:Arial,Helvetica,sans-serif;
 }
@@ -54,7 +54,7 @@ button,input,select{font-family:inherit}
 .nav .links a{color:#2D2E33;text-decoration:none;font-size:15px;font-weight:500;padding:6px 0;border-bottom:2px solid transparent}
 .nav .links a:hover{border-bottom-color:var(--accent)}
 .nav a.cta{background:var(--accent);color:#fff;text-decoration:none;font-size:15px;font-weight:600;padding:12px 24px;border-radius:4px;flex-shrink:0}
-.nav a.cta:hover{background:#651B29}
+.nav a.cta:hover{background:#4A2028}
 .nav .menu{display:none;margin-left:auto;background:none;border:1px solid var(--line);border-radius:4px;width:42px;height:42px;cursor:pointer}
 .nav .menu span{display:block;width:18px;height:2px;background:var(--text);margin:4px auto}
 
@@ -165,9 +165,9 @@ a.slide:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .faculty h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.02em}
 .fgrid{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .fcard{background:#fff;border:1px solid #E4DCD6;border-radius:12px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:3px;font-size:14px}
-.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#7E2233;font-size:13px;word-break:break-all;text-decoration:none}
-.fcard.chair{border-color:#7E2233;box-shadow:0 0 0 1px #7E2233 inset}
-.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#7E2233;color:#fff !important;margin-bottom:6px}
+.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#602933;font-size:13px;word-break:break-all;text-decoration:none}
+.fcard.chair{border-color:#602933;box-shadow:0 0 0 1px #602933 inset}
+.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#602933;color:#fff !important;margin-bottom:6px}
 .ftag.leave{background:#E7E1DC;color:#5D5450 !important}
 .offer{padding:90px 0;background:var(--accent);color:#fff}
 .offer h2{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.08;letter-spacing:-.02em}
@@ -346,9 +346,9 @@ body{animation:pageIn .5s ease backwards}
 </style>
 <style>
 /* charcoal and yellow: buttons in yellow with dark text */
-:root{--yellow:#E5D3A1;--on-yellow:#1D181C}
+:root{--yellow:#F1C45D;--on-yellow:#1D181C}
 .btn,.nav a.cta,.morebtn{background:var(--yellow);color:var(--on-yellow)}
-.btn:hover,.nav a.cta:hover,.morebtn:hover{background:#D9C38E;color:var(--on-yellow)}
+.btn:hover,.nav a.cta:hover,.morebtn:hover{background:#E5B444;color:var(--on-yellow)}
 .btn.ghost{background:transparent;color:#fff}
 .btn.ghost:hover{background:rgba(255,255,255,.1);color:#fff}
 /* the numbers band sits on top of the news, with a soft shadow below it */
@@ -368,7 +368,7 @@ body{animation:pageIn .5s ease backwards}
 <style>
 /* yellow only on charcoal: buttons on white or off-white go back to maroon */
 .nav a.cta,.morebtn,.enter .btn{background:var(--accent);color:#fff}
-.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#651B29;color:#fff}
+.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#4A2028;color:#fff}
 </style>
 <style>
 /* faculty: photo cards; the photo darkens towards the bottom so the name reads on top of it */
@@ -500,7 +500,7 @@ body{animation:pageIn .5s ease backwards}
 .nitem.lead h3 a:hover{color:#fff}
 .newsx .nitem:not(.lead) p{color:#3e3e3e}
 .newsx .morebtn{background:var(--accent);color:#fff;box-shadow:none}
-.newsx .morebtn:hover{background:#651B29;color:#fff}
+.newsx .morebtn:hover{background:#4A2028;color:#fff}
 @media (max-width:900px){.nitem.lead{grid-template-columns:1fr}.nitem.lead .ltxt{padding:26px 24px 30px}}
 </style>
 <style>
@@ -599,11 +599,11 @@ body{animation:pageIn .5s ease backwards}
 <style>
 /* "What this website gives you": a soft maroon gradient from the left, like the one over the top photo;
    it fades out a little after the words and the cards sit on white */
-.offer{background:linear-gradient(90deg,#7E2233 0%,#7E2233 34%,rgba(126,34,51,.82) 41%,rgba(126,34,51,.45) 48%,rgba(126,34,51,.14) 55%,#fff 62%)}
+.offer{background:linear-gradient(90deg,#602933 0%,#602933 34%,rgba(96,41,51,.82) 41%,rgba(96,41,51,.45) 48%,rgba(96,41,51,.14) 55%,#fff 62%)}
 .opanel{background:none;border-radius:0;padding:0;min-height:0;max-width:430px}
 .opanel h2{font-size:clamp(26px,2.8vw,36px)}
 @media (max-width:900px){
-  .offer{background:linear-gradient(180deg,#7E2233 0%,#7E2233 38%,rgba(126,34,51,.35) 52%,#fff 62%)}
+  .offer{background:linear-gradient(180deg,#602933 0%,#602933 38%,rgba(96,41,51,.35) 52%,#fff 62%)}
   .opanel{max-width:none;padding:0 4px}
   .rstack{height:500px}
   .rpic{height:42%}
@@ -613,7 +613,7 @@ body{animation:pageIn .5s ease backwards}
 /* "What this website gives you", final: no solid block. A soft maroon gradient starts at the very
    left edge (deepest there), gets lighter all the way, and is gone exactly where the word "website"
    starts; from there it's white. The text is dark so it reads on the whole fade. --fadeEnd is set by script. */
-.offer{--fade:126,34,51;background:linear-gradient(90deg,rgba(var(--fade),.55) 0px,rgba(var(--fade),.40) calc(var(--fadeEnd,520px) * .35),rgba(var(--fade),.20) calc(var(--fadeEnd,520px) * .7),rgba(var(--fade),0) var(--fadeEnd,520px)),#fff}
+.offer{--fade:96,41,51;background:linear-gradient(90deg,rgba(var(--fade),.55) 0px,rgba(var(--fade),.40) calc(var(--fadeEnd,520px) * .35),rgba(var(--fade),.20) calc(var(--fadeEnd,520px) * .7),rgba(var(--fade),0) var(--fadeEnd,520px)),#fff}
 .offer.charcoal{--fade:48,43,49}
 .opanel h2{color:var(--ink)}
 .opanel .lead{color:#2E2A2B}
