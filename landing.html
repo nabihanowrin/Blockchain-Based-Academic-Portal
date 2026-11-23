@@ -718,7 +718,7 @@ body{animation:pageIn .5s ease backwards}
 .findway{padding:88px 0}
 .more-wrap:has(> [hidden]){display:none}
 /* around the department: the lightest shade of our maroon, no line on top */
-.drift.dark{background:var(--accent-wash);border-top:0}
+.drift.dark{background:#FBF6F7;border-top:0}
 .drift.dark .labs,.drift.dark .labs li{border-color:#E6D2D6}
 /* the two moving photo columns: no fade, and they run from the very top edge of the
    section to its very bottom edge, so photos come in at the top and leave at the bottom */
@@ -731,12 +731,14 @@ body{animation:pageIn .5s ease backwards}
 /* slimmer photo panels: the two columns take less width, the photos keep their shape */
 @media (min-width:901px){
   .drift .grid{grid-template-columns:minmax(0,1.45fr) minmax(0,.78fr) minmax(0,.78fr);column-gap:32px}
-  .drift .grid .intro{padding-right:24px}}
+  .drift .grid .intro{padding-right:24px}
+  .drift .grid .col{margin-right:12px}
+  .drift .grid .col + .col{margin-right:0;margin-left:12px}}
 .strip{gap:14px}
 .shot{border-radius:14px}
 /* on a phone the two columns sit side by side under the lab list, not one under the other */
 @media (max-width:900px){
-  .drift .grid{grid-template-columns:1fr 1fr;column-gap:12px}
+  .drift .grid{grid-template-columns:1fr 1fr;column-gap:22px}
   .drift .grid .intro{grid-column:1 / -1;margin-bottom:28px}
   .drift .col{min-height:440px;margin-bottom:-56px}
   .strip{gap:10px}
