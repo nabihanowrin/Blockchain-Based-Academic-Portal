@@ -25,6 +25,7 @@ import auth
 import mailer
 import notices
 import complaints
+import events as objection_events     # (named so it isn't confused with the local "events" lists below)
 import site_settings
 import assistant
 import dept_fees
@@ -978,6 +979,7 @@ class Handler(SimpleHTTPRequestHandler):
              "/privacy.html",                                # the Privacy Policy, linked from the footer
              "/google6089bfc9267fdecb.html",                 # Google Search Console's check
              "/loader.js",                                   # the loading screen, used by every page
+             "/assistant-panel.js",                          # the Ask-our-AI chat on the teacher and office pages
              "/theme.css"}                                   # the shared look of the four panels
     PHOTO_TYPES = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg")
 
@@ -1214,7 +1216,7 @@ class Handler(SimpleHTTPRequestHandler):
             name = rows("SELECT name FROM students WHERE roll=?", (roll,))
             return self.reply({"ok": True, "role": user["role"], "roll": roll,
                                "email": user["email"], "name": name[0][0] if name else roll,
-                               "assistant": user["role"] == "student" and assistant.enabled()})
+                               "assistant": user["role"] in ("student", "teacher", "office") and assistant.enabled()})
 
         # course resources: anyone in the course, its teachers and the office
         if url.path == "/api/resources":
@@ -1439,15 +1441,27 @@ class Handler(SimpleHTTPRequestHandler):
             auth.sign_out(token)
             return self.reply({"ok": True})
 
-        # the student's AI assistant (see assistant.py): students only, their own schedule only
+        # the AI assistant (see assistant.py). Each role is given only its OWN information:
+        # a student their timetable, a teacher their classes, the office what is pending.
         if url.path == "/api/assistant":
-            if user["role"] != "student":
-                return self.reply({"ok": False, "why": "The assistant is for students."}, 403)
+            if user["role"] not in ("student", "teacher", "office"):
+                return self.reply({"ok": False, "why": "The assistant isn't available here."}, 403)
             body = json.loads(self.rfile.read(length) or "{}")
             try:
-                name = rows("SELECT name FROM students WHERE roll=?", (roll,))
-                answer = assistant.reply(roll, name[0][0] if name else "", semester_view(roll),
-                                         body.get("message"), body.get("history"))
+                if user["role"] == "student":
+                    name = rows("SELECT name FROM students WHERE roll=?", (roll,))
+                    answer = assistant.reply(roll, name[0][0] if name else "", semester_view(roll),
+                                             body.get("message"), body.get("history"))
+                elif user["role"] == "teacher":
+                    home = teacher_home(user["email"], "teacher:" + roll)
+                    counts = {c["code"]: len(objection_events.open_objections(c["course_id"]))
+                              for c in home["classes"]}            # how many, never whose
+                    answer = assistant.reply_teacher("teacher:" + roll, home, counts,
+                                                     body.get("message"), body.get("history"))
+                else:
+                    answer = assistant.reply_office("office:" + user["email"], office_requests()["requests"],
+                                                    complaints.for_office(),
+                                                    body.get("message"), body.get("history"))
                 return self.reply({"ok": True, **answer})
             except Refused as why:
                 return self.reply({"ok": False, "why": str(why)}, 400)

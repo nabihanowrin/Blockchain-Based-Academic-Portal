@@ -264,6 +264,15 @@ async function boot(){
     return;
   }
   await load();
+  eeeAssistant({enabled: me.assistant, title: 'Teaching assistant',
+    subtitle: 'Knows your classes and requests. Not your students’ marks or attendance.',
+    can: ['your classes: courses, batches, how many students', 'class requests still waiting, or turned down',
+          'how many student objections are open', 'how the website works, who to contact'],
+    cant: ['see any student’s name, marks or attendance (open the course page)', 'change anything on the website',
+           'remember this chat after you close the page'],
+    tries: ['Which classes do I teach?', 'Are any of my class requests still waiting?',
+            'Do I have open objections to answer?', 'Who do I contact in the office?'],
+    placeholder: 'e.g. Which classes do I teach?'});
   document.getElementById('app').classList.remove('hide');
   document.getElementById('initials').textContent = initials(HOME.profile.name);
   document.getElementById('name').textContent = HOME.profile.name;
@@ -956,6 +965,7 @@ function keepPlace(redraw){
   if (fresh){ fresh.scrollLeft = x; fresh.scrollTop = y; }
 }
 </script>
+<script src="assistant-panel.js"></script>
 <script src="loader.js"></script>
 </body>
 </html>

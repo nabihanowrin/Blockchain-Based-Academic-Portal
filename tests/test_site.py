@@ -831,8 +831,8 @@ class TestSite(unittest.TestCase):
     def test_30_study_assistant(self):
         """Students can ask the assistant (daily limit), others can't, and it is given no marks."""
         self.assertTrue(self.ok("/api/me", who="student").get("assistant"), "the Ask button wouldn't show")
-        self.assertFalse(self.ok("/api/me", who="teacher").get("assistant"))
-        self.refused("/api/assistant", {"message": "hi"}, who="teacher", status=403, what="a teacher using it")
+        self.assertTrue(self.ok("/api/me", who="teacher").get("assistant"), "the teacher's Ask button wouldn't show")
+        self.assertTrue(self.ok("/api/me", who="office").get("assistant"), "the office's Ask button wouldn't show")
         self.refused("/api/assistant", {"message": "hi"}, status=401, what="using it signed out")
         self.refused("/api/assistant", {"message": "   "}, who="student", status=400, what="an empty question")
         self.refused("/api/assistant", {"message": "x" * 900}, who="student", status=400, what="a huge question")
@@ -847,6 +847,25 @@ class TestSite(unittest.TestCase):
         why = self.refused("/api/assistant", {"message": "one more"}, who="student", status=400,
                            what="going past the daily limit")
         self.assertIn("today", why["why"])
+
+    def test_30b_teacher_and_office_assistants(self):
+        """Teachers and the office have their own assistant, told only their own information, no student data."""
+        self.refused("/api/assistant", {"message": "hi"}, status=401, what="using it signed out")
+        teacher = self.ok("/api/assistant", {"message": "Which classes do I teach?"}, who="teacher")["text"]
+        self.assertIn("Teacher:", teacher, "the teacher's assistant wasn't told who is asking")
+        self.assertIn("open student objections", teacher, "it wasn't given the objection counts")
+        office = self.ok("/api/assistant", {"message": "What is my pending task?"}, who="office")["text"]
+        self.assertIn("Class requests waiting for the office", office, "the office wasn't given its pending requests")
+        self.assertIn("Complaint box", office)
+        for text, who in ((teacher, "teacher"), (office, "office")):
+            for private in (STUDENT_ROLL, "Test Student", "Test Father", "Test Mother", "GPA"):
+                self.assertNotIn(private, text, f"the {who} assistant was told {private!r}")
+        # each person has their own daily count: using up the teacher's doesn't touch the office's
+        left = self.ok("/api/assistant", {"message": "again"}, who="teacher")["left_today"]
+        for _ in range(left):
+            self.ok("/api/assistant", {"message": "again"}, who="teacher")
+        self.refused("/api/assistant", {"message": "one more"}, who="teacher", status=400, what="past the daily limit")
+        self.ok("/api/assistant", {"message": "still fine"}, who="office")
 
     def test_31_assistant_is_given_no_private_records(self):
         """What the AI is sent: schedule and courses only; no marks, GPA, parents or other students."""

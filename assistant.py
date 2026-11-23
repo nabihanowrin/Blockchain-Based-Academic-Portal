@@ -1,6 +1,6 @@
 """
-The student's assistant: a chat box on the student page, answered by an AI
-through its API: Google's Gemini first, Groq as the backup.
+The assistant: a chat box on the student, teacher and office pages, answered by an
+AI through its API: Groq first, Google's Gemini as the backup.
 
 How one message travels:
   student types  ->  our server (/api/assistant): checks who is asking, adds THAT
@@ -23,6 +23,9 @@ What the AI is given:
     contact for what, the faculty with emails and official profile links, how
     fees are paid, the complaint box, how the website works, alumni stories.
 What it is NOT given: marks, GPA, attendance, parents' names, anyone else's data.
+A teacher's assistant is given that teacher's own courses, class requests and COUNTS
+of open objections; the office's is given the pending class requests and the
+complaint titles. Never a student's name, roll, marks or attendance.
 (Free AI tiers may use what they are sent to improve their products, so nothing
 more personal than a timetable goes to them.)
 
@@ -231,8 +234,9 @@ def _clean_history(history):
     return out
 
 
-def reply(roll, name, view, message, history=None):
-    """One answer from the assistant. Raises Refused with a message the student can read."""
+def _answer(key, rules, context, message, history):
+    """The common part: checks, daily limit, one answer. `key` is who is asking
+    (a roll, or "teacher:..." / "office:...") so each person has their own daily count."""
     message = (message or "").strip()
     if not message:
         raise Refused("Type a question first.")
@@ -240,14 +244,116 @@ def reply(roll, name, view, message, history=None):
         raise Refused(f"Please keep a question under {MAX_MESSAGE} characters.")
     if not enabled():
         raise Refused("The assistant isn't switched on yet.")
-    used = _used_today(roll)
-    context = about_student(name, view) + "\n\n" + about_department()
-
+    used = _used_today(key)
     if os.environ.get("AI_FAKE") == "1":           # the automatic tests: no real AI is called
         text = f"(test assistant) You asked: {message}\n\nWhat I was told:\n{context}"
     else:
-        text = ask_ai(RULES + "\n\n" + context, _clean_history(history), message)
-    return {"text": text, "left_today": _count_one(roll, used)}
+        text = ask_ai(rules + "\n\n" + context, _clean_history(history), message)
+    return {"text": text, "left_today": _count_one(key, used)}
+
+
+def reply(roll, name, view, message, history=None):
+    """A student's question. Raises Refused with a message the student can read."""
+    return _answer(roll, RULES, about_student(name, view) + "\n\n" + about_department(), message, history)
+
+
+TEACHER_RULES = """You are the assistant inside EEE Records, the academic records website of the
+Department of Electrical and Electronic Engineering, University of Chittagong.
+You are talking to one TEACHER. Below is THEIR information (their classes, their class
+requests, how many student objections are open) and the DEPARTMENT's public information.
+Today's date is given.
+
+What you help with:
+- Their classes: which courses and batches they teach, how many students each has,
+  which class requests are still waiting for the office or were turned down.
+- What needs their attention: objections students raised that they haven't answered.
+- How the website works for teachers, and who to contact in the department.
+
+Rules:
+- Use ONLY the information below for facts. If it isn't there, say you don't have it.
+  Never invent a number, a name, an email or a date.
+- You are NOT given any student's name, roll, marks or attendance. If asked who a
+  student is, or about marks or attendance, say you can't see them and send the teacher
+  to the course page on the website, where those are.
+- You can't change anything on the website, only talk.
+- Keep answers short: a few sentences or a short list. Answer in the language the
+  teacher writes in (English or Bangla). Plain text, no markdown tables.
+- Web addresses: write them in full (https://...)."""
+
+OFFICE_RULES = """You are the assistant inside EEE Records, the academic records website of the
+Department of Electrical and Electronic Engineering, University of Chittagong.
+You are talking to the DEPARTMENT OFFICE. Below is what is waiting for them (class
+requests from teachers, complaints from the complaint box) and the DEPARTMENT's public
+information. Today's date is given.
+
+What you help with:
+- Their pending tasks: class requests waiting for approval (which teacher, which course
+  and batch), and complaints in the complaint box that are still open.
+- How the website works for the office, and who to contact.
+
+Rules:
+- Use ONLY the information below for facts. If it isn't there, say you don't have it.
+  Never invent a request, a number, a name or a date.
+- You are NOT given any student's name, roll, marks or attendance, and complaints are
+  anonymous: you can't say who sent one.
+- You can't approve, turn down or change anything: tell the office which page to open.
+- Keep answers short: a few sentences or a short list. Answer in the language the
+  office writes in (English or Bangla). Plain text, no markdown tables.
+- Web addresses: write them in full (https://...)."""
+
+
+def about_teacher(home, open_objections):
+    """A teacher's own classes. `open_objections` = {course code: how many are open}: counts only."""
+    now = clock.now()
+    lines = [f"Today: {now.strftime('%A %d %B %Y')}, {now.strftime('%H:%M')} (Bangladesh time).",
+             f"Teacher: {home['profile']['name']}.", "Their approved classes (course, batch, students enrolled):"]
+    for c in home["classes"]:
+        n = open_objections.get(c["code"], 0)
+        lines.append(f"- {c['code']} {c['title']}, semester {c['semester']}, batch {c['session']}, "
+                     f"{c['students']} students; open student objections: {n}")
+    if not home["classes"]:
+        lines.append("- none yet")
+    lines.append("Class requests not yet approved:")
+    for r in home["waiting"]:
+        why = f" (office note: {r['note']})" if r.get("note") else ""
+        lines.append(f"- {r['code']} {r['title']}, batch {r['session']}: {r['status']}{why}")
+    if not home["waiting"]:
+        lines.append("- none")
+    return "\n".join(lines)
+
+
+def reply_teacher(teacher_key, home, open_objections, message, history=None):
+    return _answer(teacher_key, TEACHER_RULES,
+                   about_teacher(home, open_objections) + "\n\n" + about_department(), message, history)
+
+
+def about_office(requests, complaints):
+    """What waits for the office: class requests and complaint titles. No student data."""
+    now = clock.now()
+    lines = [f"Today: {now.strftime('%A %d %B %Y')}, {now.strftime('%H:%M')} (Bangladesh time).",
+             "Class requests waiting for the office to approve or turn down:"]
+    waiting = [r for r in requests if r["status"] == "waiting"]
+    for r in waiting:
+        lines.append(f"- {r['teacher']} asks to teach {r['code']} {r['title']} (semester {r['semester']}) "
+                     f"to batch {r['session']}, {r['students']} students; asked {str(r.get('asked_at') or '')[:10]}")
+    if not waiting:
+        lines.append("- none")
+    decided = len(requests) - len(waiting)
+    lines.append(f"({decided} earlier requests are already decided.)")
+    lines.append("Complaint box (anonymous; newest first, up to 10; titles only):")
+    for c in complaints[:10]:
+        flag = " [flagged as unnecessary]" if c.get("flagged") else ""
+        lines.append(f"- {str(c.get('at') or '')[:10]}: {(c.get('what') or '')[:80]}{flag}")
+    if not complaints:
+        lines.append("- none")
+    lines.append(f"Complaints in total: {len(complaints)}, flagged unnecessary: "
+                 f"{sum(1 for c in complaints if c.get('flagged'))}.")
+    return "\n".join(lines)
+
+
+def reply_office(office_key, requests, complaints, message, history=None):
+    return _answer(office_key, OFFICE_RULES,
+                   about_office(requests, complaints) + "\n\n" + about_department(), message, history)
 
 
 class Busy(Exception):

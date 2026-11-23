@@ -137,6 +137,20 @@ From Sabrin's homepage chat, on top of b7ec38b.
   the fallback. `signin.html`'s form side uses it too. (`theme.css` is Najah's area — she has been told
   in the change log.) `alumni.html` is unchanged.
 
+## 2026-11-23 — "Ask our AI?" for teachers and the office
+
+What changed: teachers and the office now have the same oval button and right-hand
+panel as students (`assistant-panel.js`, one shared file; the student page keeps its own).
+- Teacher: told its own classes (course, batch, number of students), class requests
+  still waiting or turned down, and HOW MANY student objections are open per course.
+- Office: told the class requests waiting for approval (teacher, course, batch) and the
+  complaint box (date and title only; complaints are anonymous).
+- Neither is ever told a student's name, roll, marks or attendance, and each role has its
+  own guide, example questions and daily limit (30 each). Tests check the teacher and the
+  office are told no student data. It only talks: it can't approve or change anything.
+- Decided with you: attendance does NOT go to the outside AI. A "students who miss my
+  classes" list, if wanted, will be a plain list computed on our own server.
+
 ## 2026-11-23 — Research areas read from the real pages; Hoque/Jamal mix-up fixed
 
 What you saw: the first automatic read of the CU profiles gave every teacher the

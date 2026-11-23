@@ -210,6 +210,15 @@ async function boot(){
     return;
   }
   document.getElementById('mail').textContent = me.email;
+  eeeAssistant({enabled: me.assistant, title: 'Office assistant',
+    subtitle: 'Knows what is waiting for the office. Not any student’s data.',
+    can: ['your pending tasks: class requests waiting for approval', 'what is in the complaint box',
+          'how the website works, who to contact'],
+    cant: ['approve or turn down anything (open the Requests page)', 'see any student’s name, marks or attendance',
+           'say who sent a complaint (they are anonymous)', 'remember this chat after you close the page'],
+    tries: ['What is my pending task?', 'Which class requests are waiting?',
+            'What is in the complaint box?', 'Which complaints are flagged as unnecessary?'],
+    placeholder: 'e.g. What is my pending task?'});
   await load();
   document.getElementById('app').classList.remove('hide');
   go('home');
@@ -960,6 +969,7 @@ function alertBox(id, text){
   if (m){ m.className = 'okmsg bad'; m.textContent = text; }
 }
 </script>
+<script src="assistant-panel.js"></script>
 <script src="loader.js"></script>
 </body>
 </html>
