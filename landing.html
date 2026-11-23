@@ -686,6 +686,33 @@ body{animation:pageIn .5s ease backwards}
 @media (max-width:900px){.nshow{column-gap:0}}
 @media (max-width:900px){.nband,.drift,.offer,.faculty{padding-top:56px}}
 </style>
+<style>
+/* find your way: charcoal on the left fading into the graduation photo */
+.findway{color:#fff;padding:96px 0;
+  background:
+    linear-gradient(90deg, var(--ink) 0%, var(--ink) 30%, rgba(48,43,49,.86) 46%, rgba(48,43,49,.62) 66%, rgba(48,43,49,.55) 100%),
+    url("photos/graduation-caps.jpg") right center / cover no-repeat, var(--ink)}
+.fw-in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:center}
+.fw-copy h2{font-family:var(--os);font-weight:800;font-size:clamp(32px,4vw,48px);letter-spacing:-.02em}
+.fw-copy p{margin-top:16px;font-size:16.5px;line-height:1.6;color:rgba(255,255,255,.85);max-width:40ch}
+.fw-btns{display:flex;flex-direction:column;gap:14px;margin-top:30px;max-width:280px}
+.fw-btn{display:block;text-align:center;color:#fff;text-decoration:none;font-weight:600;font-size:15px;
+  border:1px solid rgba(255,255,255,.75);border-radius:999px;padding:12px 24px;transition:background .2s ease,color .2s ease}
+.fw-btn:hover{background:#fff;color:var(--ink)}
+.fw-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 32px}
+.fw-links a{color:#fff;text-decoration:none;font-family:var(--os);font-weight:600;font-size:19px;line-height:1.35;
+  text-shadow:0 1px 8px rgba(0,0,0,.45)}
+.fw-links a:hover{text-decoration:underline;text-underline-offset:5px}
+@media (max-width:900px){
+  .findway{padding:64px 0;background:linear-gradient(180deg, var(--ink) 0%, rgba(48,43,49,.82) 45%, rgba(48,43,49,.66) 100%),
+    url("photos/graduation-caps.jpg") center / cover no-repeat, var(--ink)}
+  .fw-in{grid-template-columns:1fr;gap:40px}
+  .fw-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 20px}
+  .fw-links a{font-size:17px}}
+/* faculty: the same space under the photos as above the heading */
+.faculty{padding-bottom:79px}
+@media (max-width:900px){.faculty{padding-bottom:47px}}
+</style>
 </head>
 <body>
 
@@ -748,6 +775,28 @@ body{animation:pageIn .5s ease backwards}
 </section>
 
 
+<!-- ================= FIND YOUR WAY ================= -->
+<section class="findway" id="find">
+  <div class="wrap fw-in">
+    <div class="fw-copy rise">
+      <h2>Find your way</h2>
+      <p>Your records, the department's people and its news, all on this website.</p>
+      <div class="fw-btns">
+        <a class="fw-btn" href="signin.html">Sign in</a>
+        <a class="fw-btn" href="signin.html#register">Register</a>
+      </div>
+    </div>
+    <nav class="fw-links rise d1" aria-label="On this website">
+      <a href="#gallery">Around the department</a>
+      <a href="#faculty">Faculty members</a>
+      <a href="#alumni">Alumni</a>
+      <a href="#what">What this website gives you</a>
+      <a href="#news">News</a>
+      <a href="#faq">Questions</a>
+    </nav>
+  </div>
+</section>
+
 <!-- ================= GALLERY ================= -->
 <section class="drift dark" id="gallery">
   <div class="wrap grid">
@@ -766,41 +815,6 @@ body{animation:pageIn .5s ease backwards}
     </div>
     <div class="col rise d1"><div class="strip down" id="galA"></div></div>
     <div class="col rise d2"><div class="strip up" id="galB"></div></div>
-  </div>
-</section>
-
-<section class="offer" id="what">
-  <div class="wrap offer-in">
-    <div class="opanel rise">
-      <h2>What this <span id="wsite">website</span> gives you</h2>
-      <p class="lead">One place for the department's academic records, for every role. Swipe the cards to see what each one gets.</p>
-      <p class="seal"><b>How changes are caught:</b> every entry is saved with a fingerprint linked to the entry before it. If anyone changes a record outside this website, the check shows exactly which record was changed, and copies kept on other computers still hold the original.</p>
-    </div>
-    <div class="ostack rise d1">
-      <div class="rstack" id="rstack" aria-roledescription="carousel" aria-label="What each role gets">
-        <article class="rcard" data-i="0">
-          <div class="rpic"><img src="photos/what-students.jpg" alt="" loading="lazy" draggable="false"></div>
-          <div class="rtxt"><h3>Students</h3><ul><li>Every course of your semester, with class tests, attendance and CATM worked out for you</li><li>Your GPA for each semester and your running CGPA</li><li>The full history of any mark: who entered it, when, and every change with its reason</li><li>Raise an objection on a mark you think is wrong</li></ul></div>
-        </article>
-        <article class="rcard" data-i="1">
-          <div class="rpic"><img src="photos/what-teachers.jpg" alt="" loading="lazy" draggable="false"></div>
-          <div class="rtxt"><h3>Teachers</h3><ul><li>Take attendance for each class in one grid</li><li>Enter class-test marks; see each student's CATM and a class chart</li><li>Correct a mark only with a reason, which the student can read</li></ul></div>
-        </article>
-        <article class="rcard" data-i="2">
-          <div class="rpic"><img src="photos/what-office.jpg" alt="" loading="lazy" draggable="false"></div>
-          <div class="rtxt"><h3>Office</h3><ul><li>Keep the register: batches and the students in them</li><li>Approve which teacher takes which class</li><li>Check the whole record for changes at any time</li></ul></div>
-        </article>
-        <article class="rcard" data-i="3">
-          <div class="rpic"><img src="photos/what-examiners.jpg" alt="" loading="lazy" draggable="false"></div>
-          <div class="rtxt"><h3>Examiners</h3><ul><li>Enter final exam marks</li><li>Publish results; GPA and semester standing follow from them</li></ul></div>
-        </article>
-      </div>
-      <div class="rnav">
-        <button class="arrow" type="button" aria-label="Previous card" onclick="roleTurn(-1)">←</button>
-        <span class="rwho" id="rwho">Students</span>
-        <button class="arrow" type="button" aria-label="Next card" onclick="roleTurn(1)">→</button>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -842,6 +856,44 @@ body{animation:pageIn .5s ease backwards}
     <div class="more-wrap"><button class="morebtn" type="button" id="moreAlumni" hidden onclick="showAllAlumni()">View all</button></div>
   </div>
 </section>
+
+<section class="offer" id="what">
+  <div class="wrap offer-in">
+    <div class="opanel rise">
+      <h2>What this <span id="wsite">website</span> gives you</h2>
+      <p class="lead">One place for the department's academic records, for every role. Swipe the cards to see what each one gets.</p>
+      <p class="seal"><b>How changes are caught:</b> every entry is saved with a fingerprint linked to the entry before it. If anyone changes a record outside this website, the check shows exactly which record was changed, and copies kept on other computers still hold the original.</p>
+    </div>
+    <div class="ostack rise d1">
+      <div class="rstack" id="rstack" aria-roledescription="carousel" aria-label="What each role gets">
+        <article class="rcard" data-i="0">
+          <div class="rpic"><img src="photos/what-students.jpg" alt="" loading="lazy" draggable="false"></div>
+          <div class="rtxt"><h3>Students</h3><ul><li>Every course of your semester, with class tests, attendance and CATM worked out for you</li><li>Your GPA for each semester and your running CGPA</li><li>The full history of any mark: who entered it, when, and every change with its reason</li><li>Raise an objection on a mark you think is wrong</li></ul></div>
+        </article>
+        <article class="rcard" data-i="1">
+          <div class="rpic"><img src="photos/what-teachers.jpg" alt="" loading="lazy" draggable="false"></div>
+          <div class="rtxt"><h3>Teachers</h3><ul><li>Take attendance for each class in one grid</li><li>Enter class-test marks; see each student's CATM and a class chart</li><li>Correct a mark only with a reason, which the student can read</li></ul></div>
+        </article>
+        <article class="rcard" data-i="2">
+          <div class="rpic"><img src="photos/what-office.jpg" alt="" loading="lazy" draggable="false"></div>
+          <div class="rtxt"><h3>Office</h3><ul><li>Keep the register: batches and the students in them</li><li>Approve which teacher takes which class</li><li>Check the whole record for changes at any time</li></ul></div>
+        </article>
+        <article class="rcard" data-i="3">
+          <div class="rpic"><img src="photos/what-examiners.jpg" alt="" loading="lazy" draggable="false"></div>
+          <div class="rtxt"><h3>Examiners</h3><ul><li>Enter final exam marks</li><li>Publish results; GPA and semester standing follow from them</li></ul></div>
+        </article>
+      </div>
+      <div class="rnav">
+        <button class="arrow" type="button" aria-label="Previous card" onclick="roleTurn(-1)">←</button>
+        <span class="rwho" id="rwho">Students</span>
+        <button class="arrow" type="button" aria-label="Next card" onclick="roleTurn(1)">→</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
 
 
 <!-- ================= SIGN IN ================= -->
