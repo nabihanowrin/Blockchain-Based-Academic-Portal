@@ -36,6 +36,7 @@ import faculty
 import resources
 import site_content
 import projects
+import teacher_schedule
 from contract import Refused
 
 # a cloud host tells us which port to use; on a laptop it is 8080
@@ -77,6 +78,7 @@ def prepare_database():
     resources.init()
     site_content.init()
     projects.init()
+    teacher_schedule.init()
     assistant.init()
     faculty.apply_course_teachers(connect)
     auth.init_auth()
@@ -692,7 +694,8 @@ def teacher_home(email, teacher_id):
         c["removable"] = not contract.class_in_use(teacher_id, c["course_id"], c["session"])
     return {"profile": {"name": staff_name(email), "email": email, "teacher_id": teacher_id},
             "classes": mine, "waiting": waiting, "courses": courses, "sessions": sessions,
-            "batches": batches}
+            "batches": batches,
+            "schedule": teacher_schedule.week(teacher_id, mine)}   # the teacher's week
 
 
 def attending_group(course_id, day):

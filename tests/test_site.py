@@ -417,6 +417,34 @@ class TestSite(unittest.TestCase):
         self.refused(f"/api/teach/class?course_id={self.other_course}&session={urllib.request.quote(self.batch)}",
                      who="teacher", status=403, what="opening the class the office turned down")
 
+    def test_10b_teacher_sees_their_week(self):
+        """The teacher's home shows their week: the routine slots of their own classes, in day order."""
+        home = self.ok("/api/teach/home", who="teacher")
+        week = home["schedule"]
+        mine = {c["code"] for c in home["classes"]}
+        real = [c for c in week if not c["sample"]]
+        self.assertTrue(real, "the teacher's 5th-semester class should be in their week")
+        self.assertTrue(all(c["code"] in mine for c in real), "a class that isn't theirs is in the week")
+        order = [6, 0, 1, 2, 3]
+        keys = [(order.index(c["weekday"]), c["start"]) for c in week]
+        self.assertEqual(keys, sorted(keys), "the week should run Sunday to Thursday, morning to afternoon")
+        for c in week:
+            self.assertTrue(c["day"] and c["room"] and c["start"] < c["finish"], c)
+
+        # the demo teacher's sample classes never clash with her real routine
+        sys.path.insert(0, ROOT)
+        import teacher_schedule
+        import sqlite3
+        con = sqlite3.connect(os.path.join(ROOT, "demo_records.db"))
+        hers = {"EEE 513", "EEE 514"}
+        busy = [(wd, a, b) for wd, a, b, codes in con.execute("SELECT weekday, start, finish, codes FROM timetable")
+                if hers & set(codes.split("|"))]
+        con.close()
+        sample = [(wd, a, b) for _, wd, a, b, *_ in teacher_schedule.SAMPLE]
+        for wd, a, b in sample:
+            for wd2, a2, b2 in busy + [x for x in sample if x != (wd, a, b)]:
+                self.assertFalse(wd == wd2 and a < b2 and a2 < b, f"sample class {wd} {a} clashes")
+
     # ------------------------------------------------------------------
     # 5. marks, corrections, objections, attendance
     # ------------------------------------------------------------------

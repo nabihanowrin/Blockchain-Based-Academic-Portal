@@ -45,7 +45,8 @@ body{font-family:var(--sans);color:var(--ink)}
 *,*::before,*::after{border-radius:0 !important}
 .box,.class,.profile,.sems .sem,.semcard,.pcard,.addform,.review,.obj,.change,.catm,.chip,.empty,.notice,.gp,.gpa,
 .hello,.tile,.samplenote,.btn,.mini,.side .out,.menubtn,input,select,textarea,.date,.sheet,
-.ppanel,.ptile,.pcard .pedit,.ptile .acts button{border-radius:var(--r) !important}
+.ppanel,.ptile,.pcard .pedit,.ptile .acts button,
+.wslot,.wgrid .free,.week .today,.week .legend span{border-radius:var(--r) !important}
 .me .dot,.me .dot img,.profile .big,.photo,.photo img,.ev::before,.cal .d .ctdot,.cal-head button,
 .semcard .ink,[style*="border-radius:50%"]{border-radius:50% !important}
 

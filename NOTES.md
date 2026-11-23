@@ -2,6 +2,33 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 — Teachers see their week on the home page
+
+**What you see:** the teacher's home page has a "My week" timetable under
+their name card: Sunday to Thursday down the side, the time slots across,
+each class showing the course code, the semester, the room, and "Lab" or
+"CT" where it applies. Each semester has its own light colour (3rd light
+yellow, 5th light maroon, 7th light charcoal). Above it, "Today" lists the day's classes. On a phone
+it becomes a list, one day after another.
+
+**Where the classes come from:**
+- Real: the published routine (the `timetable` table, 5th semester, session
+  2023–24). A teacher sees every routine slot of a course they have an
+  approved class in for that session.
+- Sample: only one semester's routine is in the prototype, so the demo
+  teacher (sabrina.demo, EEE 513 and EEE 514) also gets a mock week with the
+  3rd semester (EEE 313, EEE 314) and the 7th semester (EEE 711, EEE 712),
+  in slots that don't clash with her real classes. The page says these are a
+  sample.
+
+**How:** `teacher_schedule.py` (new) makes the table `teacher_schedule`
+(sample classes) and builds the week; `/api/teach/home` now includes
+`schedule`. `teacher.html` draws it. Test test_10b checks the week holds only
+the teacher's own classes, in order, and that the sample never clashes.
+
+**Changed files:** `teacher_schedule.py` (new), `server.py`, `teacher.html`,
+`theme.css`, `tests/test_site.py`.
+
 ## 2026-11-23 — Students can edit their projects and add pictures and PDFs
 
 **What you see:** every project card on the student's home page has an
