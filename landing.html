@@ -832,6 +832,34 @@ body{animation:pageIn .5s ease backwards}
   .al-band-in{flex-direction:column;align-items:flex-start;justify-content:space-between;padding-top:36px;padding-bottom:28px;min-height:360px;gap:10px}
   .al-band h2{align-self:flex-end}}
 </style>
+<style>
+/* Find your way, measured from the BRAC University reference: the band is 39% of the
+   screen width tall; the text column is the first 32.5% (text starting 15% in); then three
+   link cells of 18.2% each, full height, split by thin lines, two rows; 12% left over on
+   the right. Each cell lightens on hover. */
+@media (min-width:901px){
+  .findway{padding:0}
+  .findway .fw-in{width:100%;padding:0;display:grid;grid-template-columns:32.5% 54.6% 1fr;gap:0;
+    align-items:stretch;min-height:clamp(440px,39vw,780px)}
+  .fw-copy{padding-left:15vw;padding-right:2vw;align-self:center}
+  .fw-copy h2{font-size:clamp(30px,2.15vw,48px);font-weight:700;letter-spacing:-.015em}
+  .fw-copy p{font-size:clamp(14px,.9vw,18px);max-width:none}
+  .fw-btns{max-width:clamp(200px,12.2vw,260px);margin-top:clamp(22px,1.9vw,36px)}
+  .fw-btn{font-size:clamp(13px,.8vw,16px);padding:clamp(11px,.85vw,16px) 18px}
+  .fw-links{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:0;height:100%}
+  .fw-links a{display:flex;align-items:center;justify-content:center;text-align:center;padding:0 1.4vw;
+    font-size:clamp(17px,1.2vw,24px);font-weight:600;line-height:1.4;text-decoration:none;
+    border-left:1px solid rgba(255,255,255,.18);transition:background-color .25s ease}
+  .fw-links a:nth-child(-n+3){border-bottom:1px solid rgba(255,255,255,.18)}
+  .fw-links a:nth-child(3n){border-right:1px solid rgba(255,255,255,.18)}
+  .fw-links a:hover{background:rgba(255,255,255,.14);text-decoration:none}}
+@media (max-width:900px){
+  .fw-links{gap:0;border-top:1px solid rgba(255,255,255,.18)}
+  .fw-links a{display:flex;align-items:center;justify-content:center;text-align:center;min-height:96px;padding:12px;
+    border-bottom:1px solid rgba(255,255,255,.18);text-decoration:none}
+  .fw-links a:nth-child(odd){border-right:1px solid rgba(255,255,255,.18)}
+  .fw-links a:active{background:rgba(255,255,255,.1)}}
+</style>
 </head>
 <body>
 
