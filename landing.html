@@ -369,6 +369,9 @@ body{animation:pageIn .5s ease backwards}
 /* yellow only on charcoal: buttons on white or off-white go back to maroon */
 .nav a.cta,.morebtn,.enter .btn{background:var(--accent);color:#fff}
 .nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#4A2028;color:#fff}
+/* every Sign in button is yellow (Sabrin, 23 Nov); other buttons, ticks and links stay maroon */
+.nav a.cta,.enter .btn[onclick*="ignIn("]{background:var(--yellow);color:var(--on-yellow)}
+.nav a.cta:hover,.enter .btn[onclick*="ignIn("]:hover{background:#E5B444;color:var(--on-yellow)}
 </style>
 <style>
 /* faculty: photo cards; the photo darkens towards the bottom so the name reads on top of it */

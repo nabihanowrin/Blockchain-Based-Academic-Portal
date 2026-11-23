@@ -2,6 +2,16 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 09:45 — Sign in buttons yellow; panels flipped to white page, beige cards
+
+From Sabrin's colour chat.
+
+- **Every Sign in button is yellow** `#F1C45D` (top bar on the homepage and sign-in page, and the
+  Sign in buttons in the student, teacher and admin forms). Other buttons, ticks and links stay maroon.
+- **Panels flipped (trial):** on the student, teacher, office and examiner pages the page is now white
+  and the cards (including the CGPA chart card) are the lightest beige `#FAF6F1`. Before: cream
+  `#F6F2EE` page, white cards. To undo, revert the commit "Panels: white page, lightest-beige cards".
+
 ## 2026-11-23 09:40 — One maroon and one yellow for the whole site
 
 From Sabrin's colour chat (replaces the soft yellow of 09:25).
