@@ -1536,6 +1536,13 @@ function who(actor){
 #askLog .me{align-self:flex-end;background:var(--accent-wash);border-radius:14px 14px 4px 14px;padding:9px 12px;max-width:85%;white-space:pre-wrap}
 #askLog .ai{align-self:flex-start;background:#F6F2EE;border-radius:14px 14px 14px 4px;padding:9px 12px;max-width:90%;white-space:pre-wrap}
 #askLog .note{color:var(--grey);font-size:12.5px}
+#askLog .guide{font-size:13px;color:var(--grey);line-height:1.55;border-top:1px solid var(--line);padding-top:10px}
+#askLog .guide b{color:var(--ink);font-weight:600}
+#askLog .guide ul{margin:3px 0 8px 18px;padding:0}
+#askLog .tries{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+#askLog .tries button{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:12.5px;
+  padding:6px 10px;cursor:pointer}
+#askLog .tries button:hover{border-color:var(--accent);color:var(--accent)}
 #askForm{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
 #askForm input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit}
 #askForm button{border:none;border-radius:10px;padding:0 16px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
@@ -1545,9 +1552,27 @@ function who(actor){
 <div id="askBox" role="dialog" aria-label="Study assistant" aria-hidden="true">
   <header><div><b>Study assistant</b><small>Knows your timetable, courses and class-test dates. Not your marks.</small></div>
     <button onclick="toggleAsk()" aria-label="Close">×</button></header>
-  <div id="askLog"><div class="ai">Hi! What can I help you with?
-
-You can ask about your classes, rooms, upcoming class tests, or a topic from your courses.</div></div>
+  <div id="askLog"><div class="ai">Hi! What can I help you with?</div>
+    <div class="guide">
+      <b>I can help with</b>
+      <ul><li>your routine: today, tomorrow, rooms, labs</li>
+          <li>your upcoming class tests</li>
+          <li>who teaches your courses</li>
+          <li>planning your week</li>
+          <li>explaining a topic from your courses simply</li></ul>
+      <b>I can't</b>
+      <ul><li>see your marks, GPA or attendance (open the course page for those)</li>
+          <li>change anything on the website</li>
+          <li>see anyone else's information</li>
+          <li>remember this chat after you close the page</li></ul>
+      English or Bangla both work. Try:
+      <div class="tries">
+        <button type="button" onclick="askTry(this)">What do I have tomorrow?</button>
+        <button type="button" onclick="askTry(this)">When is my next class test?</button>
+        <button type="button" onclick="askTry(this)">Who teaches my courses?</button>
+        <button type="button" onclick="askTry(this)">Explain Fourier series simply</button>
+      </div>
+    </div></div>
   <form id="askForm" onsubmit="askSend(event)">
     <input id="askIn" maxlength="800" placeholder="e.g. What's my next class test?" autocomplete="off">
     <button id="askGo">Send</button>
@@ -1573,6 +1598,11 @@ function toggleAsk(){
 document.addEventListener('keydown', e => {                 // Esc closes it
   if (e.key === 'Escape' && document.getElementById('askBox').classList.contains('open')) toggleAsk();
 });
+/* an example question: put it in the box and send it */
+function askTry(button){
+  document.getElementById('askIn').value = button.textContent;
+  document.getElementById('askForm').requestSubmit();
+}
 function askLine(cls, text){
   const log = document.getElementById('askLog');
   const div = document.createElement('div');

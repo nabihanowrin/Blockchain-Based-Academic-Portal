@@ -2,6 +2,15 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 — The AI panel shows what it can and can't do
+
+Under the welcome message the panel lists what the assistant can help with
+(routine, rooms, labs, upcoming class tests, who teaches what, planning the
+week, explaining a topic) and what it can't (marks/GPA/attendance, changing
+anything, anyone else's information, remembering the chat), says English or
+Bangla both work, and has four example questions that send when tapped
+(`askTry` in `app.html`).
+
 ## 2026-11-23 — The AI button: an oval "Ask our AI?" and a panel on the right
 
 The button is now an oval with a soft shadow at the bottom right, saying
