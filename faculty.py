@@ -102,6 +102,12 @@ CU_PAGE = {
 # reader: the profile pages load their tabs with JavaScript and a reader gets a
 # wrong, identical list for everyone (checked 23 Nov 2026).
 AREAS = {
+    "Dr. Md. Murshadul Hoque": [
+        "Nanostructured thin films for energy storage and photovoltaic devices",
+        "STM light emission spectroscopy of normal and superconductive nano-structures",
+        "STM-LE spectroscopy and nano-optics for energy applications",
+        "Advanced functional materials and device applications",
+        "Multifunctional perovskite materials for clean energy generation and storage"],
     "Dr. Md. Shah Alam": ["Spintronics", "Magnetic Materials", "Quantum Cellular Automata (QCA)",
                           "Photovoltaics/Solar Cell"],
 }

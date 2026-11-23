@@ -137,6 +137,15 @@ From Sabrin's homepage chat, on top of b7ec38b.
   the fallback. `signin.html`'s form side uses it too. (`theme.css` is Najah's area — she has been told
   in the change log.) `alumni.html` is unchanged.
 
+## 2026-11-23 — Links in the AI chat are clickable
+
+What you saw: the assistant gave a web address and it was plain text.
+What changed (`app.html`, `addLinked()`): in the AI's answers, any `https://...`
+address becomes a link that opens in a new tab. The text is still added as plain
+text plus links we build ourselves, never as HTML, so the answer can't inject page
+code. A full stop after a link isn't included in it. Also added Dr. Md. Murshadul
+Hoque's research areas (from the list you pasted).
+
 ## 2026-11-23 — Teachers' research areas (first one: Dr. Md. Shah Alam)
 
 What you saw: asked "who works on spintronics?", the assistant couldn't say.

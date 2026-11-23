@@ -1536,6 +1536,7 @@ function who(actor){
 #askLog .me{align-self:flex-end;background:var(--accent-wash);border-radius:14px 14px 4px 14px;padding:9px 12px;max-width:85%;white-space:pre-wrap}
 #askLog .ai{align-self:flex-start;background:#F6F2EE;border-radius:14px 14px 14px 4px;padding:9px 12px;max-width:90%;white-space:pre-wrap}
 #askLog .note{color:var(--grey);font-size:12.5px}
+#askLog .ai a{color:var(--accent);text-decoration:underline;word-break:break-all}
 #askLog .guide{font-size:13px;color:var(--grey);line-height:1.55;border-top:1px solid var(--line);padding-top:10px}
 #askLog .guide b{color:var(--ink);font-weight:600}
 #askLog .guide ul{margin:3px 0 8px 18px;padding:0}
@@ -1603,11 +1604,30 @@ function askTry(button){
   document.getElementById('askIn').value = button.textContent;
   document.getElementById('askForm').requestSubmit();
 }
+// Puts `text` into `box`, turning web addresses (https://...) into links. Everything
+// is added as plain text nodes plus <a> elements we build ourselves, never as HTML,
+// so the AI's words can't inject page code. Only http(s) addresses become links.
+function addLinked(box, text){
+  const url = /https?:\/\/[^\s<>"')\]]+/g;
+  let last = 0, m;
+  while ((m = url.exec(text)) !== null){
+    let href = m[0].replace(/[.,;:!?]+$/, '');          // a full stop after the link isn't part of it
+    box.appendChild(document.createTextNode(text.slice(last, m.index)));
+    const a = document.createElement('a');
+    a.href = href; a.textContent = href;
+    a.target = '_blank'; a.rel = 'noopener noreferrer';  // opens in a new tab, can't touch this page
+    box.appendChild(a);
+    last = m.index + href.length;
+    url.lastIndex = last;
+  }
+  box.appendChild(document.createTextNode(text.slice(last)));
+}
 function askLine(cls, text){
   const log = document.getElementById('askLog');
   const div = document.createElement('div');
   div.className = cls;
-  div.textContent = text;                   // textContent: shown as plain text, never as page code
+  if (cls === 'ai') addLinked(div, text);   // the AI's answer: web addresses become clickable
+  else div.textContent = text;              // textContent: shown as plain text, never as page code
   log.appendChild(div);
   log.scrollTop = log.scrollHeight;
   return div;
