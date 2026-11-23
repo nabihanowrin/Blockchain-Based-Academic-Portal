@@ -2,6 +2,13 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 09:25 — Softer yellow everywhere
+
+From Sabrin's colour chat. The yellow is now a soft, faded light gold `#E5D3A1` (hover/deeper
+`#D9C38E` / `#CDB57E`) instead of the panels' `#D6B06A` and the homepage's bright `#F1C45D`.
+Changed in `theme.css`, the four panel pages, `landing.html` and `signin.html` (buttons, labels, the
+line under headings, the current-semester tags).
+
 ## 2026-11-23 09:20 — Panels: charcoal sidebar, duller darker maroon
 
 From Sabrin's colour chat, straight after the entry below.
