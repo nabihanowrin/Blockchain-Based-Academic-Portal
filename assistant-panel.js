@@ -66,15 +66,23 @@ function eeeAssistant(cfg){
 
   // web addresses in the AI's answer become links; everything else stays plain text
   function addLinked(target, text){
-    const url = /https?:\/\/[^\s<>"')\]]+/g;
-    let last = 0, m;
-    while ((m = url.exec(text)) !== null){
-      const href = m[0].replace(/[.,;:!?]+$/, '');
-      target.appendChild(document.createTextNode(text.slice(last, m.index)));
-      target.appendChild(el('a', {href, textContent: href, target: '_blank', rel: 'noopener noreferrer'}));
-      last = m.index + href.length; url.lastIndex = last;
+  const re = /\[([^\]\n]{1,120})\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"'\]]+)|(?<![@\w.\/-])((?:www\.)?(?:[a-z0-9-]+\.)+(?:ac\.bd|edu\.bd|gov\.bd|com\.bd|org\.bd|com|org|net|edu|info|bd)(?:\/[^\s<>"']*)?)/gi;
+  let last = 0, m;
+  while ((m = re.exec(text)) !== null){
+    let label, href;
+    if (m[1]) { label = m[1]; href = m[2]; }                       // [name](https://...)
+    else {
+      let raw = m[3] || m[4];
+      raw = raw.replace(/[.,;:!?*]+$/, '');                         // a full stop or ** after the link isn't part of it
+      if (raw.endsWith(')') && raw.indexOf('(') < 0) raw = raw.slice(0, -1);
+      label = raw; href = m[3] ? raw : 'https://' + raw;            // cu.ac.bd/eee works too
     }
-    target.appendChild(document.createTextNode(text.slice(last)));
+    target.appendChild(document.createTextNode(text.slice(last, m.index)));
+    target.appendChild(el('a', {href, textContent: label, target: '_blank', rel: 'noopener noreferrer'}));
+    last = m.index + (m[1] ? m[0].length : label.length);
+    re.lastIndex = last;
+  }
+  target.appendChild(document.createTextNode(text.slice(last)));
   }
   function line(cls, text){
     const div = el('div', {className: cls});

@@ -1800,17 +1800,24 @@ function askTry(button){
 // is added as plain text nodes plus <a> elements we build ourselves, never as HTML,
 // so the AI's words can't inject page code. Only http(s) addresses become links.
 function addLinked(box, text){
-  const url = /https?:\/\/[^\s<>"')\]]+/g;
+  const re = /\[([^\]\n]{1,120})\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"'\]]+)|(?<![@\w.\/-])((?:www\.)?(?:[a-z0-9-]+\.)+(?:ac\.bd|edu\.bd|gov\.bd|com\.bd|org\.bd|com|org|net|edu|info|bd)(?:\/[^\s<>"']*)?)/gi;
   let last = 0, m;
-  while ((m = url.exec(text)) !== null){
-    let href = m[0].replace(/[.,;:!?]+$/, '');          // a full stop after the link isn't part of it
+  while ((m = re.exec(text)) !== null){
+    let label, href;
+    if (m[1]) { label = m[1]; href = m[2]; }                       // [name](https://...)
+    else {
+      let raw = m[3] || m[4];
+      raw = raw.replace(/[.,;:!?*]+$/, '');                         // a full stop or ** after the link isn't part of it
+      if (raw.endsWith(')') && raw.indexOf('(') < 0) raw = raw.slice(0, -1);
+      label = raw; href = m[3] ? raw : 'https://' + raw;            // cu.ac.bd/eee works too
+    }
     box.appendChild(document.createTextNode(text.slice(last, m.index)));
     const a = document.createElement('a');
-    a.href = href; a.textContent = href;
-    a.target = '_blank'; a.rel = 'noopener noreferrer';  // opens in a new tab, can't touch this page
+    a.href = href; a.textContent = label;
+    a.target = '_blank'; a.rel = 'noopener noreferrer';             // new tab, can't touch this page
     box.appendChild(a);
-    last = m.index + href.length;
-    url.lastIndex = last;
+    last = m.index + (m[1] ? m[0].length : label.length);
+    re.lastIndex = last;
   }
   box.appendChild(document.createTextNode(text.slice(last)));
 }

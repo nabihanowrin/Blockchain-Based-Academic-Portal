@@ -38,6 +38,17 @@ and deleting; test_28d checks the panels load `theme.css`).
 From Sabrin's colour chat: the 2½-across cards looked too big. Back to the 10:20 size: phone 1 card
 (82% wide), 600–1099px 2, laptop 3 (~377px each), 1700px+ 4; text sizes back too. Names stay under
 the photo; still no fixed pixel size.
+## 2026-11-23 13:30 — AI answers: links without "https://" are now clickable too
+
+**What you saw:** the AI gave a link, but it was plain text and could not be clicked.
+
+**Why:** the page only made a link clickable when it started with `https://`. The AI often writes
+`cu.ac.bd/eee`, `www.cu.ac.bd/...`, or `[name](https://...)`, and none of those were caught.
+
+**What changed** (`addLinked` in `app.html` and `assistant-panel.js`): it now also turns these into
+links: `[name](https://...)` (shows "name"), addresses starting with `www.`, and plain addresses
+like `cu.ac.bd/eee` (ends in .bd, .com, .org, .net, .edu or .info). A full stop, comma or `**` after
+a link is left out of it. Email addresses stay plain text. Links open in a new tab.
 
 ## 2026-11-23 10:50 — Footer: BRAC-style bottom bar with social icons; Privacy Policy page
 
