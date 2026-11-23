@@ -96,13 +96,25 @@ CU_PAGE = {
 }
 
 
+# Research areas, copied by hand from each teacher's official CU profile ("Areas of
+# Interest" tab). Only teachers listed here have areas; for everyone else the
+# assistant says it doesn't have them. Do NOT fill this from an automatic page
+# reader: the profile pages load their tabs with JavaScript and a reader gets a
+# wrong, identical list for everyone (checked 23 Nov 2026).
+AREAS = {
+    "Dr. Md. Shah Alam": ["Spintronics", "Magnetic Materials", "Quantum Cellular Automata (QCA)",
+                          "Photovoltaics/Solar Cell"],
+}
+
+
 def listing():
     out = []
     for n, d, e, leave in FACULTY:
         photo, ein = CU_PAGE.get(n, (None, None))
         out.append({"name": n, "designation": d, "email": e, "on_leave": leave, "chairman": n == CHAIRMAN,
                     "photo": CU_PHOTO + photo if photo else "",
-                    "profile": CU_PROFILE + str(ein) if ein else ""})
+                    "profile": CU_PROFILE + str(ein) if ein else "",
+                    "areas": AREAS.get(n, [])})
     return out
 
 

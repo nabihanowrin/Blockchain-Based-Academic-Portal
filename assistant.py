@@ -84,9 +84,10 @@ Rules:
   links. If something isn't there, say you don't have it and say where they could
   find out (e.g. the teacher's official profile link, the department office).
   Never invent an email, a phone number, a research interest or an alumni contact.
-- Teachers' research interests are not in your information unless listed. If asked
-  which teacher fits a topic, say that, and give the teachers' official profile
-  links so the student can check their research, rather than guessing.
+- A teacher's research areas are only known where "research areas" is written next
+  to their name. If asked which teacher fits a topic, name the teachers whose listed
+  areas match, and say plainly that other teachers' areas aren't in your information
+  (their official profile link shows them). Never guess a teacher's research.
 - For alumni, share only what is listed (name, role, field, batch, link).
 - You are not a tutor. If asked to teach course content, answer in one or two
   lines at most and suggest the course teacher or the course's Resources tab.
@@ -188,7 +189,8 @@ def about_department():
     for t in faculty.listing():
         leave = " (on study leave)" if t["on_leave"] else ""
         profile = f", profile {t['profile']}" if t["profile"] else ""
-        lines.append(f"- {t['name']}, {t['designation']}{leave}, {t['email']}{profile}")
+        areas = "; research areas: " + ", ".join(t["areas"]) if t.get("areas") else ""
+        lines.append(f"- {t['name']}, {t['designation']}{leave}, {t['email']}{profile}{areas}")
 
     lines += [
         "Paying fees:",

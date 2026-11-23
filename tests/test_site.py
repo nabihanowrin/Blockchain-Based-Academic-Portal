@@ -878,6 +878,10 @@ class TestSite(unittest.TestCase):
             self.assertIn(expected, text)
         for private in (STUDENT_ROLL, "Test Father", "Test Mother", "GPA"):
             self.assertNotIn(private, text, f"the department information includes {private!r}")
+        # research areas: shown for the teacher who has them, and only for them
+        line = next(l for l in text.splitlines() if "Shah Alam, Professor" in l)
+        self.assertIn("research areas: Spintronics", line)
+        self.assertEqual(text.count("research areas:"), len(faculty.AREAS), "areas shown for a teacher with none")
 
     def test_99_server_had_no_crashes(self):
         """The server stayed up the whole time and wrote no Python errors."""

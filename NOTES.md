@@ -137,6 +137,20 @@ From Sabrin's homepage chat, on top of b7ec38b.
   the fallback. `signin.html`'s form side uses it too. (`theme.css` is Najah's area — she has been told
   in the change log.) `alumni.html` is unchanged.
 
+## 2026-11-23 — Teachers' research areas (first one: Dr. Md. Shah Alam)
+
+What you saw: asked "who works on spintronics?", the assistant couldn't say.
+Why: it had no research data. I tried reading the CU profile pages automatically
+and every teacher came back with the same "Machine Learning, AI, Internet of
+Things" list. Your screenshot of the real page shows Spintronics, Magnetic
+Materials, QCA and Photovoltaics/Solar Cell, so the automatic reader was wrong
+(the tabs load with JavaScript). None of that automatic data was used.
+What changed: `faculty.py` has a new `AREAS` list, copied by hand from each
+teacher's profile; `assistant.py` shows "research areas: ..." next to a teacher
+who has them. Teachers not in the list: the assistant says it doesn't have their
+areas and points to their profile. Only Dr. Md. Shah Alam is filled in so far.
+To add a teacher: open their profile -> Areas of Interest tab -> add a line to `AREAS`.
+
 ## 2026-11-23 — Groq fixed (it was blocked by name), Groq goes first, 4 models
 
 What you saw: the first question was answered, the second wasn't. The log showed
