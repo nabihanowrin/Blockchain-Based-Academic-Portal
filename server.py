@@ -30,6 +30,7 @@ import assistant
 import dept_fees
 import alumni
 import clock
+import captcha
 import faculty
 import resources
 import site_content
@@ -972,7 +973,7 @@ class Handler(SimpleHTTPRequestHandler):
 
     # The ONLY files a browser may download. Everything else in the folder
     # (code, databases, notes, tests, scripts) is never served to anyone.
-    PAGES = {"/landing.html", "/app.html", "/teacher.html", "/office.html", "/exam.html",
+    PAGES = {"/landing.html", "/signin.html", "/app.html", "/teacher.html", "/office.html", "/exam.html",
              "/alumni.html",                                 # one alumni story, opened from the homepage
              "/google6089bfc9267fdecb.html",                 # Google Search Console's check
              "/loader.js",                                   # the loading screen, used by every page
@@ -1131,6 +1132,10 @@ class Handler(SimpleHTTPRequestHandler):
             if not self.may_download(url.path):
                 return self.reply({"ok": False, "why": "Not available."}, 404)
             return super().do_GET()
+
+        # a fresh "not a robot" question for the account forms (see captcha.py)
+        if url.path == "/api/captcha":
+            return self.reply(captcha.new())
 
         if url.path == "/api/landing":
             return self.reply(landing_view())
@@ -1393,6 +1398,7 @@ class Handler(SimpleHTTPRequestHandler):
                     token, role = auth.sign_in(email, body.get("password"), body.get("remember"), self.device())
                     return self.reply({"ok": True, "token": token, "role": role})
                 if url.path == "/api/register/staff-start":
+                    captcha.check(body.get("captcha_ticket"), body.get("captcha"))
                     auth.staff_register_start(body.get("email"), self.device())
                     return self.reply({"ok": True, "emailed": True})
                 if url.path == "/api/register/staff-finish":
@@ -1401,6 +1407,7 @@ class Handler(SimpleHTTPRequestHandler):
                     token, role = auth.sign_in(email, body.get("password"), body.get("remember"), self.device())
                     return self.reply({"ok": True, "token": token, "role": role})
                 if url.path == "/api/register/start":
+                    captcha.check(body.get("captcha_ticket"), body.get("captcha"))
                     auth.start_registration(
                         body.get("email"), body.get("father"), body.get("mother"),
                         body.get("name"), body.get("batch"), self.device())

@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — EEE Records, University of Chittagong</title>
+<meta name="description" content="EEE Records: results, attendance, class tests and course records for the Department of Electrical and Electronic Engineering, University of Chittagong. Department news, faculty members and labs. A CSE 518 student project, not an official university website.">
+<link rel="canonical" href="https://eeerecords.onrender.com/landing.html">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EEE Records">
+<meta property="og:title" content="EEE Records — Department of EEE, University of Chittagong">
+<meta property="og:description" content="Results, attendance and course records for EEE students at the University of Chittagong, plus department news and faculty members.">
+<meta property="og:url" content="https://eeerecords.onrender.com/landing.html">
+<meta property="og:image" content="https://eeerecords.onrender.com/photos/building-wide.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"EEE Records","alternateName":"EEE Records — University of Chittagong","url":"https://eeerecords.onrender.com/landing.html","description":"Academic records portal for the Department of Electrical and Electronic Engineering, University of Chittagong. A CSE 518 student project, not an official university website.","inLanguage":"en"}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@300;400;600;700;800&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#302B31; --ink-2:#3D373E; --cream:#FFFFFF; --card:#fff;
+  --text:#1C1A19; --grey:#6E6764; --line:#E4DCD6;
+  --accent:#500000; --accent-wash:#F4E8EA;
+  --butter:#F2EBC6; --mist:#D3E4E8; --clay:#FFFFFF; --sage:#DCE6D8;
+  --sans:Arial,Helvetica,sans-serif; --serif:Arial,Helvetica,sans-serif; --mono:Arial,Helvetica,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+section[id],header[id],div[id="faq"]{scroll-margin-top:90px}
+body{background:var(--cream);color:var(--text);font-family:var(--sans)}
+button,input,select{font-family:inherit}
+:root{--gut:clamp(24px,4.5vw,88px)}
+.wrap{width:100%;padding:0 var(--gut)}
+.eyebrow{font-size:12.5px;letter-spacing:.08em;color:var(--grey)}
+
+/* the slide-up, slow enough to see */
+.rise{opacity:0;transform:translateY(60px);transition:opacity 1s cubic-bezier(.16,.84,.34,1),transform 1s cubic-bezier(.16,.84,.34,1)}
+.rise.seen{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+@media (prefers-reduced-motion:reduce){.rise{opacity:1;transform:none;transition:none}}
+
+/* ---------------- nav ---------------- */
+.nav{position:sticky;top:0;z-index:40;background:#fff;color:var(--text);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:32px;height:80px}
+.nav .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);flex-shrink:0}
+.nav .brand img{height:50px;width:auto}
+.nav .brand b{display:block;font-size:19px;font-weight:700;letter-spacing:-.01em}
+.nav .brand small{display:block;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--grey);margin-top:4px}
+.nav .links{margin:0 auto;display:flex;gap:44px;align-items:center}
+.nav .links a{color:#2D2E33;text-decoration:none;font-size:15px;font-weight:500;padding:6px 0;border-bottom:2px solid transparent}
+.nav .links a:hover{border-bottom-color:var(--accent)}
+.nav a.cta{background:var(--accent);color:#fff;text-decoration:none;font-size:15px;font-weight:600;padding:12px 24px;border-radius:4px;flex-shrink:0}
+.nav a.cta:hover{background:#3C001C}
+.nav .menu{display:none;margin-left:auto;background:none;border:1px solid var(--line);border-radius:4px;width:42px;height:42px;cursor:pointer}
+.nav .menu span{display:block;width:18px;height:2px;background:var(--text);margin:4px auto}
+
+/* ---------------- hero ---------------- */
+.hero{position:relative;min-height:min(80vh,660px);display:flex;align-items:center;color:#fff;padding:80px 0;
+  background:
+    linear-gradient(90deg, rgba(48,43,49,1) 0%, rgba(48,43,49,.96) 22%, rgba(48,43,49,.78) 34%, rgba(48,43,49,.42) 46%, rgba(48,43,49,.12) 56%, rgba(48,43,49,0) 64%),
+    url("photos/building-wide.jpg") right center / max(80%, calc(min(80vh,660px) * 1.78)) auto no-repeat,
+    var(--ink)}
+.hero .copy{max-width:min(620px,36vw)}
+.hero .eyebrow{color:rgba(255,255,255,.75);font-weight:600;letter-spacing:.16em}
+.hero h1{font-weight:700;font-size:clamp(32px,4.2vw,58px);line-height:.95;letter-spacing:-.035em;text-transform:uppercase;margin-top:18px}
+.hero h1 em{font-family:var(--serif);font-style:italic;text-transform:none;font-weight:400;letter-spacing:-.01em}
+.hero .lede{margin-top:24px;font-size:17px;line-height:1.6;color:rgba(255,255,255,.85);max-width:44ch}
+.hero .row{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.hero .btn{border-radius:4px}
+.hero .btn.ghost{border-color:rgba(255,255,255,.7)}
+.frame{margin-top:44px;border-radius:26px;overflow:hidden;background:var(--ink);display:grid;grid-template-columns:1fr 1fr;min-height:400px}
+.frame .copy{padding:44px 40px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end}
+.frame .copy h2{font-family:var(--serif);font-weight:600;font-size:42px;line-height:1.05;font-weight:400}
+.frame .copy p{margin-top:14px;font-size:14.5px;color:#AEBBC4;max-width:38ch;line-height:1.6}
+.frame .pic{background:var(--ink-2)}
+.frame .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.btn{display:inline-block;border:none;border-radius:30px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;text-decoration:none}
+.btn.ghost{background:transparent;color:#fff;border:1px solid #6A626B}
+.btn.line{background:transparent;color:var(--text);border:1px solid var(--line)}
+.frame .copy .row{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+
+/* ---------------- counters ---------------- */
+.facts{background:var(--card);padding:64px 0}
+.facts .row{display:grid;grid-template-columns:repeat(4,1fr)}
+.facts .cell{padding:0 28px;border-left:1px solid var(--line)}
+.facts .cell:first-child{border-left:none;padding-left:0}
+.facts .big{font-family:var(--serif);font-weight:600;font-size:62px;color:var(--accent);line-height:1;font-variant-numeric:tabular-nums}
+.facts .big.pending{font-size:22px;color:#B3A9A3;font-family:var(--sans);font-style:italic;line-height:62px}
+.facts .lbl{font-size:17px;font-weight:600;margin-top:8px}
+.facts p{margin-top:6px;font-size:13.5px;line-height:1.55;color:var(--grey);max-width:30ch}
+
+/* ---------------- achievements: a sideways slider ---------------- */
+.ach-wrap{padding:90px 0 70px}
+.ach-head{display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.ach-head h2{font-family:var(--serif);font-weight:600;font-size:52px;font-weight:400;line-height:1.02;max-width:14ch}
+.ach-head p{color:var(--grey);font-size:14.5px;line-height:1.6;max-width:44ch}
+.ach-head .arrows{margin-left:auto;display:flex;gap:10px}
+.arrow{width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:20px;cursor:pointer;transition:background .2s ease,color .2s ease}
+.arrow:hover{background:var(--ink);color:#fff}
+.slider{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  padding:34px var(--gut) 26px;margin:0 calc(-1 * var(--gut));cursor:grab;scrollbar-width:none}
+.slider::-webkit-scrollbar{display:none}
+.slider.drag{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
+.slide{flex:0 0 min(520px,82vw);scroll-snap-align:start;background:#FFFFFF;border-radius:4px;overflow:hidden;user-select:none;display:flex;flex-direction:column}
+.slide .pic{aspect-ratio:3/2;background:var(--ink);display:flex;align-items:flex-end;padding:26px;position:relative;overflow:hidden}
+.slide .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slide .pic .yr{position:relative;font-family:var(--serif);font-weight:600;font-size:84px;line-height:.8;color:rgba(255,255,255,.14)}
+.slide:nth-child(4n+2) .pic{background:#3B4A3F}
+.slide:nth-child(4n+3) .pic{background:#5A2A33}
+.slide:nth-child(4n+4) .pic{background:#46505A}
+.slide .body{padding:28px 30px 32px;flex:1}
+.slide h3{font-family:var(--serif);font-weight:600;font-size:32px;font-weight:400;line-height:1.1}
+.slide p{font-size:15px;line-height:1.6;color:#4E4845;margin-top:12px}
+a.slide{color:inherit;text-decoration:none}
+a.slide .more{display:inline-block;margin-top:16px;font-size:14px;font-weight:600;color:var(--accent)}
+a.slide:hover h3{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+a.slide:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.track{height:3px;background:var(--line);border-radius:2px;margin-top:6px;position:relative;overflow:hidden}
+.track i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:2px;width:20%;transition:transform .15s linear}
+
+/* ---------------- drifting columns ---------------- */
+.drift{padding:90px 0}
+.drift .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:start}
+.drift .intro h2{font-family:var(--serif);font-weight:600;font-size:48px;font-weight:400;line-height:1.05}
+.drift .intro p{color:var(--grey);font-size:14.5px;line-height:1.6;margin-top:14px}
+.col{position:relative;min-height:520px;align-self:stretch;overflow:hidden;
+  -webkit-mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent);
+          mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)}
+.strip{display:flex;flex-direction:column;gap:18px;position:absolute;top:0;left:0;right:0}
+.up{animation:up 34s linear infinite}
+.down{animation:down 34s linear infinite}
+@keyframes up{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@keyframes down{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+.col:hover .strip{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.up,.down{animation:none}}
+
+.ach{border-radius:20px;padding:24px 22px;min-height:180px;display:flex;flex-direction:column;justify-content:space-between}
+.ach:nth-child(4n+1){background:var(--butter)}
+.ach:nth-child(4n+2){background:var(--mist)}
+.ach:nth-child(4n+3){background:var(--clay)}
+.ach:nth-child(4n+4){background:var(--sage)}
+.ach h3{font-size:18px;font-weight:600;line-height:1.3}
+.ach p{font-size:13.5px;color:#4E4845;margin-top:8px;line-height:1.5}
+.ach .yr{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--grey);margin-top:16px}
+
+.shot{border-radius:20px;overflow:hidden;background:var(--ink-2)}
+.shot img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
+.shot .cap{padding:10px 14px;font-size:12.5px;color:#AEBBC4}
+
+.dark{background:var(--ink)}
+.dark .intro h2{color:#fff}
+.dark .intro p{color:#AEBBC4}
+.labs-h{color:#fff;font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:40px}
+.labs{list-style:none;margin-top:14px;border-top:1px solid #4A434B}
+.labs li{padding:14px 0;border-bottom:1px solid #4A434B;display:grid;gap:4px}
+.labs b{color:#fff;font-size:16px;font-weight:600}
+.labs span{color:#AEBBC4;font-size:14px;line-height:1.5}
+
+/* ---------------- quote band ---------------- */
+.faculty{padding:80px var(--gut) 40px}
+.faculty h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.02em}
+.fgrid{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.fcard{background:#fff;border:1px solid #E4DCD6;border-radius:12px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#500000;font-size:13px;word-break:break-all;text-decoration:none}
+.fcard.chair{border-color:#500000;box-shadow:0 0 0 1px #500000 inset}
+.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#500000;color:#fff !important;margin-bottom:6px}
+.ftag.leave{background:#E7E1DC;color:#5D5450 !important}
+.offer{padding:90px 0;background:var(--accent);color:#fff}
+.offer h2{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.08;letter-spacing:-.02em}
+.offer .lead{margin-top:12px;color:#EBC8CF;font-size:16px}
+.offer .cards{margin-top:34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.offer .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:22px 22px 18px}
+.offer h3{font-size:18px;font-weight:700;margin-bottom:10px}
+.offer ul{padding-left:18px;color:#F6E3E7;font-size:14.5px;line-height:1.55}
+.offer li{margin-bottom:6px}
+.offer .seal{margin-top:28px;max-width:70ch;color:#F6E3E7;font-size:15px;line-height:1.6}
+.quote{padding:100px 0;background:var(--accent);color:#fff}
+.quote h2{font-size:clamp(30px,4.6vw,58px);font-weight:700;line-height:1.05;letter-spacing:-.03em;text-transform:uppercase;max-width:20ch}
+.quote p{margin-top:20px;color:#EBC8CF;font-size:15px;max-width:52ch;line-height:1.6}
+
+/* ---------------- sign in ---------------- */
+.enter{padding:100px var(--gut)}
+.enter h2{font-family:var(--serif);font-weight:600;font-size:48px;font-weight:400}
+.enter .lede{color:var(--grey);margin-top:8px;font-size:15px}
+.gatebox{display:grid;grid-template-columns:260px 1fr;gap:0;margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;min-height:430px}
+.roles{background:var(--ink);padding:26px 0 26px 16px;display:flex;flex-direction:column;gap:6px}
+.roles button{position:relative;text-align:left;border:none;background:none;color:#AEBBC4;font-size:15px;padding:13px 18px;border-radius:22px 0 0 22px;cursor:pointer}
+.roles button:hover{color:#fff}
+.roles button.on{background:var(--card);color:var(--text);font-weight:600}
+.roles button.on::before,.roles button.on::after{content:"";position:absolute;right:0;width:22px;height:22px;background:transparent;pointer-events:none}
+.roles button.on::before{top:-22px;border-bottom-right-radius:22px;box-shadow:8px 8px 0 8px var(--card)}
+.roles button.on::after{bottom:-22px;border-top-right-radius:22px;box-shadow:8px -8px 0 8px var(--card)}
+.panel{padding:34px 38px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.tabs button{background:none;border:none;padding:10px 14px;font-size:14.5px;color:var(--grey);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--text);font-weight:600;border-bottom-color:var(--accent)}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field input,.field select{width:100%;max-width:420px;padding:12px 14px;border:1px solid var(--line);border-radius:11px;font-size:14.5px;background:var(--cream)}
+.field input:focus,.field select:focus{outline:2px solid var(--accent)}
+.field .hint{font-size:12px;color:var(--grey);margin-top:5px}
+.check{display:flex;gap:9px;align-items:center;font-size:14px;margin:6px 0 18px}
+.check input{width:17px;height:17px;accent-color:var(--accent)}
+.msg{font-size:13.5px;min-height:20px;margin-top:12px;color:var(--accent)}
+.msg.ok{color:#3F6A52}
+.steps{display:flex;gap:8px;margin-bottom:18px}
+.steps span{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--cream);color:var(--grey)}
+.steps span.on{background:var(--accent-wash);color:var(--accent);font-weight:600}
+.back{background:none;border:none;color:var(--grey);font-size:13px;cursor:pointer;text-decoration:underline;margin-left:14px}
+
+/* ---------------- footer ---------------- */
+footer{background:var(--ink);color:#AEBBC4;padding:70px 0 0}
+footer .cols{display:grid;grid-template-columns:1.1fr 1fr 1.5fr;gap:40px}
+footer h3{color:#fff;font-size:15px;font-weight:600;margin-bottom:14px}
+footer p,footer li{font-size:14px;line-height:1.8}
+footer ul{list-style:none}
+footer a{color:#AEBBC4}
+footer a:hover{color:#fff}
+footer ul.bullets{list-style:disc;padding-left:18px}
+footer ul.bullets li::marker{color:#6F8290}
+.social{margin-top:26px}
+.social ul{display:grid;grid-template-columns:repeat(2,max-content);gap:10px 22px}
+.social a{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.social a span{text-decoration:underline}
+.social .sq{width:28px;height:28px;display:block;flex:none}
+.social .sq svg{display:block;width:28px;height:28px;overflow:visible}
+.social .sq.web{color:#FFFFFF}
+.copybar{background:var(--accent);color:#F3DDE1;margin-top:40px;font-size:13.5px}
+.copybar .wrap{display:flex;justify-content:space-between;gap:10px 30px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
+.todo{color:#6F8290;font-style:italic}
+details{border-top:1px solid #4A434B;padding:12px 0}
+details:last-child{border-bottom:1px solid #4A434B}
+summary{cursor:pointer;color:#fff;font-size:14.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:#AEBBC4;font-size:18px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin-top:8px;font-size:13.5px;line-height:1.6}
+.legal{margin-top:50px;padding-top:22px;border-top:1px solid #4A434B;font-size:12.5px;color:#6F8290}
+
+.hide{display:none}
+@media (max-width:900px){
+  .frame,.drift .grid,footer .cols{grid-template-columns:1fr}
+  .social ul{grid-template-columns:1fr}
+  .facts .row{grid-template-columns:1fr 1fr;gap:26px 0}
+  .facts .cell:nth-child(3){border-left:none;padding-left:0}
+  .facts .cell{border-left:none;padding:20px 0;border-top:1px solid var(--line)}
+  .gatebox{grid-template-columns:1fr}
+  .roles{flex-direction:row;padding:14px}
+  .roles button{border-radius:22px}
+  .roles button.on::before,.roles button.on::after{display:none}
+  .nav .links{gap:26px}
+}
+@media (max-width:1000px){
+  .nav .wrap{gap:12px}
+  .nav .links{display:none}
+  .nav a.cta{margin-left:auto;padding:10px 18px}
+  .nav .menu{display:block;margin-left:0}
+  .nav.open .links{display:flex;flex-direction:column;align-items:flex-start;gap:4px;position:absolute;left:0;right:0;top:80px;background:#fff;border-bottom:1px solid var(--line);padding:12px var(--gut) 20px}
+  .nav.open .links a{padding:12px 0;font-size:16px}
+}
+@media (max-width:560px){
+  .nav .brand small{display:none}
+  .nav .brand img{height:40px}
+  .nav .brand b{font-size:16px}
+}
+@media (max-width:820px){
+  .hero{flex-direction:column;align-items:stretch;padding:0 0 48px;min-height:0;background:var(--ink)}
+  .hero::before{content:"";display:block;width:100%;aspect-ratio:16/9;max-width:100%;
+    background:linear-gradient(0deg, var(--ink) 0%, rgba(48,43,49,0) 25%), url("photos/building-wide.jpg") center / cover no-repeat}
+  .hero .copy{max-width:none;padding-top:28px}
+}
+</style>
+<style>
+/* every page opens with a 0.5 s fade from the cream background */
+html{background:#FFFFFF}
+body{animation:pageIn .5s ease backwards}
+@keyframes pageIn{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){body{animation:none}}
+</style>
+<style>
+/* the news section's colours, in the homepage's own palette (maroon, slate, cream) */
+:root{--accent-dark:var(--ink);--accent-light:var(--accent);--soft:var(--clay);--os:"Open Sans",Arial,Helvetica,sans-serif}
+</style>
+<style>
+/* ===== Resources and News, set out as on the Texas A&M ECE page ===== */
+.ctitle{font-family:"Oswald",var(--os);font-weight:500;font-size:clamp(32px,3.6vw,48px);color:var(--accent);text-align:center;letter-spacing:-.005em}
+.res{background:var(--soft);padding:80px 0}
+.res-grid,.news-grid{margin-top:52px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:56px 60px}
+.res-item .pic,.nitem .pic{aspect-ratio:16/9;overflow:hidden;background:var(--line)}
+.res-item img,.nitem img{width:100%;height:100%;object-fit:cover;display:block}
+.res-item h3,.nitem h3{font-family:var(--os);font-weight:700;font-size:clamp(22px,1.9vw,30px);line-height:1.3;margin-top:44px}
+.res-item h3 a,.nitem h3 a{color:var(--accent);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.res-item h3 a::after,.nitem h3 a::after{content:"\00a0»";display:inline-block;text-decoration:none}
+.res-item h3 a:hover,.nitem h3 a:hover{color:var(--accent-dark)}
+.res-item p,.nitem p{font-family:var(--os);font-size:17px;line-height:1.75;color:#202020;margin-top:12px}
+.nitem p{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.newsx{background:#fff;padding:80px 0}
+.nitem.later{display:none}
+.nitem .pic.none{display:grid;place-items:center;background:var(--soft)}
+.nitem .pic.none img{width:auto;height:clamp(80px,8vw,124px);object-fit:contain;opacity:.85}
+.nitem h3{color:var(--accent)}
+.more-wrap{text-align:center;margin-top:56px}
+.morebtn{background:var(--accent);color:#fff;border:none;padding:16px 30px;font-family:var(--os);font-weight:800;font-size:17px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.morebtn::after{content:"\00a0\00a0»"}
+.morebtn:hover{background:var(--accent-dark)}
+.morebtn[hidden]{display:none}
+@media (max-width:1000px){.res-grid,.news-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 36px}}
+@media (max-width:640px){.res-grid,.news-grid{grid-template-columns:1fr;gap:44px}.res-item h3,.nitem h3{margin-top:22px}}
+</style>
+<style>
+.res-grid.two{grid-template-columns:repeat(2,minmax(0,1fr));max-width:1000px;margin-left:auto;margin-right:auto}
+/* the newest post, large, across the top of the news */
+.nitem.lead{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:0;background:var(--accent-dark)}
+.nitem.lead .pic{aspect-ratio:16/10}
+.nitem.lead .ltxt{padding:48px 44px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.nitem.lead .lk{font-family:var(--os);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.75);margin:0}
+.nitem.lead h3{margin-top:14px;font-size:clamp(24px,2.4vw,36px);color:#fff}
+.nitem.lead h3 a{color:#fff}
+.nitem.lead p:not(.lk){color:rgba(255,255,255,.88);-webkit-line-clamp:6}
+@media (max-width:900px){
+  .res-grid.two{grid-template-columns:1fr}
+  .nitem.lead{grid-template-columns:1fr}
+  .nitem.lead .ltxt{padding:28px 24px 32px}
+}
+</style>
+<style>
+/* news posts slide up as they come into view, pictures ease in a little on hover */
+.nitem .pic img{transition:transform .7s cubic-bezier(.16,.84,.34,1)}
+.nitem:hover .pic img{transform:scale(1.04)}
+.nitem.rise{transform:translateY(40px)}
+.nitem.rise.seen{transform:none}
+.ctitle.rise{transform:translateY(24px)}
+@media (prefers-reduced-motion:reduce){
+  .nitem .pic img{transition:none}.nitem:hover .pic img{transform:none}
+  .nitem.rise,.ctitle.rise{transform:none}
+}
+@media (min-width:1001px){
+  .news-grid[data-rest="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .news-grid[data-rest="1"]{grid-template-columns:1fr}
+  .news-grid[data-rest="2"] .nitem:not(.lead) .pic{aspect-ratio:16/8}
+}
+</style>
+<style>
+/* alumni */
+.alumni{padding:80px var(--gut) 40px}
+.alumni h2{font-family:var(--serif);font-size:clamp(30px,4vw,44px);font-weight:700}
+.alumni .lede{color:var(--grey);margin-top:8px;font-size:16px}
+.agrid{margin-top:28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.acard{display:flex;gap:20px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--accent);padding:20px}
+.acard img{width:96px;height:96px;object-fit:cover;flex-shrink:0}
+.acard b{display:block;font-size:16px}
+.acard .yr{display:block;font-size:13px;font-weight:600;color:var(--accent);margin-top:6px}
+.acard p{font-size:14px;line-height:1.5;color:#4A4542;margin-top:6px}
+@media (max-width:560px){.agrid{grid-template-columns:1fr}}
+</style>
+<style>
+/* charcoal and yellow: buttons in yellow with dark text */
+:root{--yellow:#F1C45D;--on-yellow:#1D181C}
+.btn,.nav a.cta,.morebtn{background:var(--yellow);color:var(--on-yellow)}
+.btn:hover,.nav a.cta:hover,.morebtn:hover{background:#E5B444;color:var(--on-yellow)}
+.btn.ghost{background:transparent;color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.1);color:#fff}
+/* the numbers band sits on top of the news, with a soft shadow below it */
+.facts{position:relative;z-index:2;box-shadow:0 14px 28px -10px rgba(28,26,25,.22)}
+/* news: off-white, with less space above its title */
+.newsx{background:var(--cream);padding:56px 0 80px}
+</style>
+<style>
+/* news: the same font as the page's titles and text (Arial), not Oswald and Open Sans */
+.newsx,.newsx .ctitle,.newsx .nitem h3,.newsx .nitem p,.newsx .morebtn,.nitem.lead .lk{font-family:var(--sans)}
+.newsx .ctitle{font-weight:700;letter-spacing:-.01em}
+</style>
+<style>
+/* Around the department: a touch of yellow on the charcoal (the labs heading and each lab's name) */
+.drift.dark .labs-h,.drift.dark .labs b{color:var(--yellow)}
+</style>
+<style>
+/* yellow only on charcoal: buttons on white or off-white go back to maroon */
+.nav a.cta,.morebtn,.enter .btn{background:var(--accent);color:#fff}
+.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#3C001C;color:#fff}
+</style>
+<style>
+/* faculty: photo cards; the photo darkens towards the bottom so the name reads on top of it */
+.fgrid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px}
+.pcard{background:#fff;border:1px solid var(--line);display:flex;flex-direction:column}
+.pcard.chair{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.pcard .ph{position:relative;aspect-ratio:4/5;background:var(--ink);overflow:hidden}
+.pcard .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform .7s cubic-bezier(.16,.84,.34,1)}
+.pcard:hover .ph img{transform:scale(1.04)}
+.pcard .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(28,26,25,.92) 0%,rgba(28,26,25,.55) 32%,rgba(28,26,25,0) 60%)}
+.pcard .ini{position:absolute;inset:0;display:grid;place-items:center;font-size:56px;font-weight:700;color:rgba(255,255,255,.22)}
+.pcard .on{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:16px 16px 14px;color:#fff;display:grid;gap:4px}
+.pcard .on b{font-size:16px;line-height:1.25}
+.pcard .on span{font-size:13px;color:rgba(255,255,255,.82)}
+.pcard .ptag{position:absolute;top:12px;left:12px;z-index:1;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:4px 10px}
+.pcard .below{padding:12px 16px 14px;display:grid;gap:6px;font-size:13px}
+.pcard .mail{color:var(--grey);text-decoration:none;word-break:break-all}
+.pcard .prof{color:var(--accent);font-weight:600;text-decoration:none}
+.pcard .prof:hover,.pcard .mail:hover{text-decoration:underline}
+.pcard.rise{transform:translateY(40px)}
+.pcard.rise.seen{transform:none}
+@media (max-width:560px){.fgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.pcard .on b{font-size:14px}.pcard .below{padding:10px 12px}}
+@media (prefers-reduced-motion:reduce){.pcard.rise{transform:none}.pcard .ph img{transition:none}}
+</style>
+<style>
+/* top menu: a little bigger, more space, a thicker maroon line on hover */
+.nav .links{gap:52px}
+.nav .links a{font-size:16.5px;padding:8px 0;border-bottom:4px solid transparent}
+.nav .links a:hover{border-bottom-color:var(--accent)}
+@media (max-width:1180px){.nav .links{gap:32px}.nav .links a{font-size:15.5px}}
+
+/* news: the newest post is a photo with a maroon block under it */
+.nitem.lead{grid-template-columns:1fr;background:var(--accent)}
+.nitem.lead .pic{aspect-ratio:21/9}
+.nitem.lead .ltxt{padding:34px 40px 38px}
+.nitem.lead h3{margin-top:10px}
+.lmore{display:inline-flex;align-items:center;gap:14px;margin-top:22px;color:#fff;font-weight:700;font-size:16px;text-decoration:none;align-self:flex-start}
+.lmore span{width:40px;height:40px;border-radius:50%;background:#fff;color:var(--accent);display:grid;place-items:center;font-size:18px;transition:transform .3s ease}
+.lmore:hover span{transform:translateX(4px)}
+.lmore:hover{text-decoration:underline;text-underline-offset:4px}
+
+/* around the department: maroon along the top and beside each lab */
+.drift.dark{border-top:6px solid var(--accent)}
+.drift.dark .labs li{border-left:3px solid var(--accent);padding-left:14px}
+
+/* faculty: one row that slides sideways */
+.faculty{position:relative}
+.fhead{display:flex;justify-content:flex-end;margin-top:-52px}
+.fhead .arrows{display:flex;gap:10px}
+.fhead .arrow{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:18px;cursor:pointer;transition:background .2s ease,color .2s ease}
+.fhead .arrow:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.fgrid{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;margin-top:26px;padding-bottom:10px;cursor:grab;scrollbar-width:thin}
+.fgrid.drag{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
+.fgrid .pcard{flex:0 0 220px;scroll-snap-align:start;user-select:none}
+.fgrid .pcard img{-webkit-user-drag:none}
+@media (max-width:560px){.fhead{margin-top:12px;justify-content:flex-start}.fgrid .pcard{flex-basis:62vw}}
+</style>
+<style>
+/* news: beige section; only the newest post is maroon (picture left, white words right) */
+.newsx{background:var(--cream)}
+/* news: a maroon band with the slideshow, older posts on white below */
+.newsx{padding:0 0 80px;background:var(--cream)}
+.nband{background:var(--accent);padding:60px 0 64px}
+.nband .ctitle{color:#fff}
+.newsx .news-grid{margin-top:64px}
+.newsx .news-grid[hidden]{display:none}
+.newsx .news-grid[hidden] ~ .more-wrap{display:none}
+.nitem.lead{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);background:var(--accent)}
+.nitem.lead .pic{aspect-ratio:16/10}
+.nitem.lead .ltxt{padding:40px 44px;justify-content:center}
+.nitem.lead h3,.nitem.lead h3 a{color:#fff}
+.nitem.lead p:not(.lk){color:rgba(255,255,255,.88)}
+/* a hint of yellow on the newest post: its label and a short bar under it */
+.nitem.lead .lk{color:var(--yellow)}
+.nitem.lead .lk::after{content:"";display:block;width:56px;height:4px;background:var(--yellow);margin-top:12px}
+/* post titles: no line until you point at them, then a charcoal underline */
+.newsx .nitem h3 a{text-decoration:none}
+.newsx .nitem h3 a::after{text-decoration:none}
+.newsx .nitem:not(.lead) h3 a{color:var(--ink)}
+.newsx .nitem h3 a:hover{text-decoration:underline;text-decoration-color:currentColor;text-decoration-thickness:1px;text-underline-offset:5px}
+.newsx .nitem:not(.lead) h3 a:hover{color:var(--accent)}
+.nitem.lead h3 a:hover{color:#fff}
+.newsx .nitem:not(.lead) p{color:#3e3e3e}
+.newsx .morebtn{background:var(--accent);color:#fff;box-shadow:none}
+.newsx .morebtn:hover{background:#3C001C;color:#fff}
+@media (max-width:900px){.nitem.lead{grid-template-columns:1fr}.nitem.lead .ltxt{padding:26px 24px 30px}}
+</style>
+<style>
+/* the news slideshow: picture left, words right; the posts fade into each other */
+.nshow{display:grid;margin-top:40px}
+.nsl{grid-area:1/1;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);opacity:0;visibility:hidden;transition:opacity .9s ease,visibility 0s linear .9s}
+.nsl.on{opacity:1;visibility:visible;transition:opacity .9s ease}
+.nsl .pic{aspect-ratio:16/10;overflow:hidden;background:rgba(0,0,0,.15)}
+.nsl .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.nsl .pic.none img{object-fit:contain;padding:18%}
+.nsl .ntxt{padding:20px 0 20px 52px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.nsl .lk{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin:0}
+.nsl .lk::after{content:"";display:block;width:56px;height:4px;background:var(--yellow);margin-top:12px}
+.nsl h3{margin-top:18px;font-size:clamp(24px,2.4vw,36px);line-height:1.2;color:#fff}
+.nsl h3 a{color:#fff;text-decoration:none}
+.nsl h3 a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+.nsl .nd-p{margin-top:14px;font-size:15px;line-height:1.65;color:rgba(255,255,255,.88)}
+.ndots{display:flex;gap:12px;margin-top:30px}
+.ndots .nd{width:56px;height:4px;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer;transition:background .3s ease}
+.ndots .nd.on{background:#fff}
+.ndots .nd:hover{background:rgba(255,255,255,.7)}
+.ndots .nd:focus-visible{outline:2px solid #fff;outline-offset:4px}
+@media (max-width:900px){.nsl{grid-template-columns:1fr}.nsl .ntxt{padding:24px 0 0}}
+@media (prefers-reduced-motion:reduce){.nsl,.nsl.on{transition:none}}
+</style>
+<style>
+/* stay connected: plain white icons, no coloured badges */
+.social .ic{width:22px;height:22px;display:grid;place-items:center;flex:none;color:#fff}
+.social .ic svg{width:22px;height:22px;display:block}
+.social a:hover .ic,.social .sharebtn:hover .ic{color:var(--yellow)}
+.sharebtn{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
+.sharebtn span{text-decoration:underline}
+</style>
+<style>
+/* ---------- sign-in page: the loading screen on the left, the form on the right ---------- */
+html,body{background:#fff}
+.spage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:100vh}
+.spanel{position:sticky;top:0;height:100vh;overflow:hidden;background:#F6F2EE}
+.spanel #eee-intro{position:absolute;inset:0;display:flex;cursor:default;z-index:0;gap:2.5vh;padding:56px 28px 28px}
+.spanel #eee-logo{width:min(440px,78%);max-height:56%}
+.spanel #eee-title{width:94%}
+.spanel .eee-uni{font-size:clamp(11px,1.15vw,16px)}
+.sback{position:absolute;top:22px;left:24px;z-index:2;font-size:14px;font-weight:600;color:var(--ink);text-decoration:none;background:rgba(255,255,255,.85);padding:8px 14px;border:1px solid var(--line)}
+.sback:hover{color:var(--accent);border-color:var(--accent)}
+.sside{padding:64px clamp(24px,5vw,88px) 56px;display:flex;justify-content:center}
+.sinner{width:100%;max-width:660px}
+.sinner .enter{padding:0;margin:0}
+.stitle{font-size:clamp(30px,3.4vw,44px);font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.sinner .lede{margin-top:10px}
+.sinner .gatebox{margin-top:28px}
+.robot .capq{font-weight:700;color:var(--accent)}
+.caprow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.caprow .back{margin:0}
+.sfoot{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--grey)}
+.sfoot a{color:var(--grey)}
+@media (max-width:900px){
+  .spage{grid-template-columns:1fr}
+  .spanel{position:relative;height:300px}
+  .spanel #eee-intro{padding:50px 16px 14px;gap:10px}
+  .spanel #eee-logo{max-height:46%;width:auto}
+  .spanel #eee-title{width:auto;height:28%;max-width:92%}
+  .spanel .eee-uni{font-size:11px}
+  .sback{top:12px;left:12px;padding:6px 10px;font-size:13px}
+  .sside{padding:32px 20px 48px}
+}
+</style>
+</head>
+<body>
+<div class="spage">
+  <aside class="spanel" id="spanel" aria-label="Department of Electrical and Electronic Engineering">
+    <a class="sback" href="landing.html">← Homepage</a>
+  </aside>
+  <main class="sside">
+    <div class="sinner">
+<section class="enter" id="enter">
+  <h1 class="stitle">Sign in</h1>
+  <p class="lede">Use your university email. Your password here is separate from your email password — this site never asks for that one.</p>
+
+  <div class="gatebox">
+    <div class="roles">
+      <button class="on" onclick="pickRole('student',this)">Student</button>
+      <button onclick="pickRole('teacher',this)">Teacher</button>
+      <button onclick="pickRole('admin',this)">Admin</button>
+    </div>
+
+    <div class="panel">
+      <!-- already signed in -->
+      <div id="already" class="hide">
+        <p style="font-size:16px">You're signed in as <b id="alreadyWho"></b>.</p>
+        <div style="margin-top:20px"><a class="btn" href="app.html" onclick="event.preventDefault(); enterAccount(this.getAttribute('href'))">Continue</a><button class="back" onclick="freeThisTab()">Use this tab for another sign-in</button><button class="back" onclick="signOutHere()">Not you? Sign out</button></div>
+        <p style="color:var(--grey);margin-top:14px;font-size:13px;line-height:1.55;max-width:52ch">Signing out ends this ticket everywhere it was opened. Freeing the tab only lets go of it here.</p>
+      </div>
+
+      <!-- signed in, choose where to open it -->
+      <div id="handoff" class="hide"></div>
+
+      <!-- forgot password: a code to the inbox, then a new password -->
+      <div id="resetPane" class="hide">
+        <p style="font-size:16px;font-weight:600;margin-bottom:6px">Reset your password</p>
+        <p style="color:var(--grey);font-size:14.5px;margin-bottom:18px">We'll email a 6-digit code to the email you sign in with.</p>
+        <div id="rs1">
+          <div class="field"><label for="rsEmail">Your email</label>
+            <input id="rsEmail" type="email" autocomplete="username"></div>
+          <button class="btn" onclick="resetStart()">Email me a code</button>
+          <div class="msg" id="rs1Msg"></div>
+        </div>
+        <div id="rs2" class="hide">
+          <p style="font-size:14px;color:var(--grey);margin-bottom:16px">A code is on its way to <b id="rsSent"></b>. Check your inbox — it can take a minute.</p>
+          <div class="field"><label for="rsCode">Code</label>
+            <input id="rsCode" inputmode="numeric" maxlength="6" style="max-width:180px;font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.2em"></div>
+          <div class="field"><label for="rsPw">New password</label>
+            <input id="rsPw" type="password" autocomplete="new-password"><div class="hint">At least 8 characters. Not your email password.</div></div>
+          <div class="field"><label for="rsPw2">Type it again</label>
+            <input id="rsPw2" type="password" autocomplete="new-password"></div>
+          <label class="check"><input type="checkbox" id="rsRemember" checked> Remember me on this browser</label>
+          <button class="btn" onclick="resetFinish()">Set new password</button>
+          <button class="back" onclick="resetAgain()">Start again</button>
+          <div class="msg" id="rs2Msg"></div>
+        </div>
+        <button class="back" style="margin-left:0;margin-top:18px" onclick="closeReset()">← Back to sign in</button>
+      </div>
+
+      <!-- student -->
+      <div id="studentPane">
+        <div class="tabs">
+          <button class="on" id="tabIn" onclick="studentTab('in')">Sign in</button>
+          <button id="tabReg" onclick="studentTab('reg')">First time? Register</button>
+        </div>
+
+        <div id="paneIn">
+          <div class="field"><label for="inEmail">University email</label>
+            <input id="inEmail" type="email" placeholder="roll@std.cu.ac.bd" autocomplete="username"></div>
+          <div class="field"><label for="inPw">Password</label>
+            <input id="inPw" type="password" autocomplete="current-password"></div>
+          <label class="check"><input type="checkbox" id="inRemember" checked> Remember me on this browser</label>
+          <button class="btn" onclick="signIn()">Sign in</button>
+          <div class="msg" id="inMsg"></div>
+          <button class="back" style="margin-left:0;margin-top:6px" onclick="openReset('studentPane','inEmail')">Forgot your password?</button>
+        </div>
+
+        <div id="paneReg" class="hide">
+          <div class="steps"><span id="s1" class="on">1 · About you</span><span id="s2">2 · Code and password</span></div>
+
+          <div id="reg1">
+            <div class="field"><label for="rEmail">University email</label>
+              <input id="rEmail" type="email" placeholder="roll@std.cu.ac.bd"></div>
+            <div class="field"><label for="rName">Your full name</label>
+              <input id="rName" autocomplete="name"></div>
+            <div class="field"><label for="rBatch">Your batch</label>
+              <select id="rBatch"><option value="">Choose your batch</option></select>
+              <div class="hint">Your semester and courses are filled in from your batch.</div></div>
+            <div class="field"><label for="rCountry">Country</label>
+              <select id="rCountry"></select></div>
+            <div class="field"><label for="rFa">Father's name</label>
+              <input id="rFa"><div class="hint">In English or Bangla. If the office already has your parents' names, these are checked against them; if not, they are saved to your record.</div></div>
+            <div class="field"><label for="rMo">Mother's name</label>
+              <input id="rMo"></div>
+<div class="field robot"><label for="rCap">Not a robot: <span class="capq" id="rCapQ">loading…</span></label>
+              <div class="caprow"><input id="rCap" inputmode="numeric" maxlength="3" autocomplete="off" style="max-width:120px">
+              <button type="button" class="back" onclick="newCaptcha('r')">New question</button></div>
+              <div class="hint">Answer the sum. It keeps automatic programs from creating accounts.</div></div>
+            <button class="btn" onclick="regStart()">Send me a code</button>
+            <div class="msg" id="r1Msg"></div>
+          </div>
+
+          <div id="reg2" class="hide">
+            <p style="font-size:14px;color:var(--grey);margin-bottom:16px">A 6-digit code is on its way to <b id="rSent"></b>. <span id="rWhere"></span></p>
+            <div class="field"><label for="rCode">Code</label>
+              <input id="rCode" inputmode="numeric" maxlength="6" style="max-width:180px;font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.2em"></div>
+            <div class="field"><label for="rPw">Choose a password for this site</label>
+              <input id="rPw" type="password" autocomplete="new-password"><div class="hint">At least 8 characters. Not your email password.</div></div>
+            <div class="field"><label for="rPw2">Type it again</label>
+              <input id="rPw2" type="password" autocomplete="new-password"></div>
+            <label class="check"><input type="checkbox" id="rRemember" checked> Remember me on this browser</label>
+            <button class="btn" onclick="regFinish()">Create my account</button>
+            <button class="back" onclick="regBack()">Start again</button>
+            <div class="msg" id="r2Msg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- admin: the office and the examiners -->
+      <div id="adminPane" class="hide">
+        <p style="color:var(--grey);font-size:14.5px;margin-bottom:18px">For the academic office and for examiners. Use your <b>@cu.ac.bd</b> staff email — you land on your own screen.</p>
+        <div class="field"><label for="adEmail">Staff email</label>
+          <input id="adEmail" type="email" placeholder="name@cu.ac.bd" autocomplete="username"></div>
+        <div class="field"><label for="adPw">Password</label>
+          <input id="adPw" type="password" autocomplete="current-password"></div>
+        <label class="check"><input type="checkbox" id="adRemember" checked> Remember me on this browser</label>
+        <button class="btn" onclick="staffSignIn('admin')">Sign in</button>
+        <div class="msg" id="adMsg"></div>
+        <button class="back" style="margin-left:0;margin-top:14px" onclick="staffJoin('ad')">First time? Create your account</button>
+        <button class="back" style="margin-top:14px" onclick="openReset('adminPane','adEmail')">Forgot your password?</button>
+        <div id="adJoin" class="hide" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
+          <div class="field"><label for="adJEmail">Your email</label>
+            <input id="adJEmail" type="email" autocomplete="username"></div>
+          <div class="field robot"><label for="adCap">Not a robot: <span class="capq" id="adCapQ">loading…</span></label>
+              <div class="caprow"><input id="adCap" inputmode="numeric" maxlength="3" autocomplete="off" style="max-width:120px">
+              <button type="button" class="back" onclick="newCaptcha('ad')">New question</button></div>
+              <div class="hint">Answer the sum. It keeps automatic programs from creating accounts.</div></div>
+            <button class="btn" onclick="staffCode('ad')">Send me a code</button>
+          <div id="adJStep2" class="hide" style="margin-top:16px">
+            <p style="font-size:14px;color:var(--grey);margin-bottom:12px" id="adJWhere"></p>
+            <div class="field"><label for="adJCode">Code</label>
+              <input id="adJCode" inputmode="numeric" maxlength="6" style="max-width:180px"></div>
+            <div class="field"><label for="adJPw">Choose a password</label>
+              <input id="adJPw" type="password" autocomplete="new-password"><div class="hint">At least 8 characters.</div></div>
+            <div class="field"><label for="adJPw2">Type it again</label>
+              <input id="adJPw2" type="password" autocomplete="new-password"></div>
+            <button class="btn" onclick="staffFinish('ad', 'admin')">Create my account</button>
+          </div>
+          <div class="msg" id="adJMsg"></div>
+        </div>
+      </div>
+
+      <!-- teacher -->
+      <div id="teacherPane" class="hide">
+        <p style="color:var(--grey);font-size:14.5px;margin-bottom:18px">For course teachers: attendance, class tests and objections. Use your <b>@cu.ac.bd</b> staff email. The office decides which classes you can open.</p>
+        <div class="field"><label for="tcEmail">Staff email</label>
+          <input id="tcEmail" type="email" placeholder="name@cu.ac.bd" autocomplete="username"></div>
+        <div class="field"><label for="tcPw">Password</label>
+          <input id="tcPw" type="password" autocomplete="current-password"></div>
+        <label class="check"><input type="checkbox" id="tcRemember" checked> Remember me on this browser</label>
+        <button class="btn" onclick="staffSignIn('teacher')">Sign in</button>
+        <div class="msg" id="tcMsg"></div>
+        <button class="back" style="margin-left:0;margin-top:14px" onclick="staffJoin('tc')">First time? Create your account</button>
+        <button class="back" style="margin-top:14px" onclick="openReset('teacherPane','tcEmail')">Forgot your password?</button>
+        <div id="tcJoin" class="hide" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
+          <div class="field"><label for="tcJEmail">Your email</label>
+            <input id="tcJEmail" type="email" autocomplete="username"></div>
+          <div class="field robot"><label for="tcCap">Not a robot: <span class="capq" id="tcCapQ">loading…</span></label>
+              <div class="caprow"><input id="tcCap" inputmode="numeric" maxlength="3" autocomplete="off" style="max-width:120px">
+              <button type="button" class="back" onclick="newCaptcha('tc')">New question</button></div>
+              <div class="hint">Answer the sum. It keeps automatic programs from creating accounts.</div></div>
+            <button class="btn" onclick="staffCode('tc')">Send me a code</button>
+          <div id="tcJStep2" class="hide" style="margin-top:16px">
+            <p style="font-size:14px;color:var(--grey);margin-bottom:12px" id="tcJWhere"></p>
+            <div class="field"><label for="tcJCode">Code</label>
+              <input id="tcJCode" inputmode="numeric" maxlength="6" style="max-width:180px"></div>
+            <div class="field"><label for="tcJPw">Choose a password</label>
+              <input id="tcJPw" type="password" autocomplete="new-password"><div class="hint">At least 8 characters.</div></div>
+            <div class="field"><label for="tcJPw2">Type it again</label>
+              <input id="tcJPw2" type="password" autocomplete="new-password"></div>
+            <button class="btn" onclick="staffFinish('tc', 'teacher')">Create my account</button>
+          </div>
+          <div class="msg" id="tcJMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+      <p class="sfoot">EEE Records · CSE 518 course project, University of Chittagong. Not an official university website. <a href="landing.html#faq">Questions</a></p>
+    </div>
+  </main>
+</div>
+
+<script>
+const KEY = 'eee_token';
+const token = () => sessionStorage.getItem(KEY) || localStorage.getItem(KEY);   // this tab's own sign-in wins
+function esc(t){ return String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+/* ---------- batches for the register form ---------- */
+fetch('/api/landing').then(r => r.json()).then(d => {
+  const sel = document.getElementById('rBatch');
+  (d.batches || []).forEach(b => {
+    const o = document.createElement('option');
+    o.value = b.name;
+    o.textContent = `${b.name} (${ordinal(b.semester)} semester)`;
+    sel.appendChild(o);
+  });
+});
+
+/* ---------- country list, names in English from the browser; Bangladesh first ---------- */
+(() => {
+  const codes = 'AF AX AL DZ AS AD AO AI AQ AG AR AM AW AU AT AZ BS BH BD BB BY BE BZ BJ BM BT BO BQ BA BW BV BR IO BN BG BF BI CV KH CM CA KY CF TD CL CN CX CC CO KM CG CD CK CR CI HR CU CW CY CZ DK DJ DM DO EC EG SV GQ ER EE SZ ET FK FO FJ FI FR GF PF TF GA GM GE DE GH GI GR GL GD GP GU GT GG GN GW GY HT HM VA HN HK HU IS IN ID IR IQ IE IM IL IT JM JP JE JO KZ KE KI KP KR KW KG LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MQ MR MU YT MX FM MD MC MN ME MS MA MZ MM NA NR NP NL NC NZ NI NE NG NU NF MK MP NO OM PK PW PS PA PG PY PE PH PN PL PT PR QA RE RO RU RW BL SH KN LC MF PM VC WS SM ST SA SN RS SC SL SG SX SK SI SB SO ZA GS SS ES LK SD SR SJ SE CH SY TW TJ TZ TH TL TG TK TO TT TN TR TM TC TV UG UA AE GB US UM UY UZ VU VE VN VG VI WF EH YE ZM ZW'.split(' ');
+  let names;
+  try { const dn = new Intl.DisplayNames(['en'], {type: 'region'}); names = codes.map(c => [c, dn.of(c)]); }
+  catch (e) { names = [['BD', 'Bangladesh']]; }
+  names.sort((x, y) => x[1].localeCompare(y[1]));
+  const sel = document.getElementById('rCountry');
+  const add = ([c, n]) => { const o = document.createElement('option'); o.value = c; o.textContent = n; sel.appendChild(o); };
+  add(['BD', 'Bangladesh']);
+  names.filter(x => x[0] !== 'BD').forEach(add);
+  sel.value = 'BD';
+})();
+
+/* ---------- "not a robot": a small sum from the server, a new one after every try ---------- */
+const caps = {};
+async function newCaptcha(p){
+  const q = document.getElementById(p + 'CapQ'), box = document.getElementById(p + 'Cap');
+  try {
+    const d = await (await fetch('/api/captcha')).json();
+    caps[p] = d.ticket; q.textContent = d.question;
+  } catch (e) { q.textContent = "couldn't load — press New question"; }
+  box.value = '';
+}
+['r', 'ad', 'tc'].forEach(newCaptcha);
+
+/* ---------- already signed in? ---------- */
+async function checkSignedIn(){
+  if (!token()) return;
+  const r = await fetch('/api/me', {headers: {Authorization: 'Bearer ' + token()}});
+  if (!r.ok){ localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); return; }
+  const me = await r.json();
+  document.getElementById('already').classList.remove('hide');
+  document.getElementById('studentPane').classList.add('hide');
+  document.getElementById('alreadyWho').textContent = `${me.name} (${me.email})`;
+  document.querySelector('#already .btn').href = home(me.role);
+  const cta = document.getElementById('navCta');
+  if (!cta) return;
+  cta.textContent = {examiner: 'Open mark entry', teacher: 'Open my classes',
+                     office: 'Open the office desk'}[me.role] || 'Open my records';
+  cta.href = home(me.role);
+  cta.onclick = e => { e.preventDefault(); enterAccount(home(me.role)); };   // play the logo on the way in
+}
+checkSignedIn();
+
+/* ---------- role tabs ---------- */
+function pickRole(role, btn){
+  document.querySelectorAll('.roles button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('handoff').classList.add('hide');
+  document.getElementById('resetPane').classList.add('hide');
+  const signedIn = !document.getElementById('already').classList.contains('hide');
+  document.getElementById('studentPane').classList.toggle('hide', role !== 'student' || signedIn);
+  document.getElementById('adminPane').classList.toggle('hide', role !== 'admin' || signedIn);
+  document.getElementById('teacherPane').classList.toggle('hide', role !== 'teacher' || signedIn);
+}
+
+function studentTab(which){
+  document.getElementById('tabIn').classList.toggle('on', which === 'in');
+  document.getElementById('tabReg').classList.toggle('on', which === 'reg');
+  document.getElementById('paneIn').classList.toggle('hide', which !== 'in');
+  document.getElementById('paneReg').classList.toggle('hide', which !== 'reg');
+}
+function openRegister(){ studentTab('reg'); }
+
+/* ---------- sign in ---------- */
+async function post(path, body){
+  const r = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  return r.json();
+}
+
+/* plays the logo loading screen, then opens the account page */
+function enterAccount(url){
+  if (window.eeeLoader) eeeLoader(() => { location.href = url; });
+  else location.href = url;
+}
+
+function home(role){
+  return {examiner: 'exam.html', teacher: 'teacher.html', office: 'office.html'}[role] || 'app.html';
+}
+
+const ROLE_NAME = {student:'my records', teacher:'my classes',
+                   office:'the office desk', examiner:'mark entry'};
+
+function keep(tok, remember, role, msg){
+  // remembered: the ticket survives closing the browser, and this tab moves there
+  if (remember){ localStorage.setItem(KEY, tok); enterAccount(home(role)); return; }
+
+  // not remembered: the ticket belongs to this tab only. A tab opened from here
+  // gets its own copy, so several roles can be signed in side by side.
+  sessionStorage.setItem(KEY, tok);
+  showHandoff(role);
+}
+
+/* the browser only allows a new tab during a real click, so we ask for one */
+function showHandoff(role){
+  ['studentPane','adminPane','teacherPane','already','resetPane'].forEach(id =>
+    document.getElementById(id).classList.add('hide'));
+  const box = document.getElementById('handoff');
+  box.classList.remove('hide');
+  box.innerHTML = `
+    <p style="font-size:16px">Signed in as <b>${({student:'a student', teacher:'a course teacher',
+        office:'the academic office', examiner:'an examiner'})[role] || role}</b>.</p>
+    <p style="color:var(--grey);margin-top:10px;font-size:14.5px;line-height:1.6;max-width:52ch">
+      Open it in its own tab. This tab then goes back to being a sign-in page, so you can
+      sign in as someone else and keep both open at once.</p>
+    <div style="margin-top:20px">
+      <button class="btn" onclick="openRole('${home(role)}')">Open ${ROLE_NAME[role] || 'my page'} in a new tab</button>
+      <button class="back" onclick="enterAccount('${home(role)}')">Open it in this tab instead</button>
+    </div>`;
+}
+
+function openRole(url){
+  window.open(url + '#intro', '_blank');   // inside your click, so no pop-up blocker; #intro: play the logo there
+  setTimeout(freeThisTab, 500);      // the new tab has its copy; let go of ours
+}
+
+/* let go of the ticket here only — the tabs opened from here keep theirs */
+function freeThisTab(){
+  sessionStorage.removeItem(KEY);
+  localStorage.removeItem(KEY);
+  document.getElementById('handoff').classList.add('hide');
+  document.getElementById('already').classList.add('hide');
+  document.getElementById('resetPane').classList.add('hide');
+  document.getElementById('adminPane').classList.add('hide');
+  document.getElementById('teacherPane').classList.add('hide');
+  document.getElementById('studentPane').classList.remove('hide');
+  document.querySelectorAll('.roles button').forEach((b, i) => b.classList.toggle('on', i === 0));
+  ['inPw','tcPw','adPw'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['inMsg','tcMsg','adMsg'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+}
+
+/* ---------- forgot password ---------- */
+let resetFrom = 'studentPane';
+function openReset(paneId, emailId){
+  resetFrom = paneId;
+  ['studentPane','adminPane','teacherPane'].forEach(id => document.getElementById(id).classList.add('hide'));
+  document.getElementById('resetPane').classList.remove('hide');
+  document.getElementById('rsEmail').value = document.getElementById(emailId).value.trim();
+  resetAgain();
+}
+function closeReset(){
+  document.getElementById('resetPane').classList.add('hide');
+  document.getElementById(resetFrom).classList.remove('hide');
+}
+function resetAgain(){
+  document.getElementById('rs1').classList.remove('hide');
+  document.getElementById('rs2').classList.add('hide');
+  ['rsCode','rsPw','rsPw2'].forEach(id => document.getElementById(id).value = '');
+  ['rs1Msg','rs2Msg'].forEach(id => document.getElementById(id).textContent = '');
+}
+async function resetStart(){
+  const msg = document.getElementById('rs1Msg');
+  msg.textContent = '';
+  const email = document.getElementById('rsEmail').value.trim().toLowerCase();
+  const res = await post('/api/password/start', {email});
+  if (!res.ok){ msg.textContent = res.why; return; }
+  document.getElementById('rsSent').textContent = email;
+  document.getElementById('rs1').classList.add('hide');
+  document.getElementById('rs2').classList.remove('hide');
+}
+async function resetFinish(){
+  const msg = document.getElementById('rs2Msg');
+  msg.textContent = '';
+  const pw = document.getElementById('rsPw').value;
+  if (pw !== document.getElementById('rsPw2').value){ msg.textContent = "The two passwords don't match."; return; }
+  const remember = document.getElementById('rsRemember').checked;
+  const res = await post('/api/password/finish', {
+    email: document.getElementById('rsSent').textContent,
+    code: document.getElementById('rsCode').value, password: pw, remember});
+  if (!res.ok){ msg.textContent = res.why; return; }
+  keep(res.token, remember, res.role, msg);
+}
+
+async function signIn(){
+  const msg = document.getElementById('inMsg');
+  msg.textContent = '';
+  const remember = document.getElementById('inRemember').checked;
+  const res = await post('/api/signin', {
+    email: document.getElementById('inEmail').value,
+    password: document.getElementById('inPw').value, remember});
+  if (!res.ok){ msg.textContent = res.why; return; }
+  keep(res.token, remember, res.role, msg);
+}
+
+/* one sign-in for both staff doors: 'teacher', or 'admin' for office and examiners */
+async function staffSignIn(kind){
+  const p = kind === 'teacher' ? 'tc' : 'ad';
+  const msg = document.getElementById(p + 'Msg');
+  msg.textContent = '';
+  const remember = document.getElementById(p + 'Remember').checked;
+  const res = await post('/api/signin', {
+    email: document.getElementById(p + 'Email').value,
+    password: document.getElementById(p + 'Pw').value, remember});
+  if (!res.ok){ msg.textContent = res.why; return; }
+  const allowed = kind === 'teacher' ? ['teacher'] : ['office', 'examiner'];
+  if (!allowed.includes(res.role)){
+    msg.textContent = res.role === 'student'
+      ? 'That is a student account — use the Student tab.'
+      : `That account is ${res.role}, so it signs in at the other tab.`;
+    return;
+  }
+  keep(res.token, remember, res.role, msg);
+}
+
+function ordinal(n){ const t = ['th','st','nd','rd'], v = n % 100; return n + (t[(v - 20) % 10] || t[v] || t[0]); }
+
+/* ---------- staff sign-up (for now only the three test inboxes the site allows) ---------- */
+function staffJoin(p){ document.getElementById(p + 'Join').classList.toggle('hide'); }
+async function staffCode(p){
+  const msg = document.getElementById(p + 'JMsg');
+  msg.textContent = '';
+  const email = document.getElementById(p + 'JEmail').value.trim().toLowerCase();
+  const res = await post('/api/register/staff-start', {email,
+    captcha: document.getElementById(p + 'Cap').value, captcha_ticket: caps[p]});
+  newCaptcha(p);                         // each question works once
+  if (!res.ok){ msg.textContent = res.why; return; }
+  document.getElementById(p + 'JWhere').textContent =
+    `A 6-digit code is on its way to ${email}. Check the inbox (and spam) — it can take a minute.`;
+  document.getElementById(p + 'JStep2').classList.remove('hide');
+}
+async function staffFinish(p, kind){
+  const msg = document.getElementById(p + 'JMsg');
+  msg.textContent = '';
+  const pw = document.getElementById(p + 'JPw').value;
+  if (pw !== document.getElementById(p + 'JPw2').value){ msg.textContent = "The two passwords don't match."; return; }
+  const res = await post('/api/register/staff-finish', {
+    email: document.getElementById(p + 'JEmail').value, code: document.getElementById(p + 'JCode').value,
+    password: pw, remember: true});
+  if (!res.ok){ msg.textContent = res.why; return; }
+  const allowed = kind === 'teacher' ? ['teacher'] : ['office', 'examiner'];
+  if (!allowed.includes(res.role)){
+    msg.textContent = `Account created as ${res.role}. Sign in on the ${res.role === 'teacher' ? 'Teacher' : 'Admin'} tab.`;
+    return;
+  }
+  keep(res.token, true, res.role, msg);
+}
+
+/* ---------- register ---------- */
+async function regStart(){
+  const msg = document.getElementById('r1Msg');
+  msg.textContent = '';
+  const email = document.getElementById('rEmail').value;
+  const res = await post('/api/register/start', {
+    email, name: document.getElementById('rName').value, batch: document.getElementById('rBatch').value,
+    father: document.getElementById('rFa').value, mother: document.getElementById('rMo').value,
+    country: document.getElementById('rCountry').value,
+    captcha: document.getElementById('rCap').value, captcha_ticket: caps.r});
+  newCaptcha('r');                       // each question works once
+  if (!res.ok){ msg.textContent = res.why; return; }
+  document.getElementById('rSent').textContent = email.trim().toLowerCase();
+  document.getElementById('rWhere').textContent = 'Check your university inbox (and spam) — it can take a minute.';
+  document.getElementById('reg1').classList.add('hide');
+  document.getElementById('reg2').classList.remove('hide');
+  document.getElementById('s1').classList.remove('on');
+  document.getElementById('s2').classList.add('on');
+}
+
+async function regFinish(){
+  const msg = document.getElementById('r2Msg');
+  msg.textContent = '';
+  const pw = document.getElementById('rPw').value;
+  if (pw !== document.getElementById('rPw2').value){ msg.textContent = "The two passwords don't match."; return; }
+  const remember = document.getElementById('rRemember').checked;
+  const res = await post('/api/register/finish', {
+    email: document.getElementById('rSent').textContent,
+    code: document.getElementById('rCode').value, password: pw, remember});
+  if (!res.ok){ msg.textContent = res.why; return; }
+  keep(res.token, remember, res.role, msg);
+}
+
+function regBack(){
+  document.getElementById('reg2').classList.add('hide');
+  document.getElementById('reg1').classList.remove('hide');
+  document.getElementById('s2').classList.remove('on');
+  document.getElementById('s1').classList.add('on');
+}
+
+async function signOutHere(){
+  await fetch('/api/signout', {method:'POST', headers:{Authorization:'Bearer ' + token()}});
+  localStorage.removeItem(KEY); sessionStorage.removeItem(KEY);
+  location.reload();
+}
+
+/* ---------- the loading screen plays on a loop in the left panel ---------- */
+let panelLoop = true;
+function loopIntro(){
+  if (!panelLoop || !window.eeeLoader) return;
+  eeeLoader(() => setTimeout(loopIntro, 2600));
+  document.getElementById('eee-intro').classList.remove('play');   // shown by the panel, not as a full screen
+  document.documentElement.style.overflow = '';
+}
+window.addEventListener('load', () => {
+  const intro = document.getElementById('eee-intro');
+  if (!intro) return;
+  document.getElementById('spanel').appendChild(intro);
+  loopIntro();
+});
+/* after signing in: the loading screen fills the whole window again, then the account page opens */
+enterAccount = function (url){
+  const intro = document.getElementById('eee-intro');
+  panelLoop = false;
+  if (intro && window.eeeLoader){ document.body.appendChild(intro); eeeLoader(() => { location.href = url; }); }
+  else location.href = url;
+};
+/* opened as signin.html#register: straight to the register form */
+if (location.hash === '#register') studentTab('reg');
+</script>
+
+<script src="loader.js"></script>
+</body>
+</html>

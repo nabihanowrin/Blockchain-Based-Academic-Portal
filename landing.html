@@ -22,10 +22,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@300;400;600;700;800&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#302B31; --ink-2:#3D373E; --cream:#F6F2EE; --card:#fff;
+  --ink:#302B31; --ink-2:#3D373E; --cream:#FFFFFF; --card:#fff;
   --text:#1C1A19; --grey:#6E6764; --line:#E4DCD6;
-  --accent:#7E2233; --accent-wash:#F4E8EA;
-  --butter:#F2EBC6; --mist:#D3E4E8; --clay:#E7DFDB; --sage:#DCE6D8;
+  --accent:#500000; --accent-wash:#F4E8EA;
+  --butter:#F2EBC6; --mist:#D3E4E8; --clay:#FFFFFF; --sage:#DCE6D8;
   --sans:Arial,Helvetica,sans-serif; --serif:Arial,Helvetica,sans-serif; --mono:Arial,Helvetica,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -54,7 +54,7 @@ button,input,select{font-family:inherit}
 .nav .links a{color:#2D2E33;text-decoration:none;font-size:15px;font-weight:500;padding:6px 0;border-bottom:2px solid transparent}
 .nav .links a:hover{border-bottom-color:var(--accent)}
 .nav a.cta{background:var(--accent);color:#fff;text-decoration:none;font-size:15px;font-weight:600;padding:12px 24px;border-radius:4px;flex-shrink:0}
-.nav a.cta:hover{background:#651B29}
+.nav a.cta:hover{background:#3C001C}
 .nav .menu{display:none;margin-left:auto;background:none;border:1px solid var(--line);border-radius:4px;width:42px;height:42px;cursor:pointer}
 .nav .menu span{display:block;width:18px;height:2px;background:var(--text);margin:4px auto}
 
@@ -105,7 +105,7 @@ button,input,select{font-family:inherit}
   padding:34px var(--gut) 26px;margin:0 calc(-1 * var(--gut));cursor:grab;scrollbar-width:none}
 .slider::-webkit-scrollbar{display:none}
 .slider.drag{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
-.slide{flex:0 0 min(520px,82vw);scroll-snap-align:start;background:#E9E6E3;border-radius:4px;overflow:hidden;user-select:none;display:flex;flex-direction:column}
+.slide{flex:0 0 min(520px,82vw);scroll-snap-align:start;background:#FFFFFF;border-radius:4px;overflow:hidden;user-select:none;display:flex;flex-direction:column}
 .slide .pic{aspect-ratio:3/2;background:var(--ink);display:flex;align-items:flex-end;padding:26px;position:relative;overflow:hidden}
 .slide .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .slide .pic .yr{position:relative;font-family:var(--serif);font-weight:600;font-size:84px;line-height:.8;color:rgba(255,255,255,.14)}
@@ -165,9 +165,9 @@ a.slide:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .faculty h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.02em}
 .fgrid{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .fcard{background:#fff;border:1px solid #E4DCD6;border-radius:12px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:3px;font-size:14px}
-.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#7E2233;font-size:13px;word-break:break-all;text-decoration:none}
-.fcard.chair{border-color:#7E2233;box-shadow:0 0 0 1px #7E2233 inset}
-.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#7E2233;color:#fff !important;margin-bottom:6px}
+.fcard b{font-size:15px}.fcard span{color:#6E6764}.fcard a{color:#500000;font-size:13px;word-break:break-all;text-decoration:none}
+.fcard.chair{border-color:#500000;box-shadow:0 0 0 1px #500000 inset}
+.ftag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#500000;color:#fff !important;margin-bottom:6px}
 .ftag.leave{background:#E7E1DC;color:#5D5450 !important}
 .offer{padding:90px 0;background:var(--accent);color:#fff}
 .offer h2{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.08;letter-spacing:-.02em}
@@ -276,7 +276,7 @@ details p{margin-top:8px;font-size:13.5px;line-height:1.6}
 </style>
 <style>
 /* every page opens with a 0.5 s fade from the cream background */
-html{background:#F6F2EE}
+html{background:#FFFFFF}
 body{animation:pageIn .5s ease backwards}
 @keyframes pageIn{from{opacity:0}}
 @media (prefers-reduced-motion:reduce){body{animation:none}}
@@ -345,19 +345,6 @@ body{animation:pageIn .5s ease backwards}
 }
 </style>
 <style>
-/* alumni */
-.alumni{padding:80px var(--gut) 40px}
-.alumni h2{font-family:var(--serif);font-size:clamp(30px,4vw,44px);font-weight:700}
-.alumni .lede{color:var(--grey);margin-top:8px;font-size:16px}
-.agrid{margin-top:28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
-.acard{display:flex;gap:20px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--accent);padding:20px}
-.acard img{width:96px;height:96px;object-fit:cover;flex-shrink:0}
-.acard b{display:block;font-size:16px}
-.acard .yr{display:block;font-size:13px;font-weight:600;color:var(--accent);margin-top:6px}
-.acard p{font-size:14px;line-height:1.5;color:#4A4542;margin-top:6px}
-@media (max-width:560px){.agrid{grid-template-columns:1fr}}
-</style>
-<style>
 /* charcoal and yellow: buttons in yellow with dark text */
 :root{--yellow:#F1C45D;--on-yellow:#1D181C}
 .btn,.nav a.cta,.morebtn{background:var(--yellow);color:var(--on-yellow)}
@@ -381,7 +368,7 @@ body{animation:pageIn .5s ease backwards}
 <style>
 /* yellow only on charcoal: buttons on white or off-white go back to maroon */
 .nav a.cta,.morebtn,.enter .btn{background:var(--accent);color:#fff}
-.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#651B29;color:#fff}
+.nav a.cta:hover,.morebtn:hover,.enter .btn:hover{background:#3C001C;color:#fff}
 </style>
 <style>
 /* faculty: photo cards; the photo darkens towards the bottom so the name reads on top of it */
@@ -486,6 +473,67 @@ body{animation:pageIn .5s ease backwards}
 .al-topics .pill small{font-size:12px;opacity:.7;margin-left:2px}
 @media (max-width:700px){.alg-cards{grid-template-columns:1fr}}
 </style>
+<style>
+/* news: beige section; only the newest post is maroon (picture left, white words right) */
+.newsx{background:var(--cream)}
+/* news: a maroon band with the slideshow, older posts on white below */
+.newsx{padding:0 0 80px;background:var(--cream)}
+.nband{background:var(--accent);padding:60px 0 64px}
+.nband .ctitle{color:#fff}
+.newsx .news-grid{margin-top:64px}
+.newsx .news-grid[hidden]{display:none}
+.newsx .news-grid[hidden] ~ .more-wrap{display:none}
+.nitem.lead{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);background:var(--accent)}
+.nitem.lead .pic{aspect-ratio:16/10}
+.nitem.lead .ltxt{padding:40px 44px;justify-content:center}
+.nitem.lead h3,.nitem.lead h3 a{color:#fff}
+.nitem.lead p:not(.lk){color:rgba(255,255,255,.88)}
+/* a hint of yellow on the newest post: its label and a short bar under it */
+.nitem.lead .lk{color:var(--yellow)}
+.nitem.lead .lk::after{content:"";display:block;width:56px;height:4px;background:var(--yellow);margin-top:12px}
+/* post titles: no line until you point at them, then a charcoal underline */
+.newsx .nitem h3 a{text-decoration:none}
+.newsx .nitem h3 a::after{text-decoration:none}
+.newsx .nitem:not(.lead) h3 a{color:var(--ink)}
+.newsx .nitem h3 a:hover{text-decoration:underline;text-decoration-color:currentColor;text-decoration-thickness:1px;text-underline-offset:5px}
+.newsx .nitem:not(.lead) h3 a:hover{color:var(--accent)}
+.nitem.lead h3 a:hover{color:#fff}
+.newsx .nitem:not(.lead) p{color:#3e3e3e}
+.newsx .morebtn{background:var(--accent);color:#fff;box-shadow:none}
+.newsx .morebtn:hover{background:#3C001C;color:#fff}
+@media (max-width:900px){.nitem.lead{grid-template-columns:1fr}.nitem.lead .ltxt{padding:26px 24px 30px}}
+</style>
+<style>
+/* the news slideshow: picture left, words right; the posts fade into each other */
+.nshow{display:grid;margin-top:40px}
+.nsl{grid-area:1/1;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);opacity:0;visibility:hidden;transition:opacity .9s ease,visibility 0s linear .9s}
+.nsl.on{opacity:1;visibility:visible;transition:opacity .9s ease}
+.nsl .pic{aspect-ratio:16/10;overflow:hidden;background:rgba(0,0,0,.15)}
+.nsl .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.nsl .pic.none img{object-fit:contain;padding:18%}
+.nsl .ntxt{padding:20px 0 20px 52px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.nsl .lk{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin:0}
+.nsl .lk::after{content:"";display:block;width:56px;height:4px;background:var(--yellow);margin-top:12px}
+.nsl h3{margin-top:18px;font-size:clamp(24px,2.4vw,36px);line-height:1.2;color:#fff}
+.nsl h3 a{color:#fff;text-decoration:none}
+.nsl h3 a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+.nsl .nd-p{margin-top:14px;font-size:15px;line-height:1.65;color:rgba(255,255,255,.88)}
+.ndots{display:flex;gap:12px;margin-top:30px}
+.ndots .nd{width:56px;height:4px;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer;transition:background .3s ease}
+.ndots .nd.on{background:#fff}
+.ndots .nd:hover{background:rgba(255,255,255,.7)}
+.ndots .nd:focus-visible{outline:2px solid #fff;outline-offset:4px}
+@media (max-width:900px){.nsl{grid-template-columns:1fr}.nsl .ntxt{padding:24px 0 0}}
+@media (prefers-reduced-motion:reduce){.nsl,.nsl.on{transition:none}}
+</style>
+<style>
+/* stay connected: plain white icons, no coloured badges */
+.social .ic{width:22px;height:22px;display:grid;place-items:center;flex:none;color:#fff}
+.social .ic svg{width:22px;height:22px;display:block}
+.social a:hover .ic,.social .sharebtn:hover .ic{color:var(--yellow)}
+.sharebtn{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
+.sharebtn span{text-decoration:underline}
+</style>
 </head>
 <body>
 
@@ -503,7 +551,7 @@ body{animation:pageIn .5s ease backwards}
       <a href="#gallery">Gallery</a>
       <a href="#faq">Questions</a>
     </div>
-    <a class="cta" href="#enter" id="navCta">Sign in</a>
+    <a class="cta" href="signin.html" id="navCta">Sign in</a>
     <button class="menu" type="button" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')"><span></span><span></span><span></span></button>
   </div>
 </nav>
@@ -516,8 +564,8 @@ body{animation:pageIn .5s ease backwards}
       <h1>Electrical and Electronic<br><em>Engineering</em></h1>
       <p class="lede">Sign in with your university account to view your results, attendance and course records.</p>
       <div class="row">
-        <a class="btn" href="#enter">Sign in</a>
-        <a class="btn ghost" href="#enter" onclick="openRegister()">Create an account</a>
+        <a class="btn" href="signin.html">Sign in</a>
+        <a class="btn ghost" href="signin.html#register">Create an account</a>
       </div>
     </div>
   </div>
@@ -529,8 +577,13 @@ body{animation:pageIn .5s ease backwards}
 
 <!-- ================= NEWS ================= -->
 <section class="newsx" id="news">
+  <div class="nband">
+    <div class="wrap">
+      <h2 class="ctitle rise">Electrical and Electronic Engineering News</h2>
+      <div class="nshow rise" id="nshow" aria-roledescription="carousel" aria-label="Latest news"></div>
+    </div>
+  </div>
   <div class="wrap">
-    <h2 class="ctitle rise">Electrical and Electronic Engineering News</h2>
     <div class="news-grid" id="slider"></div>
     <div class="more-wrap"><button class="morebtn" type="button" id="moreNews" hidden onclick="showAllNews()">View more news</button></div>
   </div>
@@ -642,170 +695,6 @@ body{animation:pageIn .5s ease backwards}
 
 
 <!-- ================= SIGN IN ================= -->
-<section class="wrap enter" id="enter">
-  <h2 class="rise">Sign in</h2>
-  <p class="lede rise d1">Use your university email. Your password here is separate from your email password — this site never asks for that one.</p>
-
-  <div class="gatebox rise d2">
-    <div class="roles">
-      <button class="on" onclick="pickRole('student',this)">Student</button>
-      <button onclick="pickRole('teacher',this)">Teacher</button>
-      <button onclick="pickRole('admin',this)">Admin</button>
-    </div>
-
-    <div class="panel">
-      <!-- already signed in -->
-      <div id="already" class="hide">
-        <p style="font-size:16px">You're signed in as <b id="alreadyWho"></b>.</p>
-        <div style="margin-top:20px"><a class="btn" href="app.html" onclick="event.preventDefault(); enterAccount(this.getAttribute('href'))">Continue</a><button class="back" onclick="freeThisTab()">Use this tab for another sign-in</button><button class="back" onclick="signOutHere()">Not you? Sign out</button></div>
-        <p style="color:var(--grey);margin-top:14px;font-size:13px;line-height:1.55;max-width:52ch">Signing out ends this ticket everywhere it was opened. Freeing the tab only lets go of it here.</p>
-      </div>
-
-      <!-- signed in, choose where to open it -->
-      <div id="handoff" class="hide"></div>
-
-      <!-- forgot password: a code to the inbox, then a new password -->
-      <div id="resetPane" class="hide">
-        <p style="font-size:16px;font-weight:600;margin-bottom:6px">Reset your password</p>
-        <p style="color:var(--grey);font-size:14.5px;margin-bottom:18px">We'll email a 6-digit code to the email you sign in with.</p>
-        <div id="rs1">
-          <div class="field"><label for="rsEmail">Your email</label>
-            <input id="rsEmail" type="email" autocomplete="username"></div>
-          <button class="btn" onclick="resetStart()">Email me a code</button>
-          <div class="msg" id="rs1Msg"></div>
-        </div>
-        <div id="rs2" class="hide">
-          <p style="font-size:14px;color:var(--grey);margin-bottom:16px">A code is on its way to <b id="rsSent"></b>. Check your inbox — it can take a minute.</p>
-          <div class="field"><label for="rsCode">Code</label>
-            <input id="rsCode" inputmode="numeric" maxlength="6" style="max-width:180px;font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.2em"></div>
-          <div class="field"><label for="rsPw">New password</label>
-            <input id="rsPw" type="password" autocomplete="new-password"><div class="hint">At least 8 characters. Not your email password.</div></div>
-          <div class="field"><label for="rsPw2">Type it again</label>
-            <input id="rsPw2" type="password" autocomplete="new-password"></div>
-          <label class="check"><input type="checkbox" id="rsRemember" checked> Remember me on this browser</label>
-          <button class="btn" onclick="resetFinish()">Set new password</button>
-          <button class="back" onclick="resetAgain()">Start again</button>
-          <div class="msg" id="rs2Msg"></div>
-        </div>
-        <button class="back" style="margin-left:0;margin-top:18px" onclick="closeReset()">← Back to sign in</button>
-      </div>
-
-      <!-- student -->
-      <div id="studentPane">
-        <div class="tabs">
-          <button class="on" id="tabIn" onclick="studentTab('in')">Sign in</button>
-          <button id="tabReg" onclick="studentTab('reg')">First time? Register</button>
-        </div>
-
-        <div id="paneIn">
-          <div class="field"><label for="inEmail">University email</label>
-            <input id="inEmail" type="email" placeholder="roll@std.cu.ac.bd" autocomplete="username"></div>
-          <div class="field"><label for="inPw">Password</label>
-            <input id="inPw" type="password" autocomplete="current-password"></div>
-          <label class="check"><input type="checkbox" id="inRemember" checked> Remember me on this browser</label>
-          <button class="btn" onclick="signIn()">Sign in</button>
-          <div class="msg" id="inMsg"></div>
-          <button class="back" style="margin-left:0;margin-top:6px" onclick="openReset('studentPane','inEmail')">Forgot your password?</button>
-        </div>
-
-        <div id="paneReg" class="hide">
-          <div class="steps"><span id="s1" class="on">1 · About you</span><span id="s2">2 · Code and password</span></div>
-
-          <div id="reg1">
-            <div class="field"><label for="rEmail">University email</label>
-              <input id="rEmail" type="email" placeholder="roll@std.cu.ac.bd"></div>
-            <div class="field"><label for="rName">Your full name</label>
-              <input id="rName" autocomplete="name"></div>
-            <div class="field"><label for="rBatch">Your batch</label>
-              <select id="rBatch"><option value="">Choose your batch</option></select>
-              <div class="hint">Your semester and courses are filled in from your batch.</div></div>
-            <div class="field"><label for="rFa">Father's name</label>
-              <input id="rFa"><div class="hint">In English or Bangla. If the office already has your parents' names, these are checked against them; if not, they are saved to your record.</div></div>
-            <div class="field"><label for="rMo">Mother's name</label>
-              <input id="rMo"></div>
-            <button class="btn" onclick="regStart()">Send me a code</button>
-            <div class="msg" id="r1Msg"></div>
-          </div>
-
-          <div id="reg2" class="hide">
-            <p style="font-size:14px;color:var(--grey);margin-bottom:16px">A 6-digit code is on its way to <b id="rSent"></b>. <span id="rWhere"></span></p>
-            <div class="field"><label for="rCode">Code</label>
-              <input id="rCode" inputmode="numeric" maxlength="6" style="max-width:180px;font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.2em"></div>
-            <div class="field"><label for="rPw">Choose a password for this site</label>
-              <input id="rPw" type="password" autocomplete="new-password"><div class="hint">At least 8 characters. Not your email password.</div></div>
-            <div class="field"><label for="rPw2">Type it again</label>
-              <input id="rPw2" type="password" autocomplete="new-password"></div>
-            <label class="check"><input type="checkbox" id="rRemember" checked> Remember me on this browser</label>
-            <button class="btn" onclick="regFinish()">Create my account</button>
-            <button class="back" onclick="regBack()">Start again</button>
-            <div class="msg" id="r2Msg"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- admin: the office and the examiners -->
-      <div id="adminPane" class="hide">
-        <p style="color:var(--grey);font-size:14.5px;margin-bottom:18px">For the academic office and for examiners. Use your <b>@cu.ac.bd</b> staff email — you land on your own screen.</p>
-        <div class="field"><label for="adEmail">Staff email</label>
-          <input id="adEmail" type="email" placeholder="name@cu.ac.bd" autocomplete="username"></div>
-        <div class="field"><label for="adPw">Password</label>
-          <input id="adPw" type="password" autocomplete="current-password"></div>
-        <label class="check"><input type="checkbox" id="adRemember" checked> Remember me on this browser</label>
-        <button class="btn" onclick="staffSignIn('admin')">Sign in</button>
-        <div class="msg" id="adMsg"></div>
-        <button class="back" style="margin-left:0;margin-top:14px" onclick="staffJoin('ad')">First time? Create your account</button>
-        <button class="back" style="margin-top:14px" onclick="openReset('adminPane','adEmail')">Forgot your password?</button>
-        <div id="adJoin" class="hide" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
-          <div class="field"><label for="adJEmail">Your email</label>
-            <input id="adJEmail" type="email" autocomplete="username"></div>
-          <button class="btn" onclick="staffCode('ad')">Send me a code</button>
-          <div id="adJStep2" class="hide" style="margin-top:16px">
-            <p style="font-size:14px;color:var(--grey);margin-bottom:12px" id="adJWhere"></p>
-            <div class="field"><label for="adJCode">Code</label>
-              <input id="adJCode" inputmode="numeric" maxlength="6" style="max-width:180px"></div>
-            <div class="field"><label for="adJPw">Choose a password</label>
-              <input id="adJPw" type="password" autocomplete="new-password"><div class="hint">At least 8 characters.</div></div>
-            <div class="field"><label for="adJPw2">Type it again</label>
-              <input id="adJPw2" type="password" autocomplete="new-password"></div>
-            <button class="btn" onclick="staffFinish('ad', 'admin')">Create my account</button>
-          </div>
-          <div class="msg" id="adJMsg"></div>
-        </div>
-      </div>
-
-      <!-- teacher -->
-      <div id="teacherPane" class="hide">
-        <p style="color:var(--grey);font-size:14.5px;margin-bottom:18px">For course teachers: attendance, class tests and objections. Use your <b>@cu.ac.bd</b> staff email. The office decides which classes you can open.</p>
-        <div class="field"><label for="tcEmail">Staff email</label>
-          <input id="tcEmail" type="email" placeholder="name@cu.ac.bd" autocomplete="username"></div>
-        <div class="field"><label for="tcPw">Password</label>
-          <input id="tcPw" type="password" autocomplete="current-password"></div>
-        <label class="check"><input type="checkbox" id="tcRemember" checked> Remember me on this browser</label>
-        <button class="btn" onclick="staffSignIn('teacher')">Sign in</button>
-        <div class="msg" id="tcMsg"></div>
-        <button class="back" style="margin-left:0;margin-top:14px" onclick="staffJoin('tc')">First time? Create your account</button>
-        <button class="back" style="margin-top:14px" onclick="openReset('teacherPane','tcEmail')">Forgot your password?</button>
-        <div id="tcJoin" class="hide" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
-          <div class="field"><label for="tcJEmail">Your email</label>
-            <input id="tcJEmail" type="email" autocomplete="username"></div>
-          <button class="btn" onclick="staffCode('tc')">Send me a code</button>
-          <div id="tcJStep2" class="hide" style="margin-top:16px">
-            <p style="font-size:14px;color:var(--grey);margin-bottom:12px" id="tcJWhere"></p>
-            <div class="field"><label for="tcJCode">Code</label>
-              <input id="tcJCode" inputmode="numeric" maxlength="6" style="max-width:180px"></div>
-            <div class="field"><label for="tcJPw">Choose a password</label>
-              <input id="tcJPw" type="password" autocomplete="new-password"><div class="hint">At least 8 characters.</div></div>
-            <div class="field"><label for="tcJPw2">Type it again</label>
-              <input id="tcJPw2" type="password" autocomplete="new-password"></div>
-            <button class="btn" onclick="staffFinish('tc', 'teacher')">Create my account</button>
-          </div>
-          <div class="msg" id="tcJMsg"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ================= FOOTER ================= -->
 <footer>
   <div class="wrap">
@@ -822,17 +711,19 @@ body{animation:pageIn .5s ease backwards}
         <div class="social">
           <h3>Stay connected</h3>
           <ul>
-            <li><a href="https://cu.ac.bd/" target="_blank" rel="noopener noreferrer"><i class="sq web"><svg viewBox="284.5 280.0 412 412" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M473.5 687.3C445.1 684.0 425.6 678.3 401.7 666.4C366.0 648.6 343.1 628.8 322.6 598.2C300.5 565.0 289.5 527.5 289.6 485.5C289.7 452.5 295.4 427.1 309.0 398.5C325.7 363.2 346.4 339.9 380.0 318.1C410.4 298.4 442.0 287.6 477.3 284.9C524.9 281.3 571.5 296.0 615.9 328.8C642.6 348.4 667.4 382.7 679.8 417.0C692.6 452.2 695.3 491.1 687.6 528.0C678.1 573.4 650.6 617.7 616.1 643.4C575.3 673.7 533.4 688.4 488.8 687.9C482.0 687.8 475.1 687.5 473.5 687.3ZM454.2 659.4C457.6 658.6 462.0 657.2 464.2 656.3L468.1 654.8L461.8 650.2C450.3 641.9 436.5 629.4 428.5 620.1C425.2 616.2 421.9 613.0 421.2 613.0C417.8 613.0 385.0 631.2 385.0 633.1C385.0 634.2 399.7 643.4 408.7 647.9C423.4 655.3 438.8 660.7 445.9 660.9C447.2 661.0 450.9 660.3 454.2 659.4ZM551.0 656.8C565.7 651.6 595.0 635.9 595.0 633.2C595.0 631.8 585.0 625.5 573.6 619.5C559.1 611.9 559.7 612.0 554.8 617.7C547.2 626.5 532.6 640.1 522.8 647.5L513.0 654.8L518.8 656.9C531.4 661.6 537.3 661.6 551.0 656.8ZM480.0 618.0L480.0 599.1L474.8 599.6C460.5 601.1 444.0 604.4 444.0 605.9C444.0 608.3 476.3 636.8 479.2 637.0C479.7 637.0 480.0 628.5 480.0 618.0ZM509.8 631.3C517.4 625.7 537.0 607.4 537.0 605.9C537.0 604.6 520.6 601.4 505.2 599.7L501.0 599.2L501.0 618.1C501.0 628.5 501.2 637.0 501.6 637.0C501.9 637.0 505.6 634.4 509.8 631.3ZM378.8 611.9C384.7 608.0 393.9 602.8 399.2 600.2C404.5 597.6 408.9 595.2 408.9 594.9C409.0 594.6 406.8 590.6 404.1 586.1C391.5 565.1 382.0 535.8 378.7 507.0L377.5 496.5L343.8 496.3C325.2 496.2 309.9 496.4 309.6 496.9C308.6 498.4 312.1 520.6 315.0 531.8C320.4 552.5 329.4 572.2 341.5 589.5C348.1 599.0 365.5 619.0 367.2 619.0C367.7 619.0 372.9 615.8 378.8 611.9ZM622.5 609.7C627.2 604.6 634.0 596.4 637.5 591.5C645.6 580.1 656.7 558.6 661.4 545.1C665.3 533.9 669.4 515.0 670.5 503.3L671.2 496.1L637.3 496.3L603.5 496.5L602.8 503.0C599.3 534.3 591.4 560.1 577.9 584.3C574.5 590.3 572.0 595.3 572.2 595.4C572.4 595.6 577.7 598.4 583.9 601.6C590.2 604.8 599.0 610.1 603.4 613.2C607.9 616.3 612.0 618.9 612.7 618.9C613.3 619.0 617.7 614.8 622.5 609.7ZM563.4 567.0C572.2 549.5 576.7 535.9 580.0 516.6C581.1 510.1 582.0 502.8 582.0 500.4L582.0 496.1L541.5 496.0L501.0 496.0L501.0 537.5L501.0 579.0L505.1 579.0C511.7 579.0 529.4 581.9 540.9 584.9L551.5 587.6L554.8 582.6C556.7 579.8 560.5 572.8 563.4 567.0ZM440.7 584.5C450.1 582.1 467.0 579.3 475.5 578.8L479.5 578.5L479.5 537.5L479.5 496.5L439.1 496.2L398.7 496.0L399.3 503.9C401.1 526.8 409.9 554.5 422.0 575.6C427.7 585.4 428.8 587.0 430.1 587.0C430.6 587.0 435.3 585.9 440.7 584.5ZM379.3 461.8C381.2 446.5 383.2 437.2 388.2 422.0C391.4 412.0 400.9 391.1 406.0 382.9C407.6 380.2 409.0 377.6 409.0 377.1C409.0 376.7 407.1 375.5 404.8 374.4C397.7 371.3 385.0 364.1 376.2 358.2L367.9 352.7L361.8 358.6C339.6 380.4 322.6 410.1 314.9 440.9C311.9 452.4 308.7 473.7 309.6 475.2C309.9 475.6 325.3 476.0 343.8 476.0L377.5 476.0L379.3 461.8ZM480.0 434.6L480.0 393.3L471.8 392.6C463.0 391.8 442.7 388.0 434.8 385.6C429.3 384.0 429.5 383.9 423.6 393.7C410.7 415.3 401.4 443.9 399.4 467.8L398.7 476.0L439.4 476.0L480.0 476.0L480.0 434.6ZM581.7 468.1C579.8 443.5 569.2 412.0 555.7 391.2L551.2 384.2L539.8 387.2C533.6 388.8 522.3 390.9 514.8 391.8L501.0 393.4L501.0 434.7L501.0 476.0L541.6 476.0L582.3 476.0L581.7 468.1ZM671.0 473.4C671.0 468.2 667.8 449.3 665.3 440.0C659.5 417.8 648.8 395.8 634.7 377.0C629.0 369.4 616.0 355.1 613.8 353.9C612.3 353.1 610.1 354.2 602.2 359.4C596.9 362.9 588.0 368.2 582.5 371.1C577.0 374.0 572.3 376.5 572.1 376.7C571.8 376.9 572.6 378.7 573.8 380.8C588.7 405.7 598.3 433.6 601.7 461.8L603.5 476.0L637.2 476.0L671.0 476.0L671.0 473.4ZM480.0 353.5C480.0 332.0 481.2 333.0 468.4 343.2C459.8 350.0 444.0 364.8 444.0 366.1C444.0 367.6 465.8 371.7 474.8 371.9L480.0 372.0L480.0 353.5ZM526.8 368.9C532.4 367.7 537.0 366.4 537.0 366.0C537.0 363.9 509.6 339.9 502.2 335.6C501.3 335.0 501.0 338.9 501.0 353.6L501.0 372.3L508.8 371.7C513.0 371.4 521.1 370.1 526.8 368.9ZM436.6 344.2C444.8 336.1 455.0 327.0 459.2 324.0C463.5 321.0 467.0 318.2 467.0 317.8C467.0 317.4 464.4 316.2 461.2 314.9C453.3 311.9 442.9 311.3 435.4 313.5C417.7 318.6 383.6 336.6 386.1 339.6C388.5 342.5 418.2 359.0 421.1 359.0C421.5 359.0 428.5 352.4 436.6 344.2ZM568.8 354.7C576.3 350.9 583.9 346.6 592.8 340.9C594.0 340.2 595.0 339.2 595.0 338.9C595.0 337.6 580.5 328.8 569.5 323.5C555.3 316.5 541.7 312.0 535.0 312.0C529.9 312.0 518.1 314.9 515.0 317.0C513.7 317.8 513.8 318.1 515.5 319.4C525.9 326.7 537.4 336.7 547.0 346.8C553.3 353.4 558.9 358.9 559.3 358.9C559.7 359.0 564.0 357.0 568.8 354.7Z"/></svg></i><span>CU Website</span></a></li>
-            <li><a href="https://www.facebook.com/ictcu/" target="_blank" rel="noopener noreferrer"><i class="sq fb"><svg viewBox="192.0 192.0 596 596" aria-hidden="true" focusable="false"><path fill="#FFFFFF" d="M450.0 781.5C444.2 780.8 439.5 780.1 439.5 780.1C439.5 780.0 439.5 733.5 439.5 676.8L439.5 573.5L402.7 573.2L366.0 573.0L366.2 530.2L366.5 487.5L403.2 487.2L439.8 487.0L440.3 445.2C440.8 400.6 441.1 397.6 446.4 381.7C456.0 353.1 473.8 332.7 497.9 322.5C521.1 312.8 559.4 310.4 596.5 316.4C605.2 317.8 612.8 319.4 613.2 319.8C613.7 320.3 613.9 336.6 613.8 356.1L613.5 391.5L589.9 392.2C569.6 392.8 565.6 393.2 560.8 395.0C548.9 399.4 541.2 406.8 536.9 418.0C533.1 428.0 532.1 437.1 532.0 462.8L532.0 487.0L571.0 487.0L610.0 487.0L610.0 490.8C610.0 492.8 607.7 512.2 604.8 533.7L599.6 573.0L566.0 573.2L532.5 573.5L532.2 677.1L532.0 780.8L529.7 781.5C525.5 782.9 461.3 782.9 450.0 781.5Z"/><path fill="#0080FF" fill-rule="evenodd" d="M463.6 782.9C458.7 782.4 454.5 781.8 454.2 781.5C453.9 781.2 470.1 781.1 490.1 781.1C513.9 781.2 525.1 781.5 522.5 782.1C516.6 783.4 473.9 784.0 463.6 782.9ZM530.0 676.5L530.0 572.0L563.4 572.0C581.8 572.0 597.1 571.6 597.4 571.2C597.7 570.8 600.2 553.3 602.9 532.4C605.7 511.6 608.2 493.3 608.5 491.8L609.0 489.0L569.4 489.0L529.8 489.0L530.2 460.2C530.7 428.7 531.8 421.6 537.7 410.8C541.4 404.0 549.7 396.6 556.8 393.9C562.8 391.6 578.9 390.2 601.2 390.1L612.0 390.0L612.0 355.6L612.0 321.2L609.2 320.6C602.7 319.2 579.6 316.0 568.9 315.1C550.1 313.3 522.7 316.4 506.0 322.0C474.6 332.5 453.3 358.6 444.3 397.3C442.9 403.2 442.5 412.2 442.1 446.5L441.5 488.5L404.8 488.8L368.0 489.0L368.0 530.0L368.0 571.0L404.5 571.0L441.0 571.0L441.0 675.5C441.0 733.0 440.8 780.0 440.5 780.0C438.9 780.0 419.3 775.5 412.0 773.5C355.8 757.7 306.2 726.4 268.2 682.5C155.5 552.7 177.5 355.5 316.0 253.3C418.6 177.5 558.8 176.9 662.0 251.8C778.9 336.6 817.4 492.6 753.1 620.8C715.5 695.9 649.3 750.5 568.0 773.5C558.6 776.2 535.4 781.0 532.1 781.0L530.0 781.0L530.0 676.5Z"/></svg></i><span>CU Facebook</span></a></li>
-            <li><a href="https://www.facebook.com/IEEESBCU/" target="_blank" rel="noopener noreferrer"><i class="sq fb"><svg viewBox="192.0 192.0 596 596" aria-hidden="true" focusable="false"><path fill="#FFFFFF" d="M450.0 781.5C444.2 780.8 439.5 780.1 439.5 780.1C439.5 780.0 439.5 733.5 439.5 676.8L439.5 573.5L402.7 573.2L366.0 573.0L366.2 530.2L366.5 487.5L403.2 487.2L439.8 487.0L440.3 445.2C440.8 400.6 441.1 397.6 446.4 381.7C456.0 353.1 473.8 332.7 497.9 322.5C521.1 312.8 559.4 310.4 596.5 316.4C605.2 317.8 612.8 319.4 613.2 319.8C613.7 320.3 613.9 336.6 613.8 356.1L613.5 391.5L589.9 392.2C569.6 392.8 565.6 393.2 560.8 395.0C548.9 399.4 541.2 406.8 536.9 418.0C533.1 428.0 532.1 437.1 532.0 462.8L532.0 487.0L571.0 487.0L610.0 487.0L610.0 490.8C610.0 492.8 607.7 512.2 604.8 533.7L599.6 573.0L566.0 573.2L532.5 573.5L532.2 677.1L532.0 780.8L529.7 781.5C525.5 782.9 461.3 782.9 450.0 781.5Z"/><path fill="#0080FF" fill-rule="evenodd" d="M463.6 782.9C458.7 782.4 454.5 781.8 454.2 781.5C453.9 781.2 470.1 781.1 490.1 781.1C513.9 781.2 525.1 781.5 522.5 782.1C516.6 783.4 473.9 784.0 463.6 782.9ZM530.0 676.5L530.0 572.0L563.4 572.0C581.8 572.0 597.1 571.6 597.4 571.2C597.7 570.8 600.2 553.3 602.9 532.4C605.7 511.6 608.2 493.3 608.5 491.8L609.0 489.0L569.4 489.0L529.8 489.0L530.2 460.2C530.7 428.7 531.8 421.6 537.7 410.8C541.4 404.0 549.7 396.6 556.8 393.9C562.8 391.6 578.9 390.2 601.2 390.1L612.0 390.0L612.0 355.6L612.0 321.2L609.2 320.6C602.7 319.2 579.6 316.0 568.9 315.1C550.1 313.3 522.7 316.4 506.0 322.0C474.6 332.5 453.3 358.6 444.3 397.3C442.9 403.2 442.5 412.2 442.1 446.5L441.5 488.5L404.8 488.8L368.0 489.0L368.0 530.0L368.0 571.0L404.5 571.0L441.0 571.0L441.0 675.5C441.0 733.0 440.8 780.0 440.5 780.0C438.9 780.0 419.3 775.5 412.0 773.5C355.8 757.7 306.2 726.4 268.2 682.5C155.5 552.7 177.5 355.5 316.0 253.3C418.6 177.5 558.8 176.9 662.0 251.8C778.9 336.6 817.4 492.6 753.1 620.8C715.5 695.9 649.3 750.5 568.0 773.5C558.6 776.2 535.4 781.0 532.1 781.0L530.0 781.0L530.0 676.5Z"/></svg></i><span>IEEE CU</span></a></li>
-            <li><a href="https://www.facebook.com/curiorg/" target="_blank" rel="noopener noreferrer"><i class="sq fb"><svg viewBox="192.0 192.0 596 596" aria-hidden="true" focusable="false"><path fill="#FFFFFF" d="M450.0 781.5C444.2 780.8 439.5 780.1 439.5 780.1C439.5 780.0 439.5 733.5 439.5 676.8L439.5 573.5L402.7 573.2L366.0 573.0L366.2 530.2L366.5 487.5L403.2 487.2L439.8 487.0L440.3 445.2C440.8 400.6 441.1 397.6 446.4 381.7C456.0 353.1 473.8 332.7 497.9 322.5C521.1 312.8 559.4 310.4 596.5 316.4C605.2 317.8 612.8 319.4 613.2 319.8C613.7 320.3 613.9 336.6 613.8 356.1L613.5 391.5L589.9 392.2C569.6 392.8 565.6 393.2 560.8 395.0C548.9 399.4 541.2 406.8 536.9 418.0C533.1 428.0 532.1 437.1 532.0 462.8L532.0 487.0L571.0 487.0L610.0 487.0L610.0 490.8C610.0 492.8 607.7 512.2 604.8 533.7L599.6 573.0L566.0 573.2L532.5 573.5L532.2 677.1L532.0 780.8L529.7 781.5C525.5 782.9 461.3 782.9 450.0 781.5Z"/><path fill="#0080FF" fill-rule="evenodd" d="M463.6 782.9C458.7 782.4 454.5 781.8 454.2 781.5C453.9 781.2 470.1 781.1 490.1 781.1C513.9 781.2 525.1 781.5 522.5 782.1C516.6 783.4 473.9 784.0 463.6 782.9ZM530.0 676.5L530.0 572.0L563.4 572.0C581.8 572.0 597.1 571.6 597.4 571.2C597.7 570.8 600.2 553.3 602.9 532.4C605.7 511.6 608.2 493.3 608.5 491.8L609.0 489.0L569.4 489.0L529.8 489.0L530.2 460.2C530.7 428.7 531.8 421.6 537.7 410.8C541.4 404.0 549.7 396.6 556.8 393.9C562.8 391.6 578.9 390.2 601.2 390.1L612.0 390.0L612.0 355.6L612.0 321.2L609.2 320.6C602.7 319.2 579.6 316.0 568.9 315.1C550.1 313.3 522.7 316.4 506.0 322.0C474.6 332.5 453.3 358.6 444.3 397.3C442.9 403.2 442.5 412.2 442.1 446.5L441.5 488.5L404.8 488.8L368.0 489.0L368.0 530.0L368.0 571.0L404.5 571.0L441.0 571.0L441.0 675.5C441.0 733.0 440.8 780.0 440.5 780.0C438.9 780.0 419.3 775.5 412.0 773.5C355.8 757.7 306.2 726.4 268.2 682.5C155.5 552.7 177.5 355.5 316.0 253.3C418.6 177.5 558.8 176.9 662.0 251.8C778.9 336.6 817.4 492.6 753.1 620.8C715.5 695.9 649.3 750.5 568.0 773.5C558.6 776.2 535.4 781.0 532.1 781.0L530.0 781.0L530.0 676.5Z"/></svg></i><span>CURI</span></a></li>
-            <li><a href="https://www.facebook.com/fablabcu" target="_blank" rel="noopener noreferrer"><i class="sq fb"><svg viewBox="192.0 192.0 596 596" aria-hidden="true" focusable="false"><path fill="#FFFFFF" d="M450.0 781.5C444.2 780.8 439.5 780.1 439.5 780.1C439.5 780.0 439.5 733.5 439.5 676.8L439.5 573.5L402.7 573.2L366.0 573.0L366.2 530.2L366.5 487.5L403.2 487.2L439.8 487.0L440.3 445.2C440.8 400.6 441.1 397.6 446.4 381.7C456.0 353.1 473.8 332.7 497.9 322.5C521.1 312.8 559.4 310.4 596.5 316.4C605.2 317.8 612.8 319.4 613.2 319.8C613.7 320.3 613.9 336.6 613.8 356.1L613.5 391.5L589.9 392.2C569.6 392.8 565.6 393.2 560.8 395.0C548.9 399.4 541.2 406.8 536.9 418.0C533.1 428.0 532.1 437.1 532.0 462.8L532.0 487.0L571.0 487.0L610.0 487.0L610.0 490.8C610.0 492.8 607.7 512.2 604.8 533.7L599.6 573.0L566.0 573.2L532.5 573.5L532.2 677.1L532.0 780.8L529.7 781.5C525.5 782.9 461.3 782.9 450.0 781.5Z"/><path fill="#0080FF" fill-rule="evenodd" d="M463.6 782.9C458.7 782.4 454.5 781.8 454.2 781.5C453.9 781.2 470.1 781.1 490.1 781.1C513.9 781.2 525.1 781.5 522.5 782.1C516.6 783.4 473.9 784.0 463.6 782.9ZM530.0 676.5L530.0 572.0L563.4 572.0C581.8 572.0 597.1 571.6 597.4 571.2C597.7 570.8 600.2 553.3 602.9 532.4C605.7 511.6 608.2 493.3 608.5 491.8L609.0 489.0L569.4 489.0L529.8 489.0L530.2 460.2C530.7 428.7 531.8 421.6 537.7 410.8C541.4 404.0 549.7 396.6 556.8 393.9C562.8 391.6 578.9 390.2 601.2 390.1L612.0 390.0L612.0 355.6L612.0 321.2L609.2 320.6C602.7 319.2 579.6 316.0 568.9 315.1C550.1 313.3 522.7 316.4 506.0 322.0C474.6 332.5 453.3 358.6 444.3 397.3C442.9 403.2 442.5 412.2 442.1 446.5L441.5 488.5L404.8 488.8L368.0 489.0L368.0 530.0L368.0 571.0L404.5 571.0L441.0 571.0L441.0 675.5C441.0 733.0 440.8 780.0 440.5 780.0C438.9 780.0 419.3 775.5 412.0 773.5C355.8 757.7 306.2 726.4 268.2 682.5C155.5 552.7 177.5 355.5 316.0 253.3C418.6 177.5 558.8 176.9 662.0 251.8C778.9 336.6 817.4 492.6 753.1 620.8C715.5 695.9 649.3 750.5 568.0 773.5C558.6 776.2 535.4 781.0 532.1 781.0L530.0 781.0L530.0 676.5Z"/></svg></i><span>FABLAB CU</span></a></li>
+            <li><a href="https://www.facebook.com/ictcu/" target="_blank" rel="noopener noreferrer"><i class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.33-.04-1.56-.14-2.86-.14C11.93 2 10 3.66 10 6.7v2.8H7v4h3V22h4v-8.5z"/></svg></i><span>CU Facebook</span></a></li>
+            <li><a href="https://www.facebook.com/IEEESBCU/" target="_blank" rel="noopener noreferrer"><i class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.33-.04-1.56-.14-2.86-.14C11.93 2 10 3.66 10 6.7v2.8H7v4h3V22h4v-8.5z"/></svg></i><span>IEEE CU</span></a></li>
+            <li><a href="https://www.facebook.com/curiorg/" target="_blank" rel="noopener noreferrer"><i class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.33-.04-1.56-.14-2.86-.14C11.93 2 10 3.66 10 6.7v2.8H7v4h3V22h4v-8.5z"/></svg></i><span>CURI</span></a></li>
+            <li><a href="https://www.facebook.com/fablabcu" target="_blank" rel="noopener noreferrer"><i class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.33-.04-1.56-.14-2.86-.14C11.93 2 10 3.66 10 6.7v2.8H7v4h3V22h4v-8.5z"/></svg></i><span>FABLAB CU</span></a></li>
+            <li><a href="https://www.youtube.com/channel/UClQg__wc5h3uW_YHSD-iMbg" target="_blank" rel="noopener noreferrer"><i class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></svg></i><span>CU YouTube</span></a></li>
+            <li><button type="button" class="sharebtn" onclick="sharePage(this)"><i class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18 16.1c-.8 0-1.5.3-2 .8l-7.1-4.1c.1-.3.1-.5.1-.8s0-.5-.1-.8L16 7.1c.5.5 1.2.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .3 0 .5.1.8L8 9.8C7.5 9.3 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.2c-.1.2-.1.5-.1.7 0 1.6 1.3 2.9 2.9 2.9s2.9-1.3 2.9-2.9-1.2-3-2.8-3z"/></svg></i><span>Share this page</span></button></li>
           </ul>
         </div>
       </div>
       <div>
         <h3>Useful links</h3>
         <ul class="bullets">
+          <li><a href="https://cu.ac.bd/" target="_blank" rel="noopener noreferrer">CU Website</a></li>
           <li><a href="https://cu.ac.bd/notice-board/" target="_blank" rel="noopener noreferrer">Notice Board</a></li>
           <li><a href="https://cu.ac.bd/forms-downloads/" target="_blank" rel="noopener noreferrer">Forms &amp; Downloads</a></li>
           <li><a href="https://ictcell.cu.ac.bd/services/" target="_blank" rel="noopener noreferrer">Online and Other Services</a></li>
@@ -941,13 +832,6 @@ fetch('/api/landing').then(r => r.json()).then(d => {
   drawSlides(d.achievements);
   drawAlumni(d.alumni || []);
   drawFaculty(d.faculty || []);
-  const sel = document.getElementById('rBatch');
-  (d.batches || []).forEach(b => {
-    const o = document.createElement('option');
-    o.value = b.name;
-    o.textContent = `${b.name} (${ordinal(b.semester)} semester)`;
-    sel.appendChild(o);
-  });
   fill(d.gallery, x => `<figure class="shot"><img src="${x.image}" alt="" loading="lazy">${x.caption ? `<figcaption class="cap">${esc(x.caption)}</figcaption>` : ''}</figure>`, 'galA', 'galB');
 });
 
@@ -1012,21 +896,69 @@ function eventDate(a){
 }
 
 function drawSlides(list){
-  document.getElementById('slider').innerHTML = list.map((a, i) => {
+  const show = list.slice(0, 3), rest = list.slice(3);
+  // the newest three posts take turns in the maroon slideshow
+  const dots = k => `<div class="ndots" role="group" aria-label="Choose a post">${show.map((_, j) =>
+      `<button type="button" class="nd${j === k ? ' on' : ''}" aria-label="Post ${j + 1} of ${show.length}" onclick="newsGo(${j}, true)"></button>`).join('')}</div>`;
+  document.getElementById('nshow').innerHTML = show.map((a, k) => {
+    const {title} = splitTitle(a.title);
+    const pic = a.image ? `<div class="pic"><img src="${esc(a.image)}" alt="" loading="${k ? 'lazy' : 'eager'}"></div>`
+                        : `<div class="pic none"><img src="photos/logo.webp" alt=""></div>`;
+    const head = a.link ? `<h3><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(title)}</a></h3>` : `<h3>${esc(title)}</h3>`;
+    const more = a.link ? `<a class="lmore" href="${esc(a.link)}" target="_blank" rel="noopener"><span aria-hidden="true">→</span>Read the full post</a>` : '';
+    return `<article class="nsl${k === 0 ? ' on' : ''}" aria-hidden="${k ? 'true' : 'false'}">${pic}
+      <div class="ntxt"><p class="lk">Latest news · ${esc(a.year)}</p>${head}<p class="nd-p">${esc(a.detail)}</p>${more}${show.length > 1 ? dots(k) : ''}</div></article>`;
+  }).join('');
+  // the older posts sit on the white below
+  const grid = document.getElementById('slider');
+  grid.innerHTML = rest.map((a, i) => {
     const {title} = splitTitle(a.title);
     const pic = a.image ? `<div class="pic"><img src="${esc(a.image)}" alt="" loading="lazy"></div>`
-                        : `<div class="pic none"><img src="photos/logo.webp" alt="" loading="lazy"></div>`;   // same height when a post has no picture
-    const head = a.link
-      ? `<h3><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(title)}</a></h3>`
-      : `<h3>${esc(title)}</h3>`;
-    const more = a.link ? `<a class="lmore" href="${esc(a.link)}" target="_blank" rel="noopener"><span aria-hidden="true">→</span>Read the full post</a>` : '';
-    if (i === 0) return `<article class="nitem lead rise">${pic}<div class="ltxt"><p class="lk">Latest news · ${esc(a.year)}</p>${head}<p>${esc(a.detail)}</p>${more}</div></article>`;
-    return `<article class="nitem rise${i > 3 ? ' later' : ''}" style="transition-delay:${((i - 1) % 3) * 0.12}s">${pic}${head}<p>${esc(a.detail)}</p></article>`;
+                        : `<div class="pic none"><img src="photos/logo.webp" alt="" loading="lazy"></div>`;
+    const head = a.link ? `<h3><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(title)}</a></h3>` : `<h3>${esc(title)}</h3>`;
+    return `<article class="nitem rise${i > 2 ? ' later' : ''}" style="transition-delay:${(i % 3) * 0.12}s">${pic}${head}<p>${esc(a.detail)}</p></article>`;
   }).join('');
-  document.getElementById('moreNews').hidden = list.length <= 4;
-  // fewer than three below the lead post: let them share the width, with no gap on the right
-  document.getElementById('slider').dataset.rest = Math.min(3, Math.max(0, list.length - 1));
-  document.querySelectorAll('#slider .rise').forEach(el => io.observe(el));   // slide up as they come into view
+  grid.hidden = rest.length === 0;
+  grid.dataset.rest = Math.min(3, rest.length);
+  document.getElementById('moreNews').hidden = rest.length <= 3;
+  document.querySelectorAll('#slider .rise').forEach(el => io.observe(el));
+  newsStart(show.length);
+}
+
+
+/* share this page: the phone's own share menu, or copy the link on a computer */
+function sharePage(btn){
+  const url = location.origin + '/landing.html', title = 'EEE Records — Department of EEE, University of Chittagong';
+  if (navigator.share) { navigator.share({title, url}).catch(() => {}); return; }
+  const label = btn.querySelector('span');
+  (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
+    .then(() => { label.textContent = 'Link copied'; })
+    .catch(() => { label.textContent = url; })
+    .finally(() => setTimeout(() => { label.textContent = 'Share this page'; }, 2500));
+}
+
+/* ---------- news slideshow: changes by itself while it is on screen ---------- */
+let newsCur = 0, newsCount = 0, newsTimer = null, newsSeen = false, newsHold = false;
+function newsGo(k, byHand){
+  const slides = document.querySelectorAll('#nshow .nsl');
+  if (!slides.length) return;
+  newsCur = (k + slides.length) % slides.length;
+  slides.forEach((s, j) => {
+    s.classList.toggle('on', j === newsCur);
+    s.setAttribute('aria-hidden', j === newsCur ? 'false' : 'true');
+  });
+  if (byHand) newsTick();          // a click restarts the wait before the next post
+}
+function newsTick(){
+  clearInterval(newsTimer);
+  if (newsCount > 1 && newsSeen && !newsHold) newsTimer = setInterval(() => newsGo(newsCur + 1), 6000);
+}
+function newsStart(n){
+  newsCount = n; newsCur = 0;
+  const box = document.getElementById('nshow');
+  new IntersectionObserver(es => { newsSeen = es[0].isIntersecting; newsTick(); }, {threshold: .4}).observe(box);
+  box.addEventListener('mouseenter', () => { newsHold = true; newsTick(); });     // pauses while the mouse is on it
+  box.addEventListener('mouseleave', () => { newsHold = false; newsTick(); });
 }
 
 function showAllNews(){
@@ -1092,16 +1024,19 @@ function sourceName(link){
 }
 
 
-/* ---------- already signed in? ---------- */
+/* ---------- already signed in? the top button opens the account instead ---------- */
+function home(role){
+  return {examiner: 'exam.html', teacher: 'teacher.html', office: 'office.html'}[role] || 'app.html';
+}
+function enterAccount(url){
+  if (window.eeeLoader) eeeLoader(() => { location.href = url; });
+  else location.href = url;
+}
 async function checkSignedIn(){
   if (!token()) return;
   const r = await fetch('/api/me', {headers: {Authorization: 'Bearer ' + token()}});
   if (!r.ok){ localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); return; }
   const me = await r.json();
-  document.getElementById('already').classList.remove('hide');
-  document.getElementById('studentPane').classList.add('hide');
-  document.getElementById('alreadyWho').textContent = `${me.name} (${me.email})`;
-  document.querySelector('#already .btn').href = home(me.role);
   const cta = document.getElementById('navCta');
   cta.textContent = {examiner: 'Open mark entry', teacher: 'Open my classes',
                      office: 'Open the office desk'}[me.role] || 'Open my records';
@@ -1109,240 +1044,7 @@ async function checkSignedIn(){
   cta.onclick = e => { e.preventDefault(); enterAccount(home(me.role)); };   // play the logo on the way in
 }
 checkSignedIn();
-
-/* ---------- role tabs ---------- */
-function pickRole(role, btn){
-  document.querySelectorAll('.roles button').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('handoff').classList.add('hide');
-  document.getElementById('resetPane').classList.add('hide');
-  const signedIn = !document.getElementById('already').classList.contains('hide');
-  document.getElementById('studentPane').classList.toggle('hide', role !== 'student' || signedIn);
-  document.getElementById('adminPane').classList.toggle('hide', role !== 'admin' || signedIn);
-  document.getElementById('teacherPane').classList.toggle('hide', role !== 'teacher' || signedIn);
-}
-
-function studentTab(which){
-  document.getElementById('tabIn').classList.toggle('on', which === 'in');
-  document.getElementById('tabReg').classList.toggle('on', which === 'reg');
-  document.getElementById('paneIn').classList.toggle('hide', which !== 'in');
-  document.getElementById('paneReg').classList.toggle('hide', which !== 'reg');
-}
-function openRegister(){ studentTab('reg'); }
-
-/* ---------- sign in ---------- */
-async function post(path, body){
-  const r = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
-  return r.json();
-}
-
-/* plays the logo loading screen, then opens the account page */
-function enterAccount(url){
-  if (window.eeeLoader) eeeLoader(() => { location.href = url; });
-  else location.href = url;
-}
-
-function home(role){
-  return {examiner: 'exam.html', teacher: 'teacher.html', office: 'office.html'}[role] || 'app.html';
-}
-
-const ROLE_NAME = {student:'my records', teacher:'my classes',
-                   office:'the office desk', examiner:'mark entry'};
-
-function keep(tok, remember, role, msg){
-  // remembered: the ticket survives closing the browser, and this tab moves there
-  if (remember){ localStorage.setItem(KEY, tok); enterAccount(home(role)); return; }
-
-  // not remembered: the ticket belongs to this tab only. A tab opened from here
-  // gets its own copy, so several roles can be signed in side by side.
-  sessionStorage.setItem(KEY, tok);
-  showHandoff(role);
-}
-
-/* the browser only allows a new tab during a real click, so we ask for one */
-function showHandoff(role){
-  ['studentPane','adminPane','teacherPane','already','resetPane'].forEach(id =>
-    document.getElementById(id).classList.add('hide'));
-  const box = document.getElementById('handoff');
-  box.classList.remove('hide');
-  box.innerHTML = `
-    <p style="font-size:16px">Signed in as <b>${({student:'a student', teacher:'a course teacher',
-        office:'the academic office', examiner:'an examiner'})[role] || role}</b>.</p>
-    <p style="color:var(--grey);margin-top:10px;font-size:14.5px;line-height:1.6;max-width:52ch">
-      Open it in its own tab. This tab then goes back to being a sign-in page, so you can
-      sign in as someone else and keep both open at once.</p>
-    <div style="margin-top:20px">
-      <button class="btn" onclick="openRole('${home(role)}')">Open ${ROLE_NAME[role] || 'my page'} in a new tab</button>
-      <button class="back" onclick="enterAccount('${home(role)}')">Open it in this tab instead</button>
-    </div>`;
-}
-
-function openRole(url){
-  window.open(url + '#intro', '_blank');   // inside your click, so no pop-up blocker; #intro: play the logo there
-  setTimeout(freeThisTab, 500);      // the new tab has its copy; let go of ours
-}
-
-/* let go of the ticket here only — the tabs opened from here keep theirs */
-function freeThisTab(){
-  sessionStorage.removeItem(KEY);
-  localStorage.removeItem(KEY);
-  document.getElementById('handoff').classList.add('hide');
-  document.getElementById('already').classList.add('hide');
-  document.getElementById('resetPane').classList.add('hide');
-  document.getElementById('adminPane').classList.add('hide');
-  document.getElementById('teacherPane').classList.add('hide');
-  document.getElementById('studentPane').classList.remove('hide');
-  document.querySelectorAll('.roles button').forEach((b, i) => b.classList.toggle('on', i === 0));
-  ['inPw','tcPw','adPw'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  ['inMsg','tcMsg','adMsg'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
-}
-
-/* ---------- forgot password ---------- */
-let resetFrom = 'studentPane';
-function openReset(paneId, emailId){
-  resetFrom = paneId;
-  ['studentPane','adminPane','teacherPane'].forEach(id => document.getElementById(id).classList.add('hide'));
-  document.getElementById('resetPane').classList.remove('hide');
-  document.getElementById('rsEmail').value = document.getElementById(emailId).value.trim();
-  resetAgain();
-}
-function closeReset(){
-  document.getElementById('resetPane').classList.add('hide');
-  document.getElementById(resetFrom).classList.remove('hide');
-}
-function resetAgain(){
-  document.getElementById('rs1').classList.remove('hide');
-  document.getElementById('rs2').classList.add('hide');
-  ['rsCode','rsPw','rsPw2'].forEach(id => document.getElementById(id).value = '');
-  ['rs1Msg','rs2Msg'].forEach(id => document.getElementById(id).textContent = '');
-}
-async function resetStart(){
-  const msg = document.getElementById('rs1Msg');
-  msg.textContent = '';
-  const email = document.getElementById('rsEmail').value.trim().toLowerCase();
-  const res = await post('/api/password/start', {email});
-  if (!res.ok){ msg.textContent = res.why; return; }
-  document.getElementById('rsSent').textContent = email;
-  document.getElementById('rs1').classList.add('hide');
-  document.getElementById('rs2').classList.remove('hide');
-}
-async function resetFinish(){
-  const msg = document.getElementById('rs2Msg');
-  msg.textContent = '';
-  const pw = document.getElementById('rsPw').value;
-  if (pw !== document.getElementById('rsPw2').value){ msg.textContent = "The two passwords don't match."; return; }
-  const remember = document.getElementById('rsRemember').checked;
-  const res = await post('/api/password/finish', {
-    email: document.getElementById('rsSent').textContent,
-    code: document.getElementById('rsCode').value, password: pw, remember});
-  if (!res.ok){ msg.textContent = res.why; return; }
-  keep(res.token, remember, res.role, msg);
-}
-
-async function signIn(){
-  const msg = document.getElementById('inMsg');
-  msg.textContent = '';
-  const remember = document.getElementById('inRemember').checked;
-  const res = await post('/api/signin', {
-    email: document.getElementById('inEmail').value,
-    password: document.getElementById('inPw').value, remember});
-  if (!res.ok){ msg.textContent = res.why; return; }
-  keep(res.token, remember, res.role, msg);
-}
-
-/* one sign-in for both staff doors: 'teacher', or 'admin' for office and examiners */
-async function staffSignIn(kind){
-  const p = kind === 'teacher' ? 'tc' : 'ad';
-  const msg = document.getElementById(p + 'Msg');
-  msg.textContent = '';
-  const remember = document.getElementById(p + 'Remember').checked;
-  const res = await post('/api/signin', {
-    email: document.getElementById(p + 'Email').value,
-    password: document.getElementById(p + 'Pw').value, remember});
-  if (!res.ok){ msg.textContent = res.why; return; }
-  const allowed = kind === 'teacher' ? ['teacher'] : ['office', 'examiner'];
-  if (!allowed.includes(res.role)){
-    msg.textContent = res.role === 'student'
-      ? 'That is a student account — use the Student tab.'
-      : `That account is ${res.role}, so it signs in at the other tab.`;
-    return;
-  }
-  keep(res.token, remember, res.role, msg);
-}
-
 function ordinal(n){ const t = ['th','st','nd','rd'], v = n % 100; return n + (t[(v - 20) % 10] || t[v] || t[0]); }
-
-/* ---------- staff sign-up (for now only the three test inboxes the site allows) ---------- */
-function staffJoin(p){ document.getElementById(p + 'Join').classList.toggle('hide'); }
-async function staffCode(p){
-  const msg = document.getElementById(p + 'JMsg');
-  msg.textContent = '';
-  const email = document.getElementById(p + 'JEmail').value.trim().toLowerCase();
-  const res = await post('/api/register/staff-start', {email});
-  if (!res.ok){ msg.textContent = res.why; return; }
-  document.getElementById(p + 'JWhere').textContent =
-    `A 6-digit code is on its way to ${email}. Check the inbox (and spam) — it can take a minute.`;
-  document.getElementById(p + 'JStep2').classList.remove('hide');
-}
-async function staffFinish(p, kind){
-  const msg = document.getElementById(p + 'JMsg');
-  msg.textContent = '';
-  const pw = document.getElementById(p + 'JPw').value;
-  if (pw !== document.getElementById(p + 'JPw2').value){ msg.textContent = "The two passwords don't match."; return; }
-  const res = await post('/api/register/staff-finish', {
-    email: document.getElementById(p + 'JEmail').value, code: document.getElementById(p + 'JCode').value,
-    password: pw, remember: true});
-  if (!res.ok){ msg.textContent = res.why; return; }
-  const allowed = kind === 'teacher' ? ['teacher'] : ['office', 'examiner'];
-  if (!allowed.includes(res.role)){
-    msg.textContent = `Account created as ${res.role}. Sign in on the ${res.role === 'teacher' ? 'Teacher' : 'Admin'} tab.`;
-    return;
-  }
-  keep(res.token, true, res.role, msg);
-}
-
-/* ---------- register ---------- */
-async function regStart(){
-  const msg = document.getElementById('r1Msg');
-  msg.textContent = '';
-  const email = document.getElementById('rEmail').value;
-  const res = await post('/api/register/start', {
-    email, name: document.getElementById('rName').value, batch: document.getElementById('rBatch').value,
-    father: document.getElementById('rFa').value, mother: document.getElementById('rMo').value});
-  if (!res.ok){ msg.textContent = res.why; return; }
-  document.getElementById('rSent').textContent = email.trim().toLowerCase();
-  document.getElementById('rWhere').textContent = 'Check your university inbox (and spam) — it can take a minute.';
-  document.getElementById('reg1').classList.add('hide');
-  document.getElementById('reg2').classList.remove('hide');
-  document.getElementById('s1').classList.remove('on');
-  document.getElementById('s2').classList.add('on');
-}
-
-async function regFinish(){
-  const msg = document.getElementById('r2Msg');
-  msg.textContent = '';
-  const pw = document.getElementById('rPw').value;
-  if (pw !== document.getElementById('rPw2').value){ msg.textContent = "The two passwords don't match."; return; }
-  const remember = document.getElementById('rRemember').checked;
-  const res = await post('/api/register/finish', {
-    email: document.getElementById('rSent').textContent,
-    code: document.getElementById('rCode').value, password: pw, remember});
-  if (!res.ok){ msg.textContent = res.why; return; }
-  keep(res.token, remember, res.role, msg);
-}
-
-function regBack(){
-  document.getElementById('reg2').classList.add('hide');
-  document.getElementById('reg1').classList.remove('hide');
-  document.getElementById('s2').classList.remove('on');
-  document.getElementById('s1').classList.add('on');
-}
-
-async function signOutHere(){
-  await fetch('/api/signout', {method:'POST', headers:{Authorization:'Bearer ' + token()}});
-  localStorage.removeItem(KEY); sessionStorage.removeItem(KEY);
-  location.reload();
-}
 </script>
 
 <script src="loader.js"></script>
