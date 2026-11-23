@@ -2,6 +2,20 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 10:20 — Faculty: bigger cards that follow the screen, names under the photo
+
+From Sabrin's colour chat. `landing.html` only.
+
+- **No fixed size any more.** The old rule made five cards across with a 200px minimum, so on a
+  laptop each card was only ~220px wide. Now the number across depends only on the screen width:
+  phone (under 600px) 1 card with a peek of the next; 600–1099px 2; 1100–1699px 3 (laptop: ~377px
+  each); 1700px and wider 4. Gaps are 28px (16px on phones). Text sizes grow with the screen too.
+- **Names off the photo.** The name and title (e.g. "Professor") now sit under the photo, above the
+  email and "View profile", in dark text. The photo is shown clear: no dark fade, no darkening.
+- The ← → buttons now move one screenful of cards at a time, however many that is.
+- **Rule for later changes:** do not give the faculty cards (or other homepage sections) a fixed
+  pixel width or a min/max size; size them from the screen width so they adjust to any display.
+
 ## 2026-11-23 09:55 — Even spacing on the four panels
 
 From Sabrin's colour chat. Gaps were all different (14–80px; the profile and CGPA cards were 20px apart).
