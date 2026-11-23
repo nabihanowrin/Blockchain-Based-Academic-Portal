@@ -975,6 +975,7 @@ class Handler(SimpleHTTPRequestHandler):
     # (code, databases, notes, tests, scripts) is never served to anyone.
     PAGES = {"/landing.html", "/signin.html", "/app.html", "/teacher.html", "/office.html", "/exam.html",
              "/alumni.html",                                 # one alumni story, opened from the homepage
+             "/privacy.html",                                # the Privacy Policy, linked from the footer
              "/google6089bfc9267fdecb.html",                 # Google Search Console's check
              "/loader.js",                                   # the loading screen, used by every page
              "/theme.css"}                                   # the shared look of the four panels

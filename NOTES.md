@@ -2,6 +2,25 @@
 
 Plain-English notes on what changed and why. Newest at the top.
 
+## 2026-11-23 10:50 — Footer: BRAC-style bottom bar with social icons; Privacy Policy page
+
+From Sabrin's colour chat.
+
+- **Footer** (`landing.html`): the contact details, Useful links and Questions stay as they were. The
+  maroon copyright strip is replaced by a light bar (`#F6F2EE`), after BRAC University's footer:
+  CU logo + "Dept. of EEE, University of Chittagong" on the left; "© 2026 EEE Records. All rights
+  reserved. | Privacy Policy" in the middle; social icons on the right (Facebook, YouTube, LinkedIn,
+  Instagram, X). On phones everything stacks in the middle. The developer credit and "not an official
+  university website" moved into the small print above the bar.
+- **Social links:** Facebook (facebook.com/ictcu) and YouTube (the CU channel already in the footer)
+  work. **LinkedIn, Instagram and X have no address yet** (couldn't confirm the official ones), so
+  they show faded and do nothing. To fix: put the address in that icon's `href` and remove
+  `class="soon"`.
+- **Privacy Policy** (`privacy.html`, new; added to `PAGES` in `server.py`): what's kept, who sees
+  marks, sign-in ticket (30 days with "Remember me", otherwise 12 hours), emails, and what the AI
+  assistant sends to Groq/Gemini (no marks, GPA, attendance or parents' names). Only facts from the
+  code and the FAQ.
+
 ## 2026-11-23 10:35 — News: the photo is as tall as the charcoal panel
 
 From Sabrin's colour chat. `landing.html` only (new NEWS block at the end of the <head> styles).

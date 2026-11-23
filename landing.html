@@ -905,6 +905,35 @@ body{animation:pageIn .5s ease backwards}
   .nside{align-self:center;padding:56px 0}
 }
 </style>
+<style>
+/* =====================================================================
+   FOOTER BOTTOM BAR (23 Nov, Sabrin), after BRAC University's: a light bar
+   under the charcoal footer: logo on the left, copyright | Privacy Policy
+   in the middle, social icons on the right. Sizes follow the screen.
+   ===================================================================== */
+footer{padding-bottom:0}
+.fbar{background:#F6F2EE;color:var(--ink);margin-top:clamp(36px,4vw,64px);padding:clamp(22px,2.4vw,36px) var(--gut);
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:clamp(20px,3vw,56px)}
+.fb-logo{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink)}
+.fb-logo img{height:clamp(56px,5.5vw,92px);width:auto;display:block}
+.fb-logo span{font-size:clamp(11px,.8vw,13px);letter-spacing:.06em;text-transform:uppercase;line-height:1.5;color:#5A5350}
+.fb-mid{display:flex;align-items:center;justify-content:center;gap:clamp(14px,1.6vw,28px);flex-wrap:wrap;
+  font-family:var(--jakarta,inherit);font-size:clamp(14px,1.15vw,19px);color:var(--ink)}
+.fb-mid i{width:1px;height:1.1em;background:#CFC4BD}
+.fb-mid a{color:var(--ink);text-decoration:none}
+.fb-mid a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:4px}
+.fb-social{display:flex;align-items:center;gap:clamp(18px,2.6vw,48px)}
+.fb-social a{color:var(--ink);display:grid;place-items:center;width:clamp(26px,2.4vw,40px);height:clamp(26px,2.4vw,40px)}
+.fb-social a svg{width:100%;height:100%}
+.fb-social a[href]:hover{color:var(--accent)}
+.fb-social a.soon{opacity:.45;cursor:default}
+@media (max-width:900px){
+  .fbar{grid-template-columns:1fr;justify-items:center;text-align:center;row-gap:20px}
+  .fb-logo{flex-direction:column;gap:8px}
+  .fb-mid{flex-direction:column;gap:8px}
+  .fb-mid i{display:none}
+}
+</style>
 </head>
 <body>
 
@@ -1146,13 +1175,27 @@ body{animation:pageIn .5s ease backwards}
           <p>Click "Forgot your password?" under the sign-in button. We email a 6-digit code to your account's email; type it in and choose a new password. Any device that was still signed in is signed out.</p></details>
       </div>
     </div>
-    <div class="legal">Prototype. Marks, attendance and achievements shown here are sample data, not real records.</div>
+    <div class="legal">Prototype. Marks, attendance and achievements shown here are sample data, not real records. CSE 518 course project, University of Chittagong; not an official university website. Developed by Nabiha Nowrin, Sabrin Sultana and Syeda Muntaha Najah.</div>
   </div>
-  <div class="copybar">
-    <div class="wrap">
-      <span>Copyright © 2026 EEE Records · CSE 518 course project, University of Chittagong. Not an official university website.</span>
-      <span>Developed by Nabiha Nowrin, Sabrin Sultana and Syeda Muntaha Najah</span>
+  <!-- bottom bar, after BRAC University's: logo, copyright | Privacy Policy, social icons.
+       To add a social link: put its address in href and remove class="soon". -->
+  <div class="fbar">
+    <a class="fb-logo" href="landing.html" aria-label="EEE Records homepage">
+      <img src="photos/logo.webp" alt="University of Chittagong logo">
+      <span>Dept. of EEE<br>University of Chittagong</span>
+    </a>
+    <div class="fb-mid">
+      <span>© 2026 EEE Records. All rights reserved.</span>
+      <i aria-hidden="true"></i>
+      <a href="privacy.html">Privacy Policy</a>
     </div>
+    <nav class="fb-social" aria-label="Social media">
+      <a href="https://www.facebook.com/ictcu/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.33-.04-1.56-.14-2.86-.14C11.93 2 10 3.66 10 6.7v2.8H7v4h3V22h4v-8.5z"/></svg></a>
+      <a href="https://www.youtube.com/channel/UClQg__wc5h3uW_YHSD-iMbg" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></svg></a>
+      <a class="soon" aria-label="LinkedIn (link coming soon)" title="LinkedIn: link coming soon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4V21H3V9.75zM9.5 9.75h3.83v1.54h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-5.01c0-1.2-.02-2.73-1.66-2.73-1.67 0-1.92 1.3-1.92 2.65V21h-4V9.75z"/></svg></a>
+      <a class="soon" aria-label="Instagram (link coming soon)" title="Instagram: link coming soon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2.2c3.2 0 3.58 0 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.2 15.58 2.2 15.2 2.2 12s0-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.2 8.8 2.2 12 2.2zm0 4.86a4.94 4.94 0 1 0 0 9.88 4.94 4.94 0 0 0 0-9.88zm0 8.15a3.21 3.21 0 1 1 0-6.42 3.21 3.21 0 0 1 0 6.42zm5.13-9.5a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3z"/></svg></a>
+      <a class="soon" aria-label="X (Twitter) (link coming soon)" title="X (Twitter): link coming soon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.32l4.37 5.78L17.75 3zm-1.08 16.17h1.7L7.4 4.74H5.58l11.09 14.43z"/></svg></a>
+    </nav>
   </div>
 </footer>
 
