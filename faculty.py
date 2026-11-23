@@ -96,18 +96,30 @@ CU_PAGE = {
 }
 
 
-# Research areas, copied by hand from each teacher's official CU profile ("Areas of
-# Interest" tab). Only teachers listed here have areas; for everyone else the
-# assistant says it doesn't have them. Do NOT fill this from an automatic page
-# reader: the profile pages load their tabs with JavaScript and a reader gets a
-# wrong, identical list for everyone (checked 23 Nov 2026).
+# Research areas, copied from each teacher's official CU profile ("Areas of Interest"
+# tab). Only teachers listed here have areas; for everyone else the assistant says it
+# doesn't have them. The profile pages load their tabs with JavaScript, so a plain
+# page reader returns a wrong, identical list for everyone (checked 23 Nov 2026).
+# Read them with a reader that runs the page (Firecrawl) or copy them by hand, and
+# compare with the page on screen.
 AREAS = {
-    "Dr. Md. Murshadul Hoque": [
+    "Dr. Ariful Islam": [
+        "Ultra-wide bandgap semiconductor materials", "Photovoltaics/Solar Cells", "Thin Films",
+        "Microscopy/Nanotechnology", "Nano/Bio-photonics", "Inorganic/organic Materials",
+        "Biomaterials", "Optoelectronics"],
+    "Dr. Jamal Uddin Ahamed": [
         "Nanostructured thin films for energy storage and photovoltaic devices",
-        "STM light emission spectroscopy of normal and superconductive nano-structures",
+        "STM light emission spectroscopy of normal and super conductive nano-structures",
         "STM-LE spectroscopy and nano-optics for energy applications",
-        "Advanced functional materials and device applications",
-        "Multifunctional perovskite materials for clean energy generation and storage"],
+        "Advanced Functional Materials and Device Applications",
+        "Multifunctional perovskite materials for Clean Energy Generation and Storage"],
+    "Dr. Md. Murshadul Hoque": [
+        "Power and Energy Systems",
+        "Grid Integration of Distributed Energy Resources (EV, PV System, BEES, etc.)",
+        "Transactive Energy Market", "Peer-to-Peer (P2P) Energy Trading",
+        "Power System Optimization", "Energy Management System", "Smart Grids",
+        "Application of Power Electronics in Power and Energy Systems",
+        "Smart Intelligent Systems and Controls"],
     "Dr. Md. Shah Alam": ["Spintronics", "Magnetic Materials", "Quantum Cellular Automata (QCA)",
                           "Photovoltaics/Solar Cell"],
 }

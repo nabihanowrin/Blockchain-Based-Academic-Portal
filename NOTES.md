@@ -137,6 +137,16 @@ From Sabrin's homepage chat, on top of b7ec38b.
   the fallback. `signin.html`'s form side uses it too. (`theme.css` is Najah's area — she has been told
   in the change log.) `alumni.html` is unchanged.
 
+## 2026-11-23 — Research areas read from the real pages; Hoque/Jamal mix-up fixed
+
+What you saw: the first automatic read of the CU profiles gave every teacher the
+same list, which your screenshot proved wrong. Firecrawl (which runs the page like a
+browser) reads them correctly: its result for Dr. Shah Alam matched your screenshot.
+What changed (`faculty.py` `AREAS`): added Dr. Ariful Islam (3 items on his page,
+the long middle one split into its parts), Dr. Jamal Uddin Ahamed (the STM list) and
+Dr. Md. Murshadul Hoque (the 9 power-and-energy items). Earlier today I had wrongly put
+the STM list under Hoque; it is Jamal's. Names in the paste came AFTER their lists.
+
 ## 2026-11-23 — Links in the AI chat are clickable
 
 What you saw: the assistant gave a web address and it was plain text.
